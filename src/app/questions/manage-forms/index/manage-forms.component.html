@@ -1,16 +1,27 @@
-<div *ngFor="let form of forms">
-  <div style="background: #ececec; padding: 30px">
-    <nz-card style="width: 300px" [nzBordered]="false" nzTitle="{{form.name}}-{{form.code}}" [nzExtra]="extraTemplate">
-    </nz-card>
+<div>
+  <div nz-row nzJustify="end">
+    <div nz-col nzSpan="12">
+      <button nz-button nzType="primary" [nzSize]="size" nzShape="round">
+        <i nz-icon nzType="plus"></i>Agregar
+      </button>
+    </div>
   </div>
-  <ng-template #extraTemplate>
-    <a nz-button [nzSize]="size" nzType="link">
-      <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
-      </i>
-    </a>
-    <a nz-button [nzSize]="size" nzType="link">
-
-      <i nz-icon nzType="delete" nzTheme="outline"></i>
-    </a>
-  </ng-template>
+  <div style="background: #ECECEC;padding:30px;">
+    <div nz-row [nzGutter]="8">
+      <div nz-col [nzSpan]="8" *ngFor="let form of forms">
+        <nz-card nzTitle="{{form.name}}-{{form.code}}" [nzExtra]="extraTemplate">
+          <p>Card content</p>
+        </nz-card>
+        <ng-template #extraTemplate>
+          <a nz-button [nzSize]="size" nzType="link">
+            <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
+            </i>
+          </a>
+          <a nz-button [nzSize]="size" nzType="link">
+            <i nz-icon nzType="delete" nzTheme="outline"></i>
+          </a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
 </div>

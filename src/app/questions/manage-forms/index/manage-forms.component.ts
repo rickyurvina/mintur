@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { NzGridModule } from 'ng-zorro-antd/grid'
 import { FormService } from '../form.service';
 import { Form } from '../form';
 
@@ -8,9 +8,10 @@ import { Form } from '../form';
   templateUrl: './manage-forms.component.html',
   styleUrls: ['./manage-forms.component.css']
 })
+
 export class ManageFormsComponent {
   forms: Form[]=[];
-
+  size = 'large';
   constructor(public formService:FormService) { }
 
   ngOnInit(): void {
