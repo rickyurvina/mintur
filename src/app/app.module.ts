@@ -17,7 +17,8 @@ import { FullLayoutComponent } from './layouts/full-layout/full-layout.component
 
 import { NgChartjsModule } from 'ng-chartjs';
 import { ThemeConstantService } from './shared/services/theme-constant.service';
-
+import { FormModule } from './form/form.module';
+import { HttpClientModule } from '@angular/common/http';
 registerLocaleData(en);
 
 @NgModule({
@@ -26,6 +27,7 @@ registerLocaleData(en);
         CommonLayoutComponent,
         FullLayoutComponent
     ],
+
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
@@ -33,15 +35,18 @@ registerLocaleData(en);
         NzBreadCrumbModule,
         TemplateModule,
         SharedModule,
-        NgChartjsModule
+        NgChartjsModule,
+        FormModule,
+        HttpClientModule,
     ],
+
     providers: [
-        { 
+        {
             provide: NZ_I18N,
-            useValue: en_US, 
+            useValue: en_US,
         },
         {
-            provide: LocationStrategy, 
+            provide: LocationStrategy,
             useClass: PathLocationStrategy
         },
         ThemeConstantService
