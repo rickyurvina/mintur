@@ -1,16 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { FormService } from '../form.service';
 import { Form } from '../form';
 
 @Component({
-  selector: 'app-index',
-  templateUrl: './index.component.html',
-  styleUrls: ['./index.component.css']
+  selector: 'app-manage-forms',
+  templateUrl: './manage-forms.component.html',
+  styleUrls: ['./manage-forms.component.css']
 })
-
-export class IndexComponent implements OnInit {
-
+export class ManageFormsComponent {
   forms: Form[]=[];
 
   constructor(public formService:FormService) { }
@@ -18,7 +16,6 @@ export class IndexComponent implements OnInit {
   ngOnInit(): void {
     this.formService.getAll().subscribe((data: Form[])=>{
       this.forms=data;
-      console.log(this.forms);
     })
   }
 
@@ -28,5 +25,4 @@ export class IndexComponent implements OnInit {
   //        console.log('Person deleted successfully!');
   //   })
   // }
-
 }

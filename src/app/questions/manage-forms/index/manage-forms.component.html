@@ -1,0 +1,16 @@
+<div *ngFor="let form of forms">
+  <div style="background: #ececec; padding: 30px">
+    <nz-card style="width: 300px" [nzBordered]="false" nzTitle="{{form.name}}-{{form.code}}" [nzExtra]="extraTemplate">
+    </nz-card>
+  </div>
+  <ng-template #extraTemplate>
+    <a nz-button [nzSize]="size" nzType="link">
+      <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
+      </i>
+    </a>
+    <a nz-button [nzSize]="size" nzType="link">
+
+      <i nz-icon nzType="delete" nzTheme="outline"></i>
+    </a>
+  </ng-template>
+</div>

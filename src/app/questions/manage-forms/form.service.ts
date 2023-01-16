@@ -21,7 +21,6 @@ export class FormService {
 
   constructor(private httpClient: HttpClient) { }
 
-
   getAll(): Observable<Form[]> {
     return this.httpClient.get<Form[]>(this.apiURL)
     .pipe(

@@ -17,8 +17,8 @@ import { FullLayoutComponent } from './layouts/full-layout/full-layout.component
 
 import { NgChartjsModule } from 'ng-chartjs';
 import { ThemeConstantService } from './shared/services/theme-constant.service';
-import { FormModule } from './form/form.module';
 import { HttpClientModule } from '@angular/common/http';
+
 registerLocaleData(en);
 
 @NgModule({
@@ -36,7 +36,6 @@ registerLocaleData(en);
         TemplateModule,
         SharedModule,
         NgChartjsModule,
-        FormModule,
         HttpClientModule,
     ],
 
