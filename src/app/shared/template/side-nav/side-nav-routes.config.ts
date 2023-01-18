@@ -848,6 +848,15 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
+        path: '/admin/manage-sub-topics',
+        title: 'SubTemas',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+
+      {
         path: '/admin/manage-components',
         title: 'Componentes',
         iconType: '',

@@ -43,7 +43,7 @@ export class ManageFormsComponent implements OnInit {
           try {
             this.formService.destroy(id).subscribe(res => {
               this.forms = this.forms.filter(item => item.id !== id);
-              this.message.create('success', this.translate.instant('general.eliminado_exitosamente'));
+              this.message.create('success', this.translate.instant('mensajes.eliminado_exitosamente'));
             }, err => {
               this.message.create('error', `Error: ${err}`);
             })
@@ -65,7 +65,8 @@ export class ManageFormsComponent implements OnInit {
         nzComponentParams: {
           InputData: id,
           FormsData: this.forms
-        }
+        },
+        nzFooter:null,
       });
     } catch (e) {
       this.message.create('error', `Error ${e}`);

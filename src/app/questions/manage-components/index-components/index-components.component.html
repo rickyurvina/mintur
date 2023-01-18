@@ -1,1 +1,34 @@
-<p>index-components works!</p>
+<div>
+  <div nz-row nzJustify="end">
+    <div nz-col>
+      <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="showModalCreate()">
+        <i nz-icon nzType="plus"></i> {{ "general.agregar" | translate }}
+      </button>
+    </div>
+  </div>
+  <div style="background: #ECECEC;padding:30px;">
+    <div nz-row [nzGutter]="8">
+      <div nz-col [nzSpan]="8" *ngFor="let component of components">
+        <nz-card nzTitle="{{component.name}}-{{component.code}}" [nzExtra]="extraTemplate">
+          <p>{{component.description}}</p>
+          <nz-divider></nz-divider>
+          <div nz-row nzJustify="end">
+            <div nz-col>
+              <nz-span>{{'general.ultima_actualizacion'|translate}}</nz-span> <nz-tag
+                [nzColor]="'#87d068'">{{component.updated_at}}</nz-tag>
+            </div>
+          </div>
+        </nz-card>
+        <ng-template #extraTemplate>
+          <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(component.id)">
+            <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
+            </i>
+          </a>
+          <a nz-button [nzSize]="size" nzType="link" (click)="showConfirm(component.id)">
+            <i nz-icon nzType="delete" nzTheme="outline"></i>
+          </a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

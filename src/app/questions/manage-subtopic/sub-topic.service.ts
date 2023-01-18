@@ -3,12 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {  Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Question } from './question';
+import { SubTopic } from './sub-topic';
 
 @Injectable({
   providedIn: 'root'
 })
-export class QuestionService {
+
+export class SubTopicService {
+
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json'
@@ -17,36 +19,36 @@ export class QuestionService {
 
  constructor(private httpClient: HttpClient) { }
 
-  getAll(): Observable<Question[]> {
-    return this.httpClient.get<Question[]>(environment.url+"/question")
+  getAll(): Observable<SubTopic[]> {
+    return this.httpClient.get<SubTopic[]>(environment.url+"/sub-topic")
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
-  create(question): Observable<Question> {
-    return this.httpClient.post<Question>(environment.url+"/question", JSON.stringify(question), this.httpOptions)
+  create(subTopic): Observable<SubTopic> {
+    return this.httpClient.post<SubTopic>(environment.url+"/sub-topic", JSON.stringify(subTopic), this.httpOptions)
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
-  find(id): Observable<Question> {
-    return this.httpClient.get<Question>(environment.url+"/question/" + id)
+  find(id): Observable<SubTopic> {
+    return this.httpClient.get<SubTopic>(environment.url+"/sub-topic/" + id)
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
-  update(id, question): Observable<Question> {
-    return this.httpClient.put<Question>(environment.url+"/question/" + id, JSON.stringify(question), this.httpOptions)
+  update(id, subTopic): Observable<SubTopic> {
+    return this.httpClient.put<SubTopic>(environment.url+"/sub-topic/" + id, JSON.stringify(subTopic), this.httpOptions)
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
   destroy(id){
-    return this.httpClient.delete<Question>(environment.url+"/question/" + id, this.httpOptions)
+    return this.httpClient.delete<SubTopic>(environment.url+"/sub-topic/" + id, this.httpOptions)
     .pipe(
       catchError(this.errorHandler)
     )

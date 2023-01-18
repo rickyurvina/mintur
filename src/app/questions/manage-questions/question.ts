@@ -3,6 +3,6 @@ export interface Question {
   name:string,
   code:string,
   type:string,
-  max_sccore:number,
+  max_score:number,
   description:string
 }

@@ -37,7 +37,9 @@
     "Components":"Componentes",
     "Apps":"Aplicaciones",
     "Dashboard":"Página principal",
-    "ultima_actualizacion":"Última actualización:"
+    "ultima_actualizacion":"Última actualización:",
+    "SubTemas":"Sub Temas",
+    "Componentes":"Componentes"
   },
   "validaciones":{
     "validando":"Validando...",

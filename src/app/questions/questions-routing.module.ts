@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IndexComponentsComponent } from './manage-components/index-components/index-components.component';
 import { ManageFormsComponent } from './manage-forms/index/manage-forms.component';
 import { IndexQuestionsComponent } from './manage-questions/index-questions/index-questions.component';
+import { IndexSubTopicComponent } from './manage-subtopic/index-sub-topic/index-sub-topic.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,13 @@ const routes: Routes = [
     component: IndexComponentsComponent,
     data: {
       title: 'Componentes'
+    }
+  },
+  {
+    path: 'manage-sub-topics',
+    component: IndexSubTopicComponent,
+    data: {
+      title: 'SubTemas'
     }
   },
 

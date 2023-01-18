@@ -48,7 +48,6 @@ export class CreateFormComponent implements OnInit {
         return element['code'];
       })
     }
-
   }
 
   submitForm(value: { code: string; name: string; }): void {
