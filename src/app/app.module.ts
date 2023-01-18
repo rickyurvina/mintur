@@ -18,6 +18,15 @@ import { FullLayoutComponent } from './layouts/full-layout/full-layout.component
 import { NgChartjsModule } from 'ng-chartjs';
 import { ThemeConstantService } from './shared/services/theme-constant.service';
 import { HttpClientModule } from '@angular/common/http';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CreateFormComponent } from './questions/manage-forms/create-form/create-form.component';
+import { ManageFormsComponent } from './questions/manage-forms/index/manage-forms.component';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
+import { NzMessageModule } from 'ng-zorro-antd/message';
 
 registerLocaleData(en);
 
@@ -25,7 +34,8 @@ registerLocaleData(en);
     declarations: [
         AppComponent,
         CommonLayoutComponent,
-        FullLayoutComponent
+        FullLayoutComponent,
+        CreateFormComponent,
     ],
 
     imports: [
@@ -37,6 +47,12 @@ registerLocaleData(en);
         SharedModule,
         NgChartjsModule,
         HttpClientModule,
+        NzModalModule,
+        NzFormModule,
+        ReactiveFormsModule,
+        NzSpinModule,
+        NzAlertModule,
+        NzMessageModule
     ],
 
     providers: [
@@ -48,7 +64,8 @@ registerLocaleData(en);
             provide: LocationStrategy,
             useClass: PathLocationStrategy
         },
-        ThemeConstantService
+        ThemeConstantService,
+        ManageFormsComponent,
     ],
     bootstrap: [AppComponent]
 })

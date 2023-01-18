@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import {  Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-
+import { environment } from 'src/environments/environment';
 import { Form } from './form';
 
 @Injectable({
@@ -11,7 +11,6 @@ import { Form } from './form';
 })
 
 export class FormService {
-  private apiURL='http://apimt.test/api/form/'
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -22,21 +21,35 @@ export class FormService {
   constructor(private httpClient: HttpClient) { }
 
   getAll(): Observable<Form[]> {
-    return this.httpClient.get<Form[]>(this.apiURL)
+    return this.httpClient.get<Form[]>(environment.url+"/form")
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
   create(form): Observable<Form> {
-    return this.httpClient.post<Form>(this.apiURL, JSON.stringify(form), this.httpOptions)
+    return this.httpClient.post<Form>(environment.url+"/form", JSON.stringify(form), this.httpOptions)
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
-  delete(id){
-    return this.httpClient.delete<Form>(this.apiURL + id, this.httpOptions)
+  find(id): Observable<Form> {
+    return this.httpClient.get<Form>(environment.url+"/form/" + id)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  update(id, form): Observable<Form> {
+    return this.httpClient.put<Form>(environment.url+"/form/" + id, JSON.stringify(form), this.httpOptions)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  destroy(id){
+    return this.httpClient.delete<Form>(environment.url+"/form/" + id, this.httpOptions)
     .pipe(
       catchError(this.errorHandler)
     )
@@ -49,6 +62,7 @@ export class FormService {
     } else {
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    return throwError(errorMessage);
+    console.log(error)
+    return throwError(error);
   }
 }
