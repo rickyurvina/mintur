@@ -7,7 +7,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
 import { IndexQuestionsComponent } from '../index-questions/index-questions.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-questions',
@@ -25,7 +25,7 @@ export class CreateQuestionsComponent implements OnInit {
 
   optionList = [
     { label: 'Si/No', value: 'si_no' },
-    { label: 'Rango 1-5', value: 'rango_1_5'}
+    { label: 'Rango 1-5', value: 'rango_1_5' }
   ];
   log(value: { label: string; value: string; age: number }): void {
     console.log(value);
@@ -42,14 +42,19 @@ export class CreateQuestionsComponent implements OnInit {
           name: this.question.name,
           code: this.question.code,
           type: this.question.type,
+          description: this.question.description,
+        })
+        this.codes = this.FormsData.map(element => {
+          return element['code'] != this.question.code;
         })
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
+    } else {
+      this.codes = this.FormsData.map(element => {
+        return element['code'];
+      })
     }
-    this.codes = this.FormsData.map(element => {
-      return element['code'];
-    })
   }
 
   submitForm(value: { code: string; name: string; }): void {
@@ -126,9 +131,9 @@ export class CreateQuestionsComponent implements OnInit {
   codeAsyncValidator = (control: FormControl) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
       setTimeout(() => {
-        if(this.codes.includes(control.value)){
+        if (this.codes.includes(control.value)) {
           observer.next({ error: true, duplicated: true });
-        }else{
+        } else {
           observer.next(null);
         }
         observer.complete();
@@ -147,6 +152,7 @@ export class CreateQuestionsComponent implements OnInit {
       code: ['', [Validators.required], [this.codeAsyncValidator]],
       name: ['', [Validators.required]],
       type: ['', [Validators.required]],
+      description: ['', []],
     });
   }
 

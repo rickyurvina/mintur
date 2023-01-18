@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { FormService } from '../form.service';
-import { Form } from '../form';
+import { ComponentService } from '../component.service';
+import { Component as Comp } from '../component';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { CreateFormComponent } from '../create-form/create-form.component';
 import {TranslateService} from '@ngx-translate/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { CreateComponentsComponent } from '../create-components/create-components.component';
 
 @Component({
-  selector: 'app-manage-forms',
-  templateUrl: './manage-forms.component.html',
-  styleUrls: ['./manage-forms.component.css']
+  selector: 'app-index-components',
+  templateUrl: './index-components.component.html'
 })
+export class IndexComponentsComponent implements OnInit {
 
-export class ManageFormsComponent implements OnInit {
-  forms: Form[] = [];
+  components: Comp[] = [];
   size = 'large';
   isTranslated = false;
-  constructor(public formService: FormService,
+
+  constructor(public compService: ComponentService,
     private modalService: NzModalService,
     private message: NzMessageService,
    private translate: TranslateService) {
@@ -24,8 +24,8 @@ export class ManageFormsComponent implements OnInit {
 
   ngOnInit(): void {
     try {
-      this.formService.getAll().subscribe((data: Form[]) => {
-        this.forms = data;
+      this.compService.getAll().subscribe((data: Comp[]) => {
+        this.components = data;
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
@@ -41,8 +41,8 @@ export class ManageFormsComponent implements OnInit {
         nzContent:  this.translate.instant('general.modal_se_cierra'),
         nzOnOk: () => {
           try {
-            this.formService.destroy(id).subscribe(res => {
-              this.forms = this.forms.filter(item => item.id !== id);
+            this.compService.destroy(id).subscribe(res => {
+              this.components = this.components.filter(item => item.id !== id);
               this.message.create('success', this.translate.instant('mensajes.eliminado_exitosamente'));
             }, err => {
               this.message.create('error', `Error: ${err}`);
@@ -61,12 +61,12 @@ export class ManageFormsComponent implements OnInit {
     try {
       this.modalService.create({
         nzTitle: this.translate.instant('general.crear')+' '+this.translate.instant('general.formulario'),
-        nzContent: CreateFormComponent,
+        nzContent: CreateComponentsComponent,
+        nzFooter:null,
         nzComponentParams: {
           InputData: id,
-          FormsData: this.forms
-        },
-        nzFooter:null,
+          FormsData: this.components
+        }
       });
     } catch (e) {
       this.message.create('error', `Error ${e}`);

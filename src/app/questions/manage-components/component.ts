@@ -1,8 +1,6 @@
-export interface Question {
+export interface Component {
   id:number,
   name:string,
   code:string,
-  type:string,
-  max_score:number,
   description:string
 }
