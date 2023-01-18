@@ -1,0 +1,10 @@
+[nz-form] {
+  max-width: 600px;
+}
+
+button {
+  margin-left: 8px;
+}
+nz-select {
+  width: 120px;
+}
