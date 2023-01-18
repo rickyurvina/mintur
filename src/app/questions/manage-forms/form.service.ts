@@ -62,7 +62,6 @@ export class FormService {
     } else {
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    console.log(error)
     return throwError(error);
   }
 }

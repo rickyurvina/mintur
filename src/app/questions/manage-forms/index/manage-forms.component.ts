@@ -63,7 +63,8 @@ export class ManageFormsComponent implements OnInit {
         nzContent: CreateFormComponent,
         nzFooter: null,
         nzComponentParams: {
-          InputData: id
+          InputData: id,
+          FormsData: this.forms
         }
       });
     } catch (e) {

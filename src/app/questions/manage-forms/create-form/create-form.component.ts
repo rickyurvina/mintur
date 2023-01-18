@@ -17,12 +17,15 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class CreateFormComponent implements OnInit {
 
   @Input() InputData: any;
+  @Input() FormsData: any;
 
+  codes: string[] = [];
   id: number;
   form: Form;
   validateForm: FormGroup;
 
   public ngOnInit(): void {
+    this.codes = [];
 
     if (this.InputData) {
       this.id = this.InputData;
@@ -36,7 +39,9 @@ export class CreateFormComponent implements OnInit {
         this.message.create('error', `Error: ${err}`);
       });
     }
-
+    this.codes = this.FormsData.map(element => {
+      return element['code'];
+    })
   }
 
   submitForm(value: { code: string; name: string; }): void {
@@ -52,8 +57,7 @@ export class CreateFormComponent implements OnInit {
           this.message.create('success', `Actualizado exitosamente`);
           this.modalService.closeAll();
         }, err => {
-          this.message.create('error', `Error: ${err}`);
-
+          this.showErrors(err)
         });
       } catch (e) {
         this.message.create('error', `Error ${e}`);
@@ -72,21 +76,7 @@ export class CreateFormComponent implements OnInit {
           this.manageForms.ngOnInit();
           this.router.navigate(['forms/manage-forms'])
         }, err => {
-          const messagesArr = [];
-          if (err.error) {
-            messagesArr.push(err.error.message);
-            if (err.error.errors) {
-              for (const property in err.error.errors) {
-                if (err.error.errors.hasOwnProperty(property)) {
-                  const propertyErrors: Array<string> = err.error.errors[property];
-                  propertyErrors.forEach(error => messagesArr.push(error));
-                }
-              }
-            }
-          }
-          messagesArr.forEach(element => {
-            this.message.create('error', `${element}`)
-          });
+          this.showErrors(err)
         });
       } catch (e) {
         this.message.create('error', `Error ${e}`);
@@ -106,13 +96,30 @@ export class CreateFormComponent implements OnInit {
     }
   }
 
+  showErrors(err) {
+    const messagesArr = [];
+    if (err.error) {
+      messagesArr.push(err.error.message);
+      if (err.error.errors) {
+        for (const property in err.error.errors) {
+          if (err.error.errors.hasOwnProperty(property)) {
+            const propertyErrors: Array<string> = err.error.errors[property];
+            propertyErrors.forEach(error => messagesArr.push(error));
+          }
+        }
+      }
+    }
+    messagesArr.forEach(element => {
+      this.message.create('error', `${element}`)
+    });
+  }
+
   codeAsyncValidator = (control: FormControl) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
       setTimeout(() => {
-        if (control.value === 'JasonWood') {
-          // you have to return `{error: true}` to mark it as an error event
+        if(this.codes.includes(control.value)){
           observer.next({ error: true, duplicated: true });
-        } else {
+        }else{
           observer.next(null);
         }
         observer.complete();
