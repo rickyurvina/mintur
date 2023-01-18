@@ -30,7 +30,7 @@ import {TranslateModule} from '@ngx-translate/core';
         PerfectScrollbarModule
     ],
     declarations: [
-        SearchPipe
+        SearchPipe,
     ],
     providers: [
         ThemeConstantService

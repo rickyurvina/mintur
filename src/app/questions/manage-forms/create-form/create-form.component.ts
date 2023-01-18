@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { ManageFormsComponent } from '../index/manage-forms.component';
 import { Form } from '../form';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-form',
@@ -34,18 +34,25 @@ export class CreateFormComponent implements OnInit {
         this.form = data;
         this.validateForm.setValue({
           name: this.form.name,
-          code: this.form.code
+          code: this.form.code,
+          description: this.form.description,
+        })
+        this.codes = this.FormsData.map(element => {
+          return element['code'] != this.form.code;
         })
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
+    } else {
+      this.codes = this.FormsData.map(element => {
+        return element['code'];
+      })
     }
-    this.codes = this.FormsData.map(element => {
-      return element['code'];
-    })
+
   }
 
   submitForm(value: { code: string; name: string; }): void {
+    console.log(value);
     if (this.InputData) {
       try {
         this.formService.update(this.id, value).subscribe(res => {
@@ -118,9 +125,9 @@ export class CreateFormComponent implements OnInit {
   codeAsyncValidator = (control: FormControl) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
       setTimeout(() => {
-        if(this.codes.includes(control.value)){
+        if (this.codes.includes(control.value)) {
           observer.next({ error: true, duplicated: true });
-        }else{
+        } else {
           observer.next(null);
         }
         observer.complete();
@@ -138,6 +145,7 @@ export class CreateFormComponent implements OnInit {
     this.validateForm = this.fb.group({
       code: ['', [Validators.required], [this.codeAsyncValidator]],
       name: ['', [Validators.required]],
+      description: ['', []],
     });
   }
 }

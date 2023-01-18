@@ -5,6 +5,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { CreateFormComponent } from '../create-form/create-form.component';
 import {TranslateService} from '@ngx-translate/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
+
 @Component({
   selector: 'app-manage-forms',
   templateUrl: './manage-forms.component.html',
@@ -61,7 +62,6 @@ export class ManageFormsComponent implements OnInit {
       this.modalService.create({
         nzTitle: this.translate.instant('general.crear')+' '+this.translate.instant('general.formulario'),
         nzContent: CreateFormComponent,
-        nzFooter: null,
         nzComponentParams: {
           InputData: id,
           FormsData: this.forms

@@ -36,7 +36,8 @@
     "Chart":"Gráficos",
     "Components":"Componentes",
     "Apps":"Aplicaciones",
-    "Dashboard":"Página principal"
+    "Dashboard":"Página principal",
+    "ultima_actualizacion":"Última actualización:"
   },
   "validaciones":{
     "validando":"Validando...",

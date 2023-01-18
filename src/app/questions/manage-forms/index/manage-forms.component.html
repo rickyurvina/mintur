@@ -1,8 +1,8 @@
 <div>
   <div nz-row nzJustify="end">
-    <div nz-col nzSpan="12">
+    <div nz-col>
       <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="showModalCreate()">
-        <i nz-icon nzType="plus"></i>   {{ "general.agregar" | translate }}
+        <i nz-icon nzType="plus"></i> {{ "general.agregar" | translate }}
       </button>
     </div>
   </div>
@@ -10,7 +10,14 @@
     <div nz-row [nzGutter]="8">
       <div nz-col [nzSpan]="8" *ngFor="let form of forms">
         <nz-card nzTitle="{{form.name}}-{{form.code}}" [nzExtra]="extraTemplate">
-          <p>Card content</p>
+          <p>{{form.description}}</p>
+          <nz-divider></nz-divider>
+          <div nz-row nzJustify="end">
+            <div nz-col>
+              <nz-span>{{'general.ultima_actualizacion'|translate}}</nz-span> <nz-tag
+                [nzColor]="'#87d068'">{{form.updated_at}}</nz-tag>
+            </div>
+          </div>
         </nz-card>
         <ng-template #extraTemplate>
           <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(form.id)">
@@ -18,11 +25,10 @@
             </i>
           </a>
           <a nz-button [nzSize]="size" nzType="link" (click)="showConfirm(form.id)">
-            <i nz-icon nzType="delete" nzTheme="outline" ></i>
+            <i nz-icon nzType="delete" nzTheme="outline"></i>
           </a>
         </ng-template>
       </div>
     </div>
   </div>
 </div>
-

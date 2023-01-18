@@ -5,6 +5,7 @@ import { NZ_I18N, es_ES, en_US } from 'ng-zorro-antd/i18n';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { registerLocaleData, PathLocationStrategy, LocationStrategy } from '@angular/common';
 import es from '@angular/common/locales/es';
+import en from '@angular/common/locales/en';
 import { AppRoutingModule } from './app-routing.module';
 import { TemplateModule } from './shared/template/template.module';
 import { SharedModule } from './shared/shared.module';
@@ -14,31 +15,34 @@ import { FullLayoutComponent } from './layouts/full-layout/full-layout.component
 import { NgChartjsModule } from 'ng-chartjs';
 import { ThemeConstantService } from './shared/services/theme-constant.service';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzFormModule } from 'ng-zorro-antd/form';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CreateFormComponent } from './questions/manage-forms/create-form/create-form.component';
 import { ManageFormsComponent } from './questions/manage-forms/index/manage-forms.component';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzAlertModule } from 'ng-zorro-antd/alert';
-import { NzMessageModule } from 'ng-zorro-antd/message';
 import localeEs from '@angular/common/locales/es';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CreateQuestionsComponent } from './questions/manage-questions/create-questions/create-questions.component';
 import { IndexQuestionsComponent } from './questions/manage-questions/index-questions/index-questions.component';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-registerLocaleData(es);
-// registerLocaleData(en);
+import { NZ_ICONS } from 'ng-zorro-antd/icon';
+import { IconDefinition } from '@ant-design/icons-angular';
+import * as AllIcons from '@ant-design/icons-angular/icons';
+import { NgZorroAntdModule } from './ng-zorro-antd.module';
+import { FormsModule } from '@angular/forms';
 
 registerLocaleData(localeEs, 'es');
+registerLocaleData(en);
+
+const antDesignIcons = AllIcons as {
+  [key: string]: IconDefinition;
+};
+const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesignIcons[key])
 @NgModule({
   declarations: [
-    AppComponent,
     CommonLayoutComponent,
     FullLayoutComponent,
     CreateFormComponent,
-    CreateQuestionsComponent
+    CreateQuestionsComponent,
+    AppComponent,
   ],
 
   imports: [
@@ -50,12 +54,7 @@ registerLocaleData(localeEs, 'es');
     SharedModule,
     NgChartjsModule,
     HttpClientModule,
-    NzModalModule,
-    NzFormModule,
     ReactiveFormsModule,
-    NzSpinModule,
-    NzAlertModule,
-    NzMessageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -63,7 +62,9 @@ registerLocaleData(localeEs, 'es');
         deps: [HttpClient]
       }
     }),
-    NzSelectModule
+    ReactiveFormsModule,
+    FormsModule,
+    NgZorroAntdModule,
   ],
 
   providers: [
@@ -77,7 +78,7 @@ registerLocaleData(localeEs, 'es');
           case 'es':
             return es_ES;
           default:
-            return en_US;
+            return es_ES;
         }
       },
       deps: [LOCALE_ID]
@@ -89,7 +90,8 @@ registerLocaleData(localeEs, 'es');
     },
     ThemeConstantService,
     ManageFormsComponent,
-    IndexQuestionsComponent
+    IndexQuestionsComponent,
+    { provide: NZ_ICONS, useValue: icons }
   ],
 
   bootstrap: [AppComponent]

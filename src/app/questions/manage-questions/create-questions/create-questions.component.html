@@ -33,6 +33,14 @@
   </nz-form-item>
 
   <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>{{"general.descripcion" | translate}}</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <textarea nz-input [placeholder]="'general.descripcion'|translate"  formControlName="description"
+        [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
     <nz-form-control [nzOffset]="7" [nzSpan]="12">
       <button nz-button nzType="primary" [disabled]="!validateForm.valid">{{"general.guardar" | translate}}</button>
       <button nz-button (click)="resetForm($event)">{{"general.resetear" | translate}}</button>

@@ -36,7 +36,9 @@
     "Chart":"Charts",
     "Components":"Components",
     "Apps":"Apps",
-    "Dashboard":"Dashboard"
+    "Dashboard":"Dashboard",
+    "ultima_actualizacion":"Updated at:"
+
   },
   "validaciones":{
     "validando":"Validating...",
