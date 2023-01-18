@@ -10,7 +10,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { ManageFormsComponent } from './manage-forms/index/manage-forms.component';
-
+import { IndexQuestionsComponent } from './manage-questions/index-questions/index-questions.component';
 
 const antdModule= [
     NzFormModule,
@@ -29,7 +29,8 @@ const antdModule= [
         ...antdModule
     ],
     declarations: [
-        ManageFormsComponent
+        ManageFormsComponent,
+        IndexQuestionsComponent
     ]
 })
 

@@ -14,7 +14,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class ManageFormsComponent implements OnInit {
   forms: Form[] = [];
   size = 'large';
-
+  isTranslated = false;
   constructor(public formService: FormService,
     private modalService: NzModalService,
     private message: NzMessageService) {

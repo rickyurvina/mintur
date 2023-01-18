@@ -88,7 +88,7 @@ export const CommonLayout_ROUTES: Routes = [
 
      //Questions
      {
-      path: 'forms',
+      path: 'admin',
       data: {
           title: 'Administración'
       },
