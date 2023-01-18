@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ManageFormsComponent } from '../index/manage-forms.component';
 import { Form } from '../form';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-form',
@@ -54,7 +55,7 @@ export class CreateFormComponent implements OnInit {
               this.validateForm.controls[key].updateValueAndValidity();
             }
           }
-          this.message.create('success', `Actualizado exitosamente`);
+          this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
           this.modalService.closeAll();
         }, err => {
           this.showErrors(err)
@@ -71,10 +72,10 @@ export class CreateFormComponent implements OnInit {
               this.validateForm.controls[key].updateValueAndValidity();
             }
           }
-          this.message.create('success', `Creado exitosamente`);
+          this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
           this.modalService.closeAll();
           this.manageForms.ngOnInit();
-          this.router.navigate(['forms/manage-forms'])
+          this.router.navigate(['admin/manage-forms'])
         }, err => {
           this.showErrors(err)
         });
@@ -131,7 +132,8 @@ export class CreateFormComponent implements OnInit {
     private modalService: NzModalService,
     private router: Router,
     private manageForms: ManageFormsComponent,
-    private message: NzMessageService) {
+    private message: NzMessageService,
+    private translate: TranslateService) {
 
     this.validateForm = this.fb.group({
       code: ['', [Validators.required], [this.codeAsyncValidator]],

@@ -3,8 +3,8 @@ import { FormService } from '../form.service';
 import { Form } from '../form';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CreateFormComponent } from '../create-form/create-form.component';
+import {TranslateService} from '@ngx-translate/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
-
 @Component({
   selector: 'app-manage-forms',
   templateUrl: './manage-forms.component.html',
@@ -17,7 +17,8 @@ export class ManageFormsComponent implements OnInit {
   isTranslated = false;
   constructor(public formService: FormService,
     private modalService: NzModalService,
-    private message: NzMessageService) {
+    private message: NzMessageService,
+   private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -35,13 +36,13 @@ export class ManageFormsComponent implements OnInit {
   showConfirm(id): void {
     try {
       this.modalService.confirm({
-        nzTitle: 'Seguro que desea eliminar este item?',
-        nzContent: 'El modal se cierra automáticamente',
+        nzTitle: this.translate.instant('general.seguro_desea_eliminar'),
+        nzContent:  this.translate.instant('general.modal_se_cierra'),
         nzOnOk: () => {
           try {
             this.formService.destroy(id).subscribe(res => {
               this.forms = this.forms.filter(item => item.id !== id);
-              this.message.create('success', `Se ha eliminado correctamente`);
+              this.message.create('success', this.translate.instant('general.eliminado_exitosamente'));
             }, err => {
               this.message.create('error', `Error: ${err}`);
             })
@@ -53,13 +54,12 @@ export class ManageFormsComponent implements OnInit {
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }
-
   }
 
   showModalCreate(id = null) {
     try {
       this.modalService.create({
-        nzTitle: 'Crear Formulario',
+        nzTitle: this.translate.instant('general.crear')+' '+this.translate.instant('general.formulario'),
         nzContent: CreateFormComponent,
         nzFooter: null,
         nzComponentParams: {

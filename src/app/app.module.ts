@@ -27,7 +27,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CreateQuestionsComponent } from './questions/manage-questions/create-questions/create-questions.component';
 import { IndexQuestionsComponent } from './questions/manage-questions/index-questions/index-questions.component';
-
+import { NzSelectModule } from 'ng-zorro-antd/select';
 registerLocaleData(es);
 // registerLocaleData(en);
 
@@ -63,6 +63,7 @@ registerLocaleData(localeEs, 'es');
         deps: [HttpClient]
       }
     }),
+    NzSelectModule
   ],
 
   providers: [
