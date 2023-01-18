@@ -1,0 +1,28 @@
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Código</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+      <input nz-input formControlName="code"  id="code" placeholder="Código" />
+      <ng-template #userErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">El código es requerido.</ng-container>
+        <ng-container *ngIf="control.hasError('duplicated')">El código ya existe.</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Nombre</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
+      <input nz-input formControlName="name" placeholder="name" />
+      <ng-template #nameErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">El nombre es requerido.</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="12">
+      <button nz-button nzType="primary" [disabled]="!validateForm.valid">Guardar</button>
+      <button nz-button (click)="resetForm($event)">Resetear</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

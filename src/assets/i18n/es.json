@@ -1,0 +1,88 @@
+{
+  "vivienda":{
+    "title":"Simulador Crédito de Vivienda",
+    "matLabelTranslated": "Crédito de Vivienda",
+    "vivienda_eco":"Vivienda Ecológica",
+    "sujeta_cambios":" Sujeta a cambios y en caso de crédito ECO la tasa es con constructoras previamente pre-seleccionadas",
+    "sujeta_cambios2":"*Aplica únicamente para primera vivienda.",
+    "sujeta_cambios3":"*Tasa sujeta a descuentos en caso de viviendas ecológicas."
+
+  },
+  "personal":{
+    "title":"Simulador Crédito Inversión Personal",
+    "matLabelTranslated": "Crédito Inversión Personal"
+  },
+  "educativo":{
+    "title":"Simulador Crédito Educativo",
+    "matLabelTranslated": "Crédito Educativo"
+  },
+  "flexsave":{
+    "title":"Simulador Cuenta de Ahorro FlexSave",
+    "matLabelTranslated": "Cuenta de Ahorro FlexSave"
+  },
+  "dpf":{
+    "title":"Simulador Depósito a Plazo Fijo",
+    "matLabelTranslated": "Depósito a Plazo Fijo",
+    "titulo":"Simulaodor Ahorro DPF Banco Procredit"
+  },
+  "general":{
+    "monto":"Monto",
+    "plazo_meses":"Plazo (Meses)",
+    "plazo_dias":"Plazo (Días)",
+    "plazo":"Plazo",
+    "tabla_amortizacion":"Tabla de amortización",
+    "tasa_interes_efectiva":"Tasa de interés efectiva:",
+    "tasa_interes":"Tasa de interés",
+    "anual":"anual",
+    "tiempo_minimo":"Tiempo mínimo",
+    "monto_minimo":"Monto mínimo",
+    "monto_maximo":"monto máximo",
+    "meses":"meses",
+    "maximo":"máximo",
+    "cerrar_tabla":"Cerrar Tabla",
+    "detalle_s_alemana":"Detalle de la simulación Alemana:",
+    "tasa_periodica":"Tasa periódica",
+    "seguro_desgravamen":"Seguro desgravamen",
+    "total_seguro":"Total seguro",
+    "liquido_recibir":"Liquido a Recibir",
+    "cuota_inicial":"Cuota inicial",
+    "total_interes_a_pagar":"Total interés a pagar",
+    "detalle_simulacion_francesa":"Detalle de la simulación Francesa",
+    "cuota_a_pagar":"Cuota a pagar",
+    "todos_los_creditos":"Todos los créditos del sistema financiero serán descontados el 0.5% de contribución a SOLCA por Normativa de la Superintendencia de Bancos. Los valores son referenciales y están sujetos a dias calendario.",
+    "sujeto_a_dias_calendario":"*Los valores son referenciales y están sujetos a dias calendario.",
+    "descargar":"Descargar",
+    "tabla_amortizacion_francesa":"Tabla de Amortización Francesa",
+    "cuota":"Cuota",
+    "interes_periodo":"Interés del Periodo",
+    "capital_amortizado":"Capital Amortizado",
+    "seguro":"Seguro",
+    "saldo_remanente":"Saldo Remanente",
+    "tabla_amortizacion_alemana":"Tabla de Amortización Alemana",
+    "lo_quiero":"Lo quiero",
+    "simulacion_detallada":"Simulación detallada",
+    "cancelar":"Cancelar",
+    "francesa":"Francesa",
+    "alemana":"Alemana",
+    "dias":"Dias",
+    "detalle_de_la_simulacion":"Detalle de la simulación",
+    "plazo_dias_t":"Plazo Días",
+    "plazo_meses_t":"Plazo Meses",
+    "interes_ganado_referencial":"Interés Ganado Referencial",
+    "total_recibir":"Total Recibir",
+    "abre_tu_cuenta":"Abre tu cuenta",
+    "dia":"día",
+    "retencionIR":"Retención IR",
+    "espanol":"Español",
+    "ingles":"Inglés",
+    "regresar":"Regresar",
+    "lista_tasas":"Lista de Tasas",
+    "crear":"Crear",
+    "tasa":"Tasa",
+    "descripcion":"Descripción",
+    "fecha":"Fecha",
+    "accion":"Acción",
+    "agregar":"Agregar"
+
+  }
+}

@@ -1,0 +1,28 @@
+<div>
+  <div nz-row nzJustify="end">
+    <div nz-col nzSpan="12">
+      <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="showModalCreate()">
+        <i nz-icon nzType="plus"></i>   {{ "general.agregar" | translate }}
+      </button>
+    </div>
+  </div>
+  <div style="background: #ECECEC;padding:30px;">
+    <div nz-row [nzGutter]="8">
+      <div nz-col [nzSpan]="8" *ngFor="let form of forms">
+        <nz-card nzTitle="{{form.name}}-{{form.code}}" [nzExtra]="extraTemplate">
+          <p>Card content</p>
+        </nz-card>
+        <ng-template #extraTemplate>
+          <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(form.id)">
+            <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
+            </i>
+          </a>
+          <a nz-button [nzSize]="size" nzType="link" (click)="showConfirm(form.id)">
+            <i nz-icon nzType="delete" nzTheme="outline" ></i>
+          </a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+

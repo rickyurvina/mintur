@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ThemeConstantService } from '../../services/theme-constant.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-header',
@@ -12,8 +13,13 @@ export class HeaderComponent{
     quickViewVisible : boolean = false;
     isFolded : boolean;
     isExpand : boolean;
+    isTranslated = false;
 
-    constructor( private themeService: ThemeConstantService) {}
+    constructor( private themeService: ThemeConstantService,
+      private translate: TranslateService) {
+        translate.addLangs(['es', 'en']);
+        translate.setDefaultLang('es');
+      }
 
     ngOnInit(): void {
         this.themeService.isMenuFoldedChanges.subscribe(isFolded => this.isFolded = isFolded);
@@ -38,6 +44,15 @@ export class HeaderComponent{
 
     quickViewToggle(): void {
         this.quickViewVisible = !this.quickViewVisible;
+    }
+
+    useLanguage(language: string) {
+      this.translate.use(language);
+      if (language == 'es') {
+        this.isTranslated = false;
+      } else {
+        this.isTranslated = true;
+      }
     }
 
     notificationList = [

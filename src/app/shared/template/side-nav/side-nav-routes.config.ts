@@ -823,5 +823,31 @@ export const ROUTES: SideNavInterface[] = [
                 submenu: []
             }
         ]
-    }
-]    
+    },
+    {
+      path: '',
+      title: 'Administración',
+      iconType: 'nzIcon',
+      iconTheme: 'outline',
+      icon: 'setting',
+      submenu: [
+          {
+              path: '/admin/manage-forms',
+              title: 'Formularios',
+              iconType: '',
+              icon: '',
+              iconTheme: '',
+              submenu: []
+          },
+          {
+            path: '/admin/manage-questions',
+            title: 'Preguntas',
+            iconType: '',
+            icon: '',
+            iconTheme: '',
+            submenu: []
+        },
+
+      ]
+  }
+]
