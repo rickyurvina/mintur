@@ -15,14 +15,16 @@
           <div nz-row>
             <div nz-col>
               <nz-tag [nzColor]="'orange'">
-                {{question.type}}
+                <span nzTooltipTitle="{{question.type}}" nzTooltipPlacement="top" nz-tooltip>
+                  {{question.type}}
+                </span>
               </nz-tag>
             </div>
-            <div nz-col>
+            <!-- <div nz-col>
               <nz-span>{{'general.ultima_actualizacion'|translate}}</nz-span> <nz-tag
                 [nzColor]="'#87d068'">{{question.updated_at}}</nz-tag>
 
-            </div>
+            </div> -->
           </div>
         </nz-card>
         <ng-template #extraTemplate>

@@ -41,9 +41,9 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{"general.preguntas" | translate}}</nz-form-label>
+    <nz-form-label [nzSpan]="7">{{"general.Preguntas" | translate}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback>
-      <nz-select nzMode="tags" [nzPlaceHolder]="'general.preguntas'|translate" formControlName="selectedQuestions">
+      <nz-select nzMode="tags" [nzPlaceHolder]="'general.Preguntas'|translate" formControlName="selectedQuestions">
         <nz-option *ngFor="let option of questions" [nzLabel]="option.name" [nzValue]="option.id"></nz-option>
       </nz-select>
     </nz-form-control>

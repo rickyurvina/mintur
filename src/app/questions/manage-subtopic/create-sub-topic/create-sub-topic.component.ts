@@ -14,6 +14,7 @@ import { Question } from '../../manage-questions/question';
 import {
   QuestionService
 } from '../../manage-questions/question.service';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-create-sub-topic',
@@ -32,7 +33,6 @@ export class CreateSubTopicComponent implements OnInit {
   validateForm: FormGroup;
   components: Comp[] = [];
   questions: Question[] = [];
-  // selectedQuestions = [];
 
   constructor(private fb: FormBuilder,
     private subTopicService: SubTopicService,
@@ -65,7 +65,9 @@ export class CreateSubTopicComponent implements OnInit {
           code: this.subTopic.code,
           description: this.subTopic.description,
           component_id: this.subTopic.component_id,
-          selectedQuestions: this.subTopic.selectedQuestions,
+          selectedQuestions:this.subTopic.questions.map(function (value) {
+            return  value['id'];
+         })
         })
         this.codes = this.FormsData.map(element => {
           return element['code'] != this.subTopic.code;
@@ -80,7 +82,7 @@ export class CreateSubTopicComponent implements OnInit {
     }
 
     try {
-      this.componentService.getAll().subscribe((data: SubTopic[]) => {
+      this.componentService.getAll().subscribe((data: Comp[]) => {
         this.components = data;
       }, err => {
         this.message.create('error', `Error: ${err}`);
@@ -102,6 +104,7 @@ export class CreateSubTopicComponent implements OnInit {
 
 
   submitForm(value: { code: string; name: string}): void {
+    console.log(value);
     if (this.InputData) {
       try {
         this.subTopicService.update(this.id, value).subscribe(res => {

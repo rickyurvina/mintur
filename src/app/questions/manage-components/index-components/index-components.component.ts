@@ -8,7 +8,8 @@ import { CreateComponentsComponent } from '../create-components/create-component
 
 @Component({
   selector: 'app-index-components',
-  templateUrl: './index-components.component.html'
+  templateUrl: './index-components.component.html',
+  styleUrls: ['./index-components.component.css']
 })
 export class IndexComponentsComponent implements OnInit {
 

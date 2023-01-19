@@ -8,6 +8,8 @@ import { ManageFormsComponent } from '../index/manage-forms.component';
 import { Form } from '../form';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TranslateService } from '@ngx-translate/core';
+import { Component as Comp } from '../../manage-components/component';
+import { ComponentService } from '../../manage-components/component.service';
 
 @Component({
   selector: 'app-create-form',
@@ -24,6 +26,24 @@ export class CreateFormComponent implements OnInit {
   id: number;
   form: Form;
   validateForm: FormGroup;
+  components:Comp[]=[];
+
+  constructor(private fb: FormBuilder,
+    private formService: FormService,
+    private modalService: NzModalService,
+    private router: Router,
+    private manageForms: ManageFormsComponent,
+    private message: NzMessageService,
+    private translate: TranslateService,
+    private componentService:ComponentService) {
+
+    this.validateForm = this.fb.group({
+      code: ['', [Validators.required], [this.codeAsyncValidator]],
+      name: ['', [Validators.required]],
+      description: ['', []],
+      selectedComponents: new FormControl()
+    });
+  }
 
   public ngOnInit(): void {
     this.codes = [];
@@ -36,6 +56,9 @@ export class CreateFormComponent implements OnInit {
           name: this.form.name,
           code: this.form.code,
           description: this.form.description,
+          selectedComponents:this.form.components.map(function (value) {
+            return  value['id'];
+         })
         })
         this.codes = this.FormsData.map(element => {
           return element['code'] != this.form.code;
@@ -48,6 +71,17 @@ export class CreateFormComponent implements OnInit {
         return element['code'];
       })
     }
+
+    try {
+      this.componentService.getAll().subscribe((data: Comp[]) => {
+        this.components = data;
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+
   }
 
   submitForm(value: { code: string; name: string; }): void {
@@ -133,18 +167,4 @@ export class CreateFormComponent implements OnInit {
       }, 1000);
     });
 
-  constructor(private fb: FormBuilder,
-    private formService: FormService,
-    private modalService: NzModalService,
-    private router: Router,
-    private manageForms: ManageFormsComponent,
-    private message: NzMessageService,
-    private translate: TranslateService) {
-
-    this.validateForm = this.fb.group({
-      code: ['', [Validators.required], [this.codeAsyncValidator]],
-      name: ['', [Validators.required]],
-      description: ['', []],
-    });
-  }
 }

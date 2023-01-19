@@ -11,13 +11,18 @@
       <div nz-col [nzSpan]="8" *ngFor="let form of forms">
         <nz-card nzTitle="{{form.name}}-{{form.code}}" [nzExtra]="extraTemplate">
           <p>{{form.description}}</p>
-          <nz-divider></nz-divider>
-          <div nz-row nzJustify="end">
+          <nz-divider [nzText]="'general.Componentes'|translate"></nz-divider>
+          <nz-tag [nzColor]="'magenta'" *ngFor="let component of form.components">
+            <span nzTooltipTitle="{{component.name}}" nzTooltipPlacement="top" nz-tooltip>
+              {{component.name}}
+            </span>
+            </nz-tag>
+          <!-- <div nz-row nzJustify="end">
             <div nz-col>
               <nz-span>{{'general.ultima_actualizacion'|translate}}</nz-span> <nz-tag
                 [nzColor]="'#87d068'">{{form.updated_at}}</nz-tag>
             </div>
-          </div>
+          </div> -->
         </nz-card>
         <ng-template #extraTemplate>
           <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(form.id)">
