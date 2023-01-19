@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ComponentService } from '../component.service';
 import { Component as Comp } from '../component';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { CreateComponentsComponent } from '../create-components/create-components.component';
 
@@ -19,13 +19,14 @@ export class IndexComponentsComponent implements OnInit {
   constructor(public compService: ComponentService,
     private modalService: NzModalService,
     private message: NzMessageService,
-   private translate: TranslateService) {
+    private translate: TranslateService) {
   }
 
   ngOnInit(): void {
     try {
       this.compService.getAll().subscribe((data: Comp[]) => {
         this.components = data;
+        console.log(this.components)
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
@@ -38,7 +39,7 @@ export class IndexComponentsComponent implements OnInit {
     try {
       this.modalService.confirm({
         nzTitle: this.translate.instant('general.seguro_desea_eliminar'),
-        nzContent:  this.translate.instant('general.modal_se_cierra'),
+        nzContent: this.translate.instant('general.modal_se_cierra'),
         nzOnOk: () => {
           try {
             this.compService.destroy(id).subscribe(res => {
@@ -60,9 +61,9 @@ export class IndexComponentsComponent implements OnInit {
   showModalCreate(id = null) {
     try {
       this.modalService.create({
-        nzTitle: this.translate.instant('general.crear')+' '+this.translate.instant('general.formulario'),
+        nzTitle: id ? this.translate.instant('general.crear') : this.translate.instant('general.actualizar') + ' ' + this.translate.instant('general.sub_tema'),
         nzContent: CreateComponentsComponent,
-        nzFooter:null,
+        nzFooter: null,
         nzComponentParams: {
           InputData: id,
           FormsData: this.components

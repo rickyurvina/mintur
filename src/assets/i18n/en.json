@@ -39,14 +39,19 @@
     "Dashboard":"Dashboard",
     "ultima_actualizacion":"Updated at:",
     "SubTemas":"Sub Topic",
-    "Componentes":"Components"
+    "Componentes":"Components",
+    "componente":"Component",
+    "actualizar":"Update",
+    "sub_tema":"Sub topic"
+
   },
   "validaciones":{
     "validando":"Validating...",
     "codigo_requerido":"Code required.",
     "codigo_existente":"The code has already been taken",
     "nombre_requerido":"Name required.",
-    "no,nre_existente":"The name has already been taken"
+    "no,nre_existente":"The name has already been taken",
+    "componente_requerido":"The component is required."
   },
   "mensajes":{
     "eliminado_exitosamente":"It has been successfully removed",

@@ -12,6 +12,8 @@
         <nz-card nzTitle="{{component.name}}-{{component.code}}" [nzExtra]="extraTemplate">
           <p>{{component.description}}</p>
           <nz-divider></nz-divider>
+          <nz-tag [nzColor]="'magenta'" *ngFor="let subTopic of component.sub_topics">{{subTopic.name}}</nz-tag>
+          <nz-divider></nz-divider>
           <div nz-row nzJustify="end">
             <div nz-col>
               <nz-span>{{'general.ultima_actualizacion'|translate}}</nz-span> <nz-tag
@@ -24,7 +26,8 @@
             <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
             </i>
           </a>
-          <a nz-button [nzSize]="size" nzType="link" (click)="showConfirm(component.id)">
+          <a nz-button [nzSize]="size" nzType="link" *ngIf="component.sub_topics.length <=0"
+            (click)="showConfirm(component.id)">
             <i nz-icon nzType="delete" nzTheme="outline"></i>
           </a>
         </ng-template>

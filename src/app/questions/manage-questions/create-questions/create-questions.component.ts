@@ -153,6 +153,7 @@ export class CreateQuestionsComponent implements OnInit {
       name: ['', [Validators.required]],
       type: ['', [Validators.required]],
       description: ['', []],
+
     });
   }
 

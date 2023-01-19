@@ -39,14 +39,18 @@
     "Dashboard":"Página principal",
     "ultima_actualizacion":"Última actualización:",
     "SubTemas":"Sub Temas",
-    "Componentes":"Componentes"
+    "Componentes":"Componentes",
+    "componente":"Componente",
+    "actualizar":"Actualizar",
+    "sub_tema":"Sub tema"
   },
   "validaciones":{
     "validando":"Validando...",
     "codigo_requerido":"Código requerido.",
     "codigo_existente":"El código ya existe",
     "nombre_requerido":"Nombre requerido.",
-    "nombre_existente":"El nombre ya existe"
+    "nombre_existente":"El nombre ya existe",
+    "componente_requerido":"El componente es requerido"
   },
   "mensajes":{
     "eliminado_exitosamente":"Se ha eliminado correctamente",
