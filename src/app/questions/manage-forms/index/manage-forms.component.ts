@@ -60,7 +60,7 @@ export class ManageFormsComponent implements OnInit {
   showModalCreate(id = null) {
     try {
       this.modalService.create({
-        nzTitle: this.translate.instant('general.crear')+' '+this.translate.instant('general.formulario'),
+        nzTitle: id? this.translate.instant('general.crear'): this.translate.instant('general.actualizar') +' '+this.translate.instant('general.sub_tema'),
         nzContent: CreateFormComponent,
         nzComponentParams: {
           InputData: id,

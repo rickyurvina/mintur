@@ -4,5 +4,8 @@ export interface Question {
   code:string,
   type:string,
   max_score:number,
-  description:string
+  description:string,
+  parent_id:number,
+  value:number,
+  questionsRelated:any[]
 }

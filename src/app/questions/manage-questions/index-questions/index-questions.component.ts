@@ -59,13 +59,13 @@ export class IndexQuestionsComponent implements OnInit {
   showModalCreate(id = null) {
     try {
       this.modalService.create({
-        nzTitle: this.translate.instant('general.crear')+' '+this.translate.instant('general.formulario'),
+        nzTitle: id? this.translate.instant('general.actualizar'): this.translate.instant('general.crear') +' '+this.translate.instant('general.Pregunta'),
         nzContent: CreateQuestionsComponent,
         nzFooter: null,
         nzComponentParams: {
           InputData: id,
           FormsData: this.questions
-        }
+        },
       });
     } catch (e) {
       this.message.create('error', `Error ${e}`);

@@ -11,21 +11,32 @@
       <div nz-col [nzSpan]="8" *ngFor="let question of questions">
         <nz-card nzTitle="{{question.name}}-{{question.code}}" [nzExtra]="extraTemplate">
           <p>{{question.description}}</p>
+          <div nz-row *ngIf="question.children.length>0">
+            <nz-divider [nzText]="'general.Preguntas'|translate"></nz-divider>
+            <nz-tag [nzColor]="'magenta'" *ngFor="let child of question.children">
+              <span nzTooltipTitle="{{child.name}}" nzTooltipPlacement="top" nz-tooltip>
+                {{child.name}}
+              </span>
+             </nz-tag>
+          </div>
           <nz-divider></nz-divider>
           <div nz-row>
             <div nz-col>
               <nz-tag [nzColor]="'orange'">
-                {{question.type}}
+                <span nzTooltipTitle="{{question.type}}" nzTooltipPlacement="top" nz-tooltip>
+                  {{question.type}}
+                </span>
               </nz-tag>
             </div>
-            <div nz-col>
+            <!-- <div nz-col>
               <nz-span>{{'general.ultima_actualizacion'|translate}}</nz-span> <nz-tag
                 [nzColor]="'#87d068'">{{question.updated_at}}</nz-tag>
 
-            </div>
+            </div> -->
           </div>
         </nz-card>
         <ng-template #extraTemplate>
+
           <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(question.id)">
             <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
             </i>

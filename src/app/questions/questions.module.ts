@@ -16,7 +16,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { IndexComponentsComponent } from './manage-components/index-components/index-components.component';
 import { CreateComponentsComponent } from './manage-components/create-components/create-components.component';
 import { IndexSubTopicComponent } from './manage-subtopic/index-sub-topic/index-sub-topic.component';
-import { CreateSubTopicComponent } from './manage-subtopic/create-sub-topic/create-sub-topic.component';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTableModule } from 'ng-zorro-antd/table';
 const antdModule= [
     NzFormModule,
     NzInputModule,
@@ -25,7 +26,9 @@ const antdModule= [
     NzCheckboxModule,
     NzSkeletonModule,
     NzTagModule,
-    NzDividerModule
+    NzDividerModule,
+    NzToolTipModule,
+    NzTableModule
 ]
 
 @NgModule({
@@ -42,7 +45,6 @@ const antdModule= [
         IndexComponentsComponent,
         CreateComponentsComponent,
         IndexSubTopicComponent,
-        CreateSubTopicComponent
     ]
 })
 

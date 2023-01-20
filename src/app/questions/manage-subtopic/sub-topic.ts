@@ -5,4 +5,6 @@ export interface SubTopic {
   description:string,
   result:string,
   component_id:number,
+  selectedQuestions:[],
+  questions:[]
 }

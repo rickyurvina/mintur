@@ -29,7 +29,8 @@ import * as AllIcons from '@ant-design/icons-angular/icons';
 import { NgZorroAntdModule } from './ng-zorro-antd.module';
 import { FormsModule } from '@angular/forms';
 import { IndexComponentsComponent } from './questions/manage-components/index-components/index-components.component';
-
+import { IndexSubTopicComponent } from './questions/manage-subtopic/index-sub-topic/index-sub-topic.component';
+import { CreateSubTopicComponent } from './questions/manage-subtopic/create-sub-topic/create-sub-topic.component';
 registerLocaleData(localeEs, 'es');
 registerLocaleData(en);
 
@@ -43,6 +44,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     FullLayoutComponent,
     CreateFormComponent,
     CreateQuestionsComponent,
+    CreateSubTopicComponent,
     AppComponent,
   ],
 
@@ -93,6 +95,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     ManageFormsComponent,
     IndexQuestionsComponent,
     IndexComponentsComponent,
+    IndexSubTopicComponent,
     { provide: NZ_ICONS, useValue: icons }
   ],
 
