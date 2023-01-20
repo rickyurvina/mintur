@@ -42,8 +42,11 @@
     "Componentes":"Components",
     "componente":"Component",
     "actualizar":"Update",
-    "sub_tema":"Sub topic"
-
+    "sub_tema":"Sub topic",
+    "valor":"Value",
+    "limpiar":"Clear",
+    "preguntas_relacionadas":"Related questions",
+    "crear_preguntas_relacionadas":"Crear Preguntas relacionadas"
   },
   "validaciones":{
     "validando":"Validating...",

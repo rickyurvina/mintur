@@ -22,14 +22,20 @@ export class CreateQuestionsComponent implements OnInit {
   id: number;
   question: Question;
   validateForm: FormGroup;
+  validateFormRelated: FormGroup;
+  isCollapse = true;
+  questionsRelated: any[]=[];
 
   optionList = [
     { label: 'Si/No', value: 'si_no' },
-    { label: 'Rango 1-5', value: 'rango_1_5' }
+    { label: 'Rango 1-5', value: 'rango_1_5' },
+    { label: 'Relacionada', value: 'relacionada' },
   ];
-  log(value: { label: string; value: string; age: number }): void {
-    console.log(value);
-  }
+
+  optionList2 = [
+    { label: 'Si/No', value: 'si_no' },
+    { label: 'Rango 1-5', value: 'rango_1_5' },
+  ];
 
   public ngOnInit(): void {
     this.codes = [];
@@ -57,10 +63,10 @@ export class CreateQuestionsComponent implements OnInit {
     }
   }
 
-  submitForm(value: { code: string; name: string; }): void {
+  submitForm(value: { code: string; name: string; type: string; description:string; questionsRelated:any[] }): void {
     if (this.InputData) {
       try {
-        this.questionService.update(this.id, value).subscribe(res => {
+        this.questionService.update(this.id, [value, this.questionsRelated]).subscribe(res => {
           for (const key in this.validateForm.controls) {
             if (this.validateForm.controls.hasOwnProperty(key)) {
               this.validateForm.controls[key].markAsDirty();
@@ -77,6 +83,7 @@ export class CreateQuestionsComponent implements OnInit {
       }
     } else {
       try {
+        value.questionsRelated=this.questionsRelated
         this.questionService.create(value).subscribe(res => {
           for (const key in this.validateForm.controls) {
             if (this.validateForm.controls.hasOwnProperty(key)) {
@@ -95,7 +102,6 @@ export class CreateQuestionsComponent implements OnInit {
         this.message.create('error', `Error ${e}`);
       }
     }
-    // this.router.navigateByUrl('forms/manage-forms')
   }
 
   resetForm(e: MouseEvent): void {
@@ -153,8 +159,29 @@ export class CreateQuestionsComponent implements OnInit {
       name: ['', [Validators.required]],
       type: ['', [Validators.required]],
       description: ['', []],
+      questionsRelated: new FormControl()
+    });
 
+    this.validateFormRelated = this.fb.group({
+      name: ['', [Validators.required]],
+      value: ['', [Validators.required]],
+      type: ['', [Validators.required]],
     });
   }
 
+
+  resetFormRelated(): void {
+    this.validateFormRelated.reset();
+    console.log(this.questionsRelated)
+  }
+
+
+  submitFormRelated(value: { name: string; type: string;  value:string }): void {
+    for (const i in this.validateFormRelated.controls) {
+      this.validateFormRelated.controls[i].markAsDirty();
+      this.validateFormRelated.controls[i].updateValueAndValidity();
+    }
+    this.questionsRelated.push(value);
+    this.resetFormRelated();
+  }
 }

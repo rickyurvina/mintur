@@ -29,6 +29,8 @@
     "modal_se_cierra":"El modal se cierra automáticamente",
     "tipo":"Tipo",
     "escoge":"Escoge",
+    "pregunta":"pregunta",
+    "Pregunta":"Pregunta",
     "preguntas":"preguntas",
     "Preguntas":"Preguntas",
     "Authentication":"Autenticación",
@@ -42,7 +44,11 @@
     "Componentes":"Componentes",
     "componente":"Componente",
     "actualizar":"Actualizar",
-    "sub_tema":"Sub tema"
+    "sub_tema":"Sub tema",
+    "valor":"Valor",
+    "limpiar":"Limpiar",
+    "preguntas_relacionadas":"Preguntas relacionadas",
+    "crear_preguntas_relacionadas":"Crear Preguntas relacionadas"
   },
   "validaciones":{
     "validando":"Validando...",
