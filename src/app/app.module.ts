@@ -31,6 +31,8 @@ import { FormsModule } from '@angular/forms';
 import { IndexComponentsComponent } from './questions/manage-components/index-components/index-components.component';
 import { IndexSubTopicComponent } from './questions/manage-subtopic/index-sub-topic/index-sub-topic.component';
 import { CreateSubTopicComponent } from './questions/manage-subtopic/create-sub-topic/create-sub-topic.component';
+import { FillFormComponent } from './test-form/fill-form/fill-form.component';
+
 registerLocaleData(localeEs, 'es');
 registerLocaleData(en);
 
@@ -96,6 +98,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     IndexQuestionsComponent,
     IndexComponentsComponent,
     IndexSubTopicComponent,
+    FillFormComponent,
     { provide: NZ_ICONS, useValue: icons }
   ],
 

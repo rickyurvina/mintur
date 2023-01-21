@@ -4,13 +4,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {  Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Form } from './form';
+import { Establishment } from './establishment';
 
 @Injectable({
   providedIn: 'root'
 })
+export class EstablishmentService {
 
-export class FormService {
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -20,47 +20,49 @@ export class FormService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAll(): Observable<Form[]> {
-    return this.httpClient.get<Form[]>(environment.url+"/form")
+  getAll(): Observable<Establishment[]> {
+    return this.httpClient.get<Establishment[]>(environment.url+"/establishment")
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
-  create(form): Observable<Form> {
-    return this.httpClient.post<Form>(environment.url+"/form", JSON.stringify(form), this.httpOptions)
+  create(establishment): Observable<Establishment> {
+    return this.httpClient.post<Establishment>(environment.url+"/establishment", JSON.stringify(establishment), this.httpOptions)
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
-  find(id): Observable<Form> {
-    return this.httpClient.get<Form>(environment.url+"/form/" + id)
+  find(id): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/" + id)
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
-  showActiveForm(): Observable<Form> {
-    return this.httpClient.get<Form>(environment.url+"/form/show/active/")
-    .pipe(
-      catchError(this.errorHandler)
-    )
-  }
 
-  update(id, form): Observable<Form> {
-    return this.httpClient.put<Form>(environment.url+"/form/" + id, JSON.stringify(form), this.httpOptions)
+  update(id, establishment): Observable<Establishment> {
+    return this.httpClient.put<Establishment>(environment.url+"/establishment/" + id, JSON.stringify(establishment), this.httpOptions)
     .pipe(
       catchError(this.errorHandler)
     )
   }
 
   destroy(id){
-    return this.httpClient.delete<Form>(environment.url+"/form/" + id, this.httpOptions)
+    return this.httpClient.delete<Establishment>(environment.url+"/establishment/" + id, this.httpOptions)
     .pipe(
       catchError(this.errorHandler)
     )
   }
+
+  showActiveEstablishment(email): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-active/"+email)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
 
   errorHandler(error) {
     let errorMessage = '';

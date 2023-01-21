@@ -85,7 +85,7 @@ export class CreateFormComponent implements OnInit {
   }
 
   submitForm(value: { code: string; name: string; }): void {
-    console.log(value);
+
     if (this.InputData) {
       try {
         this.formService.update(this.id, value).subscribe(res => {
