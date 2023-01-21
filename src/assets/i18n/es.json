@@ -52,7 +52,8 @@
     "correo":"Correo",
     "empresa":"Empresa",
     "antes_de_empezar":"ANTES DE EMPEZAR",
-    "completa_info":"Completa esta información"
+    "completa_info":"Completa esta información",
+    "tipo_preguntas_hijas":"Tipo preguntas relaciondas"
   },
   "validaciones":{
     "validando":"Validando...",

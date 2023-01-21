@@ -7,5 +7,6 @@ export interface Question {
   description:string,
   parent_id:number,
   value:number,
-  questionsRelated:any[]
+  children_type:string,
+  children:any[]
 }

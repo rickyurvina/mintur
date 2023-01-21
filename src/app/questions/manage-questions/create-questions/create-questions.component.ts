@@ -24,7 +24,7 @@ export class CreateQuestionsComponent implements OnInit {
   validateForm: FormGroup;
   validateFormRelated: FormGroup;
   isCollapse = true;
-  questionsRelated: any[]=[];
+  questionsRelated: any[] = [];
 
   optionList = [
     { label: 'Si/No', value: 'si_no' },
@@ -35,7 +35,31 @@ export class CreateQuestionsComponent implements OnInit {
   optionList2 = [
     { label: 'Si/No', value: 'si_no' },
     { label: 'Rango 1-5', value: 'rango_1_5' },
+    { label: 'Multiple', value: 'multiple' },
   ];
+
+  constructor(private fb: FormBuilder,
+    private questionService: QuestionService,
+    private modalService: NzModalService,
+    private router: Router,
+    private indexQuestions: IndexQuestionsComponent,
+    private message: NzMessageService,
+    private translate: TranslateService) {
+
+    this.validateForm = this.fb.group({
+      code: ['', [Validators.required], [this.codeAsyncValidator]],
+      name: ['', [Validators.required]],
+      type: ['', [Validators.required]],
+      description: ['', []],
+      children_type: ['', []],
+      children: new FormControl()
+    });
+
+    this.validateFormRelated = this.fb.group({
+      name: ['', [Validators.required]],
+      value: ['', [Validators.pattern("^[0-9]*$")]],
+    });
+  }
 
   public ngOnInit(): void {
     this.codes = [];
@@ -44,12 +68,16 @@ export class CreateQuestionsComponent implements OnInit {
       this.id = this.InputData;
       this.questionService.find(this.id).subscribe((data: Question) => {
         this.question = data;
+        console.log(data);
         this.validateForm.setValue({
           name: this.question.name,
           code: this.question.code,
           type: this.question.type,
           description: this.question.description,
+          children_type: this.question.children_type,
+          children: this.question.children
         })
+        this.questionsRelated = data.children
         this.codes = this.FormsData.map(element => {
           return element['code'] != this.question.code;
         })
@@ -63,10 +91,12 @@ export class CreateQuestionsComponent implements OnInit {
     }
   }
 
-  submitForm(value: { code: string; name: string; type: string; description:string; questionsRelated:any[] }): void {
+  submitForm(value: { code: string; name: string; type: string; description: string; questionsRelated: any[], children_type: string }): void {
     if (this.InputData) {
       try {
-        this.questionService.update(this.id, [value, this.questionsRelated]).subscribe(res => {
+        value.questionsRelated = this.questionsRelated
+
+        this.questionService.update(this.id, value).subscribe(res => {
           for (const key in this.validateForm.controls) {
             if (this.validateForm.controls.hasOwnProperty(key)) {
               this.validateForm.controls[key].markAsDirty();
@@ -83,7 +113,7 @@ export class CreateQuestionsComponent implements OnInit {
       }
     } else {
       try {
-        value.questionsRelated=this.questionsRelated
+        value.questionsRelated = this.questionsRelated
         this.questionService.create(value).subscribe(res => {
           for (const key in this.validateForm.controls) {
             if (this.validateForm.controls.hasOwnProperty(key)) {
@@ -146,42 +176,20 @@ export class CreateQuestionsComponent implements OnInit {
       }, 1000);
     });
 
-  constructor(private fb: FormBuilder,
-    private questionService: QuestionService,
-    private modalService: NzModalService,
-    private router: Router,
-    private indexQuestions: IndexQuestionsComponent,
-    private message: NzMessageService,
-    private translate: TranslateService) {
-
-    this.validateForm = this.fb.group({
-      code: ['', [Validators.required], [this.codeAsyncValidator]],
-      name: ['', [Validators.required]],
-      type: ['', [Validators.required]],
-      description: ['', []],
-      questionsRelated: new FormControl()
-    });
-
-    this.validateFormRelated = this.fb.group({
-      name: ['', [Validators.required]],
-      value: ['', [Validators.required]],
-      type: ['', [Validators.required]],
-    });
-  }
-
-
   resetFormRelated(): void {
     this.validateFormRelated.reset();
-    console.log(this.questionsRelated)
   }
 
-
-  submitFormRelated(value: { name: string; type: string;  value:string }): void {
+  submitFormRelated(value: { name: string; value: string }): void {
     for (const i in this.validateFormRelated.controls) {
       this.validateFormRelated.controls[i].markAsDirty();
       this.validateFormRelated.controls[i].updateValueAndValidity();
     }
     this.questionsRelated.push(value);
     this.resetFormRelated();
+  }
+
+  deleteItemQuestionsRelated(name) {
+    this.questionsRelated = this.questionsRelated.filter(item => item.name !== name)
   }
 }
