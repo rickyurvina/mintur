@@ -50,7 +50,8 @@
     "correo":"Email",
     "empresa":"Empresa",
     "antes_de_empezar":"BEFORE STARTING",
-    "completa_info":"Complet this information"
+    "completa_info":"Complet this information",
+    "tipo_preguntas_hijas":"Related questions type"
   },
   "validaciones":{
     "validando":"Validating...",
