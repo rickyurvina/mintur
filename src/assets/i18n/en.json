@@ -46,7 +46,11 @@
     "valor":"Value",
     "limpiar":"Clear",
     "preguntas_relacionadas":"Related questions",
-    "crear_preguntas_relacionadas":"Crear Preguntas relacionadas"
+    "crear_preguntas_relacionadas":"Crear Preguntas relacionadas",
+    "correo":"Email",
+    "empresa":"Empresa",
+    "antes_de_empezar":"BEFORE STARTING",
+    "completa_info":"Complet this information"
   },
   "validaciones":{
     "validando":"Validating...",
