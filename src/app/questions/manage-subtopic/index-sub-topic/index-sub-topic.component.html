@@ -14,7 +14,7 @@
           <nz-divider [nzText]="'general.Preguntas'|translate"></nz-divider>
           <nz-tag [nzColor]="'magenta'" *ngFor="let question of subTopic.questions">
             <span nzTooltipTitle="{{question.name}}" nzTooltipPlacement="top" nz-tooltip>
-              {{question.name}}
+              {{question.code}} - {{question.name}}
             </span>
            </nz-tag>
           <nz-divider [nzText]="'general.componente'|translate"></nz-divider>
@@ -22,7 +22,7 @@
             <div nz-col>
               <nz-tag [nzColor]="'orange'">
                 <span nzTooltipTitle="{{subTopic.component.name}}" nzTooltipPlacement="top" nz-tooltip>
-                  {{subTopic.component.name}}
+                  {{subTopic.component.code}}-{{subTopic.component.name}}
                 </span>
               </nz-tag>
             </div>

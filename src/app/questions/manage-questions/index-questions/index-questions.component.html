@@ -12,7 +12,7 @@
         <nz-card nzTitle="{{question.name}}-{{question.code}}" [nzExtra]="extraTemplate">
           <p>{{question.description}}</p>
           <div nz-row *ngIf="question.children.length>0">
-            <nz-divider [nzText]="'general.Preguntas'|translate"></nz-divider>
+            <nz-divider [nzText]="'general.opciones'|translate"></nz-divider>
             <nz-tag [nzColor]="'magenta'" *ngFor="let child of question.children">
               <span nzTooltipTitle="{{child.name}}" nzTooltipPlacement="top" nz-tooltip>
                 {{child.name}}
