@@ -74,10 +74,10 @@
             </nz-form-control>
           </nz-form-item>
 
-          <nz-form-item *ngIf="validateForm.value.children_type=='multiple'">
-            <nz-form-label [nzSpan]="7" nzRequired>{{"general.valor" | translate}}</nz-form-label>
+          <nz-form-item *ngIf="validateForm.value.children_type==='multiple'">
+            <nz-form-label [nzSpan]="7">{{"general.valor" | translate}}</nz-form-label>
             <nz-form-control [nzSpan]="24" nzHasFeedback [nzErrorTip]="valueErrorTpl">
-              <input nz-input type=formControlName="value" [placeholder]="'general.valor' | translate" />
+              <input nz-input type="number" formControlName="value" [placeholder]="'general.valor' | translate" />
               <ng-template #valueErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{"validaciones.valor_requerido" |
                   translate}}</ng-container>

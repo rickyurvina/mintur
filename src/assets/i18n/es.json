@@ -53,7 +53,8 @@
     "empresa":"Empresa",
     "antes_de_empezar":"ANTES DE EMPEZAR",
     "completa_info":"Completa esta información",
-    "tipo_preguntas_hijas":"Tipo preguntas relaciondas"
+    "tipo_preguntas_hijas":"Tipo preguntas relaciondas",
+    "opciones":"Opciones"
   },
   "validaciones":{
     "validando":"Validando...",

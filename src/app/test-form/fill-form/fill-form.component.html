@@ -77,7 +77,7 @@
         <nz-tab *ngFor=" let component of form.components" nzTitle="{{component.name}}">
           <div class="container">
             <div class="row">
-              <div class="col-md-8 mx-auto" *ngFor="let subTopic of component.sub_topics">
+              <div class="col-md-12 mx-auto" *ngFor="let subTopic of component.sub_topics">
                 <nz-card nzTitle="{{subTopic.name}}">
                   <nz-list [nzDataSource]="subTopic.questions" [nzRenderItem]="network" [nzItemLayout]="'horizontal'">
                     <ng-template #network let-question>
@@ -107,12 +107,24 @@
                             </ng-template>
                           </div>
                         </ng-template>
+
                         <nz-list-item-meta [nzTitle]="networkName" [nzAvatar]="networkIcon">
                           <ng-template #networkName>
                             <div class="font-size-15 font-weight-semibold m-t-10">{{question.name}}</div>
                           </ng-template>
                         </nz-list-item-meta>
                       </nz-list-item>
+                      <div *ngIf="question.type=='relacionada'">
+                        <nz-divider nzText="Opciones"></nz-divider>
+                        <nz-checkbox-wrapper style="width: 100%;">
+                          <div nz-row>
+                            <div nz-col nzSpan="12" *ngFor="let child of question.children">
+                              <label nz-checkbox nzValue="{{child.id}}">{{child.name}}
+                              </label>
+                            </div>
+                          </div>
+                        </nz-checkbox-wrapper>
+                      </div>
                     </ng-template>
                   </nz-list>
                 </nz-card>
