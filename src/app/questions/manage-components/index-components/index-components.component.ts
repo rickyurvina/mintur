@@ -61,7 +61,7 @@ export class IndexComponentsComponent implements OnInit {
 
   showModalCreate(id = null) {
     try {
-      this.modalService.create({
+      const modal = this.modalService.create({
         nzTitle: id ? this.translate.instant('general.crear') : this.translate.instant('general.actualizar') + ' ' + this.translate.instant('general.sub_tema'),
         nzContent: CreateComponentsComponent,
         nzFooter: null,
@@ -70,6 +70,8 @@ export class IndexComponentsComponent implements OnInit {
           FormsData: this.components
         }
       });
+      modal.afterClose.subscribe(() => this.ngOnInit());
+
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }

@@ -4,5 +4,6 @@ export interface Form {
   code:string,
   description:string,
   selectedComponents:[],
-  components:[]
+  components:[],
+  status:string
 }

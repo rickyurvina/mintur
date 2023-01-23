@@ -3,7 +3,7 @@ import { FormService } from '../form.service';
 import { Form } from '../form';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CreateFormComponent } from '../create-form/create-form.component';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -19,7 +19,7 @@ export class ManageFormsComponent implements OnInit {
   constructor(public formService: FormService,
     private modalService: NzModalService,
     private message: NzMessageService,
-   private translate: TranslateService) {
+    private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -38,7 +38,7 @@ export class ManageFormsComponent implements OnInit {
     try {
       this.modalService.confirm({
         nzTitle: this.translate.instant('general.seguro_desea_eliminar'),
-        nzContent:  this.translate.instant('general.modal_se_cierra'),
+        nzContent: this.translate.instant('general.modal_se_cierra'),
         nzOnOk: () => {
           try {
             this.formService.destroy(id).subscribe(res => {
@@ -59,15 +59,16 @@ export class ManageFormsComponent implements OnInit {
 
   showModalCreate(id = null) {
     try {
-      this.modalService.create({
-        nzTitle: id? this.translate.instant('general.crear'): this.translate.instant('general.actualizar') +' '+this.translate.instant('general.sub_tema'),
+      const modal = this.modalService.create({
+        nzTitle: id ? this.translate.instant('general.crear') : this.translate.instant('general.actualizar') + ' ' + this.translate.instant('general.sub_tema'),
         nzContent: CreateFormComponent,
         nzComponentParams: {
           InputData: id,
           FormsData: this.forms
         },
-        nzFooter:null,
+        nzFooter: null,
       });
+      modal.afterClose.subscribe(() => this.ngOnInit());
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }

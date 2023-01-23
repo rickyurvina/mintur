@@ -95,7 +95,6 @@ export class CreateQuestionsComponent implements OnInit {
     if (this.InputData) {
       try {
         value.questionsRelated = this.questionsRelated
-
         this.questionService.update(this.id, value).subscribe(res => {
           for (const key in this.validateForm.controls) {
             if (this.validateForm.controls.hasOwnProperty(key)) {

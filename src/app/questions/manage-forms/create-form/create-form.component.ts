@@ -26,7 +26,13 @@ export class CreateFormComponent implements OnInit {
   id: number;
   form: Form;
   validateForm: FormGroup;
-  components:Comp[]=[];
+  components: Comp[] = [];
+  statusForms: string[] = [];
+
+  optionList = [
+    { label: 'Activo', value: 'Activo' },
+    { label: 'Inactivo', value: 'NoActivo' }
+  ];
 
   constructor(private fb: FormBuilder,
     private formService: FormService,
@@ -35,12 +41,13 @@ export class CreateFormComponent implements OnInit {
     private manageForms: ManageFormsComponent,
     private message: NzMessageService,
     private translate: TranslateService,
-    private componentService:ComponentService) {
+    private componentService: ComponentService) {
 
     this.validateForm = this.fb.group({
       code: ['', [Validators.required], [this.codeAsyncValidator]],
       name: ['', [Validators.required]],
       description: ['', []],
+      status: new FormControl(''),
       selectedComponents: new FormControl()
     });
   }
@@ -56,19 +63,29 @@ export class CreateFormComponent implements OnInit {
           name: this.form.name,
           code: this.form.code,
           description: this.form.description,
-          selectedComponents:this.form.components.map(function (value) {
-            return  value['id'];
-         })
+          status:this.form.status,
+          selectedComponents: this.form.components.map(function (value) {
+            return value['id'];
+          })
         })
         this.codes = this.FormsData.map(element => {
           return element['code'] != this.form.code;
         })
+        if (this.form.status !== 'Activo') {
+          this.statusForms = this.FormsData.filter(element => {
+            return element['status'] === 'Activo';
+          })
+        }
+
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
     } else {
       this.codes = this.FormsData.map(element => {
         return element['code'];
+      })
+      this.statusForms = this.FormsData.filter(element => {
+        return element['status'] === 'Activo';
       })
     }
 
@@ -84,7 +101,7 @@ export class CreateFormComponent implements OnInit {
 
   }
 
-  submitForm(value: { code: string; name: string; }): void {
+  submitForm(value: { code: string; name: string; status: string }): void {
 
     if (this.InputData) {
       try {
