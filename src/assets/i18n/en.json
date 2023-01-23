@@ -52,7 +52,8 @@
     "antes_de_empezar":"BEFORE STARTING",
     "completa_info":"Complet this information",
     "tipo_preguntas_hijas":"Related questions type",
-    "opciones":"Options"
+    "opciones":"Options",
+    "bienvenido":"Welcome"
   },
   "validaciones":{
     "validando":"Validating...",

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzUploadFile } from 'ng-zorro-antd/upload';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormService } from 'src/app/questions/manage-forms/form.service';
 import { Form } from 'src/app/questions/manage-forms/form';

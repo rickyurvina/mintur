@@ -6,7 +6,7 @@
         nzStatus="active"></nz-progress>
     </div>
     <nz-tabset class="page-header-tab" *ngIf="form">
-      <nz-tab nzTitle="{{'general.antes_de_empezar'|translate}}">
+      <nz-tab nzTitle="{{'general.antes_de_empezar'|translate}}" *ngIf="!establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
             <div class="d-flex flex-column justify-content-between h-100">
@@ -73,6 +73,24 @@
           </nz-card>
         </div>
       </nz-tab>
+
+      <nz-tab nzTitle="{{'general.bienvenido'|translate}}" *ngIf="establishment">
+        <div class="container">
+          <nz-card nzTitle="{{establishment.name}}">
+            <div class="d-flex flex-column justify-content-between h-100">
+              <div class="d-none d-md-block"></div>
+              <div class="row align-items-center">
+                <div class="col-md-7 col-lg-5 m-h-auto">
+                  <div class="d-flex align-items-center justify-content-between m-b-30">
+                    <img class="img-fluid" alt="" src="assets/images/logo/logo-min.png">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+      </nz-tab>
+
       <div *ngIf="establishment">
         <nz-tab *ngFor=" let component of form.components" nzTitle="{{component.name}}">
           <div class="container">
