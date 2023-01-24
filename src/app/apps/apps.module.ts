@@ -32,6 +32,7 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 
 import { ChatComponent } from './chat/chat.component';
 import { FileManagerComponent } from './file-manager/file-manager.component';
@@ -66,7 +67,8 @@ const antdModule = [
     NzPaginationModule,
     NzDatePickerModule,
     NzCheckboxModule,
-    NzMessageModule
+    NzMessageModule,
+    NzSkeletonModule
 ]
 
 @NgModule({

@@ -1,0 +1,76 @@
+import { Component, OnInit } from '@angular/core';
+import { FormService } from '../form.service';
+import { Form } from '../form';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { CreateFormComponent } from '../create-form/create-form.component';
+import { TranslateService } from '@ngx-translate/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
+
+@Component({
+  selector: 'app-manage-forms',
+  templateUrl: './manage-forms.component.html',
+  styleUrls: ['./manage-forms.component.css']
+})
+
+export class ManageFormsComponent implements OnInit {
+  forms: Form[] = [];
+  size = 'large';
+  isTranslated = false;
+  constructor(public formService: FormService,
+    private modalService: NzModalService,
+    private message: NzMessageService,
+    private translate: TranslateService) {
+  }
+
+  ngOnInit(): void {
+    try {
+      this.formService.getAll().subscribe((data: Form[]) => {
+        this.forms = data;
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+  }
+
+  showConfirm(id): void {
+    try {
+      this.modalService.confirm({
+        nzTitle: this.translate.instant('general.seguro_desea_eliminar'),
+        nzContent: this.translate.instant('general.modal_se_cierra'),
+        nzOnOk: () => {
+          try {
+            this.formService.destroy(id).subscribe(res => {
+              this.forms = this.forms.filter(item => item.id !== id);
+              this.message.create('success', this.translate.instant('mensajes.eliminado_exitosamente'));
+            }, err => {
+              this.message.create('error', `Error: ${err}`);
+            })
+          } catch (e) {
+            this.message.create('error', `Error: ${e}`);
+          }
+        }
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+  }
+
+  showModalCreate(id = null) {
+    try {
+      const modal = this.modalService.create({
+        nzTitle: id ? this.translate.instant('general.crear') : this.translate.instant('general.actualizar') + ' ' + this.translate.instant('general.sub_tema'),
+        nzContent: CreateFormComponent,
+        nzComponentParams: {
+          InputData: id,
+          FormsData: this.forms
+        },
+        nzFooter: null,
+      });
+      modal.afterClose.subscribe(() => this.ngOnInit());
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+  }
+}
