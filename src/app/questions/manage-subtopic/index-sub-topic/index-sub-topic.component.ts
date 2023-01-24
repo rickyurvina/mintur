@@ -4,7 +4,7 @@ import { SubTopicService } from '../sub-topic.service';
 import { CreateSubTopicComponent } from '../create-sub-topic/create-sub-topic.component';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-index-sub-topic',
@@ -38,7 +38,7 @@ export class IndexSubTopicComponent implements OnInit {
     try {
       this.modalService.confirm({
         nzTitle: this.translate.instant('general.seguro_desea_eliminar'),
-        nzContent:  this.translate.instant('general.modal_se_cierra'),
+        nzContent: this.translate.instant('general.modal_se_cierra'),
         nzOnOk: () => {
           try {
             this.subTopicService.destroy(id).subscribe(res => {
@@ -59,8 +59,8 @@ export class IndexSubTopicComponent implements OnInit {
 
   showModalCreate(id = null) {
     try {
-      this.modalService.create({
-        nzTitle: id? this.translate.instant('general.actualizar'): this.translate.instant('general.crear') +' '+this.translate.instant('general.sub_tema'),
+      const modal = this.modalService.create({
+        nzTitle: id ? this.translate.instant('general.actualizar') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.sub_tema'),
         nzContent: CreateSubTopicComponent,
         nzFooter: null,
         nzComponentParams: {
@@ -68,6 +68,8 @@ export class IndexSubTopicComponent implements OnInit {
           FormsData: this.subTopics
         }
       });
+      modal.afterClose.subscribe(() => this.ngOnInit());
+
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }

@@ -53,7 +53,9 @@
     "completa_info":"Complet this information",
     "tipo_preguntas_hijas":"Related questions type",
     "opciones":"Options",
-    "bienvenido":"Welcome"
+    "bienvenido":"Welcome",
+    "estado":"Status"
+
   },
   "validaciones":{
     "validando":"Validating...",

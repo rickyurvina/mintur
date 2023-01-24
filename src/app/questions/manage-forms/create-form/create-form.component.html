@@ -23,10 +23,19 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{"general.descripcion" | translate}}</nz-form-label>
+    <nz-form-label [nzSpan]="7">{{"general.descripcion" | translate}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback>
       <textarea nz-input [placeholder]="'general.descripcion'|translate"  formControlName="description"
         [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="statusForms.length<=0">
+    <nz-form-label [nzSpan]="7">{{"general.estado" | translate}}</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <nz-select formControlName="status">
+        <nz-option *ngFor="let option of optionList" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+      </nz-select>
     </nz-form-control>
   </nz-form-item>
 

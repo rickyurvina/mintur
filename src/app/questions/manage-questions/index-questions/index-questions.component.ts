@@ -4,7 +4,7 @@ import { QuestionService } from '../question.service';
 import { CreateQuestionsComponent } from '../create-questions/create-questions.component';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-index-questions',
@@ -37,7 +37,7 @@ export class IndexQuestionsComponent implements OnInit {
     try {
       this.modalService.confirm({
         nzTitle: this.translate.instant('general.seguro_desea_eliminar'),
-        nzContent:  this.translate.instant('general.modal_se_cierra'),
+        nzContent: this.translate.instant('general.modal_se_cierra'),
         nzOnOk: () => {
           try {
             this.questionService.destroy(id).subscribe(res => {
@@ -58,8 +58,8 @@ export class IndexQuestionsComponent implements OnInit {
 
   showModalCreate(id = null) {
     try {
-      this.modalService.create({
-        nzTitle: id? this.translate.instant('general.actualizar'): this.translate.instant('general.crear') +' '+this.translate.instant('general.Pregunta'),
+      const modal = this.modalService.create({
+        nzTitle: id ? this.translate.instant('general.actualizar') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.Pregunta'),
         nzContent: CreateQuestionsComponent,
         nzFooter: null,
         nzComponentParams: {
@@ -67,6 +67,8 @@ export class IndexQuestionsComponent implements OnInit {
           FormsData: this.questions
         },
       });
+      modal.afterClose.subscribe(() => this.ngOnInit());
+
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }
