@@ -1,3 +1,46 @@
 .large ::ng-deep .ant-rate-star {
   font-size: 36px;
 }
+.ant-progress {
+  margin-right: 8px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+:host {
+  text-align: center;
+}
+
+
+nz-footer {
+  background: #ffffff;
+}
+nz-header {
+  background: #ffffff;
+  height: auto;
+}
+
+nz-footer {
+  line-height: 1.5;
+}
+
+nz-sider {
+  background: #3ba0e9;
+  color: #fff;
+  line-height: 120px;
+}
+
+nz-content {
+  color: #fff;
+  min-height: 120px;
+  line-height: 120px;
+}
+
+nz-layout {
+  margin-bottom: 3me;
+}
+
+nz-layout nz-layout,
+nz-layout:last-child {
+  margin: 2em;
+}

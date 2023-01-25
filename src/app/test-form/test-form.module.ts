@@ -27,7 +27,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
-
+import { NzLayoutModule } from 'ng-zorro-antd/layout'
+import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzAffixModule } from 'ng-zorro-antd/affix';
 const antdModule= [
   NzCardModule,
   NzSkeletonModule,
@@ -51,7 +54,11 @@ const antdModule= [
   NzMessageModule,
   NzInputModule,
   NzCheckboxModule,
-  NzProgressModule
+  NzProgressModule,
+  NzLayoutModule,
+  NzCarouselModule,
+  NzStepsModule,
+  NzAffixModule
 ]
 
 @NgModule({

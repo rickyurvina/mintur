@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormService } from 'src/app/questions/manage-forms/form.service';
@@ -7,7 +7,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Establishment } from '../establishment';
 import { EstablishmentService } from '../establishment.service';
 import { LocalService } from 'src/app/services/local.service';
-
+import { SubTopic } from 'src/app/questions/manage-subtopic/sub-topic';
+import {
+  SubTopicService
+} from 'src/app/questions/manage-subtopic/sub-topic.service';
 @Component({
   selector: 'app-fill-form',
   templateUrl: './fill-form.component.html',
@@ -15,18 +18,39 @@ import { LocalService } from 'src/app/services/local.service';
 })
 
 export class FillFormComponent implements OnInit {
-
+  encapsulation: ViewEncapsulation.None
   establishmentForm: FormGroup;
   form: Form;
   emailEstablishment: string;
   establishment: Establishment;
+  index = 0;
+  disable = false;
+  subTopic: SubTopic;
+  offsetTop = 2;
+  answers = {};
+  value = 3;
+
+  selectStep(id: number, index: number): void {
+    this.index = index;
+    this.subTopicService.find(id).subscribe((data: SubTopic) => {
+      this.subTopic = data;
+    }, err => {
+      this.message.create('error', `Error: ${err}`);
+    });
+  }
+
+  handleTabChange(event) {
+    this.subTopic = null;
+    this.index = 0;
+  }
 
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private formService: FormService,
     private translate: TranslateService,
     private establishmentService: EstablishmentService,
-    private localStore: LocalService
+    private localStore: LocalService,
+    private subTopicService: SubTopicService,
   ) {
     this.establishmentForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -42,7 +66,6 @@ export class FillFormComponent implements OnInit {
     try {
       this.formService.showActiveForm().subscribe((data: Form) => {
         this.form = data;
-        console.log(data)
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
@@ -103,4 +126,10 @@ export class FillFormComponent implements OnInit {
       this.message.create('error', `${element}`)
     });
   }
+
+  onChange(idQuestion: number, answer: string, value: any): void {
+    console.log(idQuestion, answer);
+    console.log(value);
+  }
+
 }

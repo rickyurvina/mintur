@@ -25,6 +25,7 @@ export class IndexQuestionsComponent implements OnInit {
     try {
       this.questionService.getAll().subscribe((data: Question[]) => {
         this.questions = data;
+        console.log(this.questions)
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });

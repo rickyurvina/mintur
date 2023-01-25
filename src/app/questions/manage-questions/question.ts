@@ -8,5 +8,6 @@ export interface Question {
   parent_id:number,
   value:number,
   children_type:string,
-  children:any[]
+  children:any[],
+  dependent:number
 }
