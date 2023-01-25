@@ -1,14 +1,13 @@
-<nz-layout >
+<nz-layout>
   <nz-header>
     <div nz-row>
       <div nz-col nzFlex="1">
         <img class="img-fluid" alt="logo_min_tur" src="assets/images/logo/logo-min.png">
       </div>
       <div nz-col nzFlex="4">
-        <h1 class="w-90 m-h-auto" *ngIf="form"  style="font-size: 20px">
+        <h1 class="w-90 m-h-auto" *ngIf="form" style="font-size: 20px">
           {{form.name}}
         </h1>
-        <nz-divider></nz-divider>
         <p *ngIf="form" class="w-90 m-h-auto m-b-30">
           {{form.description}}
         </p>
@@ -20,8 +19,8 @@
     </div>
   </nz-header>
 
-  <nz-content style=" padding-left: 6rem; padding-right: 6rem; height: 550px; overflow-x: auto;">
-    <nz-tabset class="page-header-tab" *ngIf="form">
+  <nz-content style=" padding-left: 6rem; padding-right: 6rem; height: auto; overflow-x: auto;">
+    <nz-tabset class="page-header-tab" *ngIf="form" (nzSelectedIndexChange)="handleTabChange($event)">
       <nz-tab nzTitle="{{'general.antes_de_empezar'|translate}}" *ngIf="!establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
@@ -89,86 +88,75 @@
           </nz-card>
         </div>
       </nz-tab>
-<!--
-      <nz-tab nzTitle="{{'general.bienvenido'|translate}}" *ngIf="establishment">
-        <div class="container">
-          <nz-card nzTitle="{{establishment.name}}">
-            <div class="d-flex flex-column justify-content-between h-100">
-              <div class="d-none d-md-block"></div>
-              <div class="row align-items-center">
-                <div class="col-md-7 col-lg-5 m-h-auto">
-                  <div class="d-flex align-items-center justify-content-between m-b-30">
-                    <img class="img-fluid" alt="" src="assets/images/logo/logo-min.png">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-      </nz-tab> -->
 
       <div *ngIf="establishment">
         <nz-tab *ngFor=" let component of form.components" nzTitle="{{component.name}}">
-
-          <div class="container">
-            <div class="row">
-              <nz-card [nzTitle]="subTopicName" class="col-md-12 mx-auto" *ngFor="let subTopic of component.sub_topics">
-                <nz-list [nzDataSource]="subTopic.questions" [nzRenderItem]="network" [nzItemLayout]="'horizontal'">
-                  <ng-template #network let-question>
-                    <nz-list-item [nzActions]="[moreAction]">
-                      <ng-template #moreAction>
-                        <div *ngIf="question.type=='si_no'">
-                          <nz-radio-group nzButtonStyle="solid">
-                            <label nz-radio-button nzValue="si">Si</label>
-                            <label nz-radio-button nzValue="no">No</label>
-                          </nz-radio-group>
-                        </div>
-                        <div *ngIf="question.type=='rango_1_5'">
-                          <nz-rate [ngModel]="0" [nzCharacter]="characterNumber"></nz-rate>
-                          <ng-template #characterNumber let-index>
-                            {{ index + 1 }}
-                          </ng-template>
-                          <ng-template #characterIcon let-index>
-                            <ng-container [ngSwitch]="index">
-                              <span nz-icon nzType="frown" *ngSwitchCase="1"></span>
-                              <span nz-icon nzType="frown" *ngSwitchCase="2"></span>
-                              <span nz-icon nzType="meh" *ngSwitchCase="3"></span>
-                              <span nz-icon nzType="smile" *ngSwitchCase="4"></span>
-                              <span nz-icon nzType="smile" *ngSwitchCase="5"></span>
-                            </ng-container>
-                          </ng-template>
-                        </div>
-                      </ng-template>
-
-                      <nz-list-item-meta [nzTitle]="networkName" [nzAvatar]="networkIcon">
-                        <ng-template #networkName>
-                          <div class="font-size-15 font-weight-semibold m-t-10">
-                            <nz-tag [nzColor]="'gold'"> {{question.code}}</nz-tag>-{{question.name}}
+          <div nz-row>
+            <div nz-col nzFlex="160px">
+              <nz-steps nzDirection="vertical" [nzCurrent]="index">
+                <nz-step *ngFor="let subTopic of component.sub_topics" (click)="selectStep(subTopic.id)"
+                  style="cursor: pointer" nzTitle="{{subTopic.name}}" nzDescription="{{subTopic.description}}"></nz-step>
+              </nz-steps>
+            </div>
+            <div nz-col nzFlex="auto" *ngIf="subTopic">
+              <div class="container">
+                <div class="row">
+                    <nz-card [nzTitle]="subTopicName" class="col-md-12 mx-auto">
+                      <nz-list [nzDataSource]="subTopic.questions" [nzRenderItem]="network"
+                        [nzItemLayout]="'horizontal'">
+                        <ng-template #network let-question>
+                          <nz-list-item>
+                            <nz-list-item-meta [nzTitle]="networkName" [nzAvatar]="networkIcon">
+                              <ng-template #networkName>
+                                <div class="font-size-15 font-weight-semibold m-t-2">
+                                  <nz-tag [nzColor]="'gold'"> {{question.code}}</nz-tag>-{{question.name}}
+                                </div>
+                              </ng-template>
+                            </nz-list-item-meta>
+                          </nz-list-item>
+                          <div *ngIf="question.type=='si_no'">
+                            <nz-radio-group nzButtonStyle="solid">
+                              <label nz-radio-button nzValue="si">Si</label>
+                              <label nz-radio-button nzValue="no">No</label>
+                            </nz-radio-group>
+                          </div>
+                          <div *ngIf="question.type=='rango_1_5'">
+                            <nz-rate [ngModel]="0" [nzCharacter]="characterNumber"></nz-rate>
+                            <ng-template #characterNumber let-index>
+                              {{ index + 1 }}
+                            </ng-template>
+                            <ng-template #characterIcon let-index>
+                              <ng-container [ngSwitch]="index">
+                                <span nz-icon nzType="frown" *ngSwitchCase="1"></span>
+                                <span nz-icon nzType="frown" *ngSwitchCase="2"></span>
+                                <span nz-icon nzType="meh" *ngSwitchCase="3"></span>
+                                <span nz-icon nzType="smile" *ngSwitchCase="4"></span>
+                                <span nz-icon nzType="smile" *ngSwitchCase="5"></span>
+                              </ng-container>
+                            </ng-template>
+                          </div>
+                          <div *ngIf="question.type=='relacionada'">
+                            <nz-checkbox-wrapper style="width: 100%;">
+                              <div nz-row>
+                                <div nz-col nzSpan="12" *ngFor="let child of question.children">
+                                  <label nz-checkbox nzValue="{{child.id}}">{{child.name}}
+                                  </label>
+                                </div>
+                              </div>
+                            </nz-checkbox-wrapper>
                           </div>
                         </ng-template>
-                      </nz-list-item-meta>
-                    </nz-list-item>
-                    <div *ngIf="question.type=='relacionada'">
-                      <nz-divider nzText="Opciones"></nz-divider>
-                      <nz-checkbox-wrapper style="width: 100%;">
-                        <div nz-row>
-                          <div nz-col nzSpan="12" *ngFor="let child of question.children">
-                            <label nz-checkbox nzValue="{{child.id}}">{{child.name}}
-                            </label>
-                          </div>
+                      </nz-list>
+                      <ng-template #subTopicName>
+                        <div class="text-center">
+                          <h2>
+                            <nz-tag [nzColor]="'lime'" style="font-size: 20px">{{subTopic.name}}</nz-tag>
+                          </h2>
                         </div>
-                      </nz-checkbox-wrapper>
-                    </div>
-                  </ng-template>
-                </nz-list>
-                <ng-template #subTopicName>
-                  <div class="text-center">
-                    <h2>
-                      <nz-tag [nzColor]="'lime'" style="font-size: 20px">{{subTopic.name}}</nz-tag>
-                    </h2>
-                  </div>
-                </ng-template>
-              </nz-card>
+                      </ng-template>
+                    </nz-card>
+                </div>
+              </div>
             </div>
           </div>
         </nz-tab>
@@ -248,7 +236,8 @@
               <!-- Links -->
 
               <p>
-                <img class="img-fluid" alt="logo_laverix" width="100" height="100" src="assets/images/logo/logo_laverix.png">
+                <img class="img-fluid" alt="logo_laverix" width="100" height="100"
+                  src="assets/images/logo/logo_laverix.png">
               </p>
             </div>
             <!-- Grid column -->
@@ -302,7 +291,7 @@
         <p class="m-b-0">Copyright © 2023 Theme_Nate. All rights reserved.</p>
         <span>
           <a href="https://laverix.com.ec/" class="text-gray m-r-15">Developed by: &amp; Laverix
-         </a>
+          </a>
           <a href="" class="text-gray">Privacy &amp; Policy</a>
         </span>
       </div>

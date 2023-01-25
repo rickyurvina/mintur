@@ -44,10 +44,3 @@ nz-layout nz-layout,
 nz-layout:last-child {
   margin: 2em;
 }
-
-[nz-carousel-content] {
-  text-align: center;
-  height: 550px;
-  line-height: 160px;
-  overflow: hidden;
-}
