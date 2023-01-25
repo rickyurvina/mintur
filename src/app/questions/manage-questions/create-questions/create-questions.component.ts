@@ -21,6 +21,7 @@ export class CreateQuestionsComponent implements OnInit {
   codes: string[] = [];
   id: number;
   question: Question;
+  questions: Question[]=[];
   validateForm: FormGroup;
   validateFormRelated: FormGroup;
   isCollapse = true;
@@ -36,6 +37,8 @@ export class CreateQuestionsComponent implements OnInit {
     { label: 'Si/No', value: 'si_no' },
     { label: 'Rango 1-5', value: 'rango_1_5' },
     { label: 'Multiple', value: 'multiple' },
+    { label: 'Una Opción', value: 'una_opcion' },
+
   ];
 
   constructor(private fb: FormBuilder,
@@ -52,7 +55,9 @@ export class CreateQuestionsComponent implements OnInit {
       type: ['', [Validators.required]],
       description: ['', []],
       children_type: ['', []],
-      children: new FormControl()
+      children: new FormControl(),
+      dependent: new FormControl(),
+      dependentQ: new FormControl(),
     });
 
     this.validateFormRelated = this.fb.group({
@@ -63,20 +68,26 @@ export class CreateQuestionsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.codes = [];
+    this.questions = this.FormsData.map(element => {
+      return element;
+    })
+    console.log(this.questions)
 
     if (this.InputData) {
       this.id = this.InputData;
       this.questionService.find(this.id).subscribe((data: Question) => {
         this.question = data;
-        console.log(data);
+
         this.validateForm.setValue({
           name: this.question.name,
           code: this.question.code,
           type: this.question.type,
           description: this.question.description,
           children_type: this.question.children_type,
-          children: this.question.children
+          children: this.question.children,
+          dependent: this.question.dependent,
         })
+
         this.questionsRelated = data.children
         this.codes = this.FormsData.map(element => {
           return element['code'] != this.question.code;
@@ -91,7 +102,15 @@ export class CreateQuestionsComponent implements OnInit {
     }
   }
 
-  submitForm(value: { code: string; name: string; type: string; description: string; questionsRelated: any[], children_type: string }): void {
+  submitForm(value: {
+    code: string;
+    name: string;
+    type: string;
+    description: string;
+    questionsRelated: any[],
+    children_type: string,
+    dependent: number
+  }): void {
     if (this.InputData) {
       try {
         value.questionsRelated = this.questionsRelated

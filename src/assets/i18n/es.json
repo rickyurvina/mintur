@@ -55,8 +55,11 @@
     "completa_info":"Completa esta información",
     "tipo_preguntas_hijas":"Tipo preguntas relaciondas",
     "opciones":"Opciones",
-    "bienvenido":"Bienvenido",
-    "estado":"Estado"
+    "bienvenido":"BIENVENIDO",
+    "estado":"Estado",
+    "resumen":"RESUMEN",
+    "dependiente":"Dependiente",
+    "dependiente_de":"Dependiente de"
   },
   "validaciones":{
     "validando":"Validando...",

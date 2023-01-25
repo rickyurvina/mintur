@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormService } from 'src/app/questions/manage-forms/form.service';
@@ -15,7 +15,7 @@ import { LocalService } from 'src/app/services/local.service';
 })
 
 export class FillFormComponent implements OnInit {
-
+  encapsulation: ViewEncapsulation.None
   establishmentForm: FormGroup;
   form: Form;
   emailEstablishment: string;

@@ -53,8 +53,11 @@
     "completa_info":"Complet this information",
     "tipo_preguntas_hijas":"Related questions type",
     "opciones":"Options",
-    "bienvenido":"Welcome",
-    "estado":"Status"
+    "bienvenido":"WELCOME",
+    "estado":"Status",
+    "resumen":"SUMMARY",
+    "dependiente":"Dependent",
+    "dependiente_de":"Dependent of"
 
   },
   "validaciones":{
