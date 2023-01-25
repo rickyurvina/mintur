@@ -127,14 +127,9 @@ export class FillFormComponent implements OnInit {
     });
   }
 
-  onChange(idQuestion:number,answer:string, value: any): void {
-    console.log(idQuestion,answer);
+  onChange(idQuestion: number, answer: string, value: any): void {
+    console.log(idQuestion, answer);
     console.log(value);
   }
 
-  onCheckboxChange(event) {
-    console.log(event);
-    // console.log(event.target);
-    //aquí puedes hacer lo que desees con el estado del checkbox
-}
 }
