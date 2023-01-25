@@ -26,26 +26,24 @@ export class FillFormComponent implements OnInit {
   index = 0;
   disable = false;
   subTopic: SubTopic;
+  offsetTop = 2;
+  answers = {};
+  value = 3;
 
-  selectStep(index: number): void {
+  selectStep(id: number, index: number): void {
     this.index = index;
-    this.subTopicService.find(index).subscribe((data: SubTopic) => {
+    this.subTopicService.find(id).subscribe((data: SubTopic) => {
       this.subTopic = data;
     }, err => {
       this.message.create('error', `Error: ${err}`);
     });
   }
 
-  onIndexChange(): void {
-    this.subTopic = null
-    this.index = 0;
-  }
-
   handleTabChange(event) {
-    console.log("Selected tab index: ", event);
     this.subTopic = null;
     this.index = 0;
   }
+
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private formService: FormService,
@@ -128,4 +126,15 @@ export class FillFormComponent implements OnInit {
       this.message.create('error', `${element}`)
     });
   }
+
+  onChange(idQuestion:number,answer:string, value: any): void {
+    console.log(idQuestion,answer);
+    console.log(value);
+  }
+
+  onCheckboxChange(event) {
+    console.log(event);
+    // console.log(event.target);
+    //aquí puedes hacer lo que desees con el estado del checkbox
+}
 }

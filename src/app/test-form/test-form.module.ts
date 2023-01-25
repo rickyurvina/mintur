@@ -30,6 +30,7 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzLayoutModule } from 'ng-zorro-antd/layout'
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzAffixModule } from 'ng-zorro-antd/affix';
 const antdModule= [
   NzCardModule,
   NzSkeletonModule,
@@ -56,7 +57,8 @@ const antdModule= [
   NzProgressModule,
   NzLayoutModule,
   NzCarouselModule,
-  NzStepsModule
+  NzStepsModule,
+  NzAffixModule
 ]
 
 @NgModule({

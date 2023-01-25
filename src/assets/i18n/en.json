@@ -57,8 +57,9 @@
     "estado":"Status",
     "resumen":"SUMMARY",
     "dependiente":"Dependent",
-    "dependiente_de":"Dependent of"
-
+    "dependiente_de":"Dependent of",
+    "siguiente":"Forward",
+    "anterior":"Backward"
   },
   "validaciones":{
     "validando":"Validating...",
