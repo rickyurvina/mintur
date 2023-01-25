@@ -122,7 +122,16 @@
                           </nz-radio-group>
                         </div>
                         <div *ngIf="question.type=='rango_1_5'">
-                          <nz-rate [ngModel]="3" (ngModelChange)="onChange(question.id,'',$event)"
+
+                          <nz-radio-group>
+                            <label nz-radio nzValue="1" >1</label>
+                            <label nz-radio nzValue="2">2</label>
+                            <label nz-radio nzValue="3">3</label>
+                            <label nz-radio nzValue="4">4</label>
+                            <label nz-radio nzValue="5">5</label>
+                          </nz-radio-group>
+
+                          <!-- <nz-rate [ngModel]="3" (ngModelChange)="onChange(question.id,'',$event)"
                             [nzCharacter]="characterNumber" class="large"></nz-rate>
                           <ng-template #characterNumber let-index>
                             {{ index+1 }}
@@ -137,7 +146,7 @@
                               <span nz-icon *ngSwitchCase="5"></span>
                               <span nz-icon *ngSwitchCase="6"></span>
                             </ng-container>
-                          </ng-template>
+                          </ng-template> -->
                         </div>
                         <div *ngIf="question.type=='relacionada'">
                           <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="onChange(question.id ,'',$event)">
@@ -170,21 +179,12 @@
                 </div>
               </div>
             </div>
+
             <div nz-col nzFlex="160px">
-
-              <button nz-button nzType="primary" nzShape="round" class="mb-2"
-                style="background-color:#87d068; border-color: #87d068;" nzBlock>
-                {{'general.guardar'|translate}}</button>
-
-              <nz-button-group [nzSize]="size">
-                <button nz-button nzType="primary">
-                  <span nz-icon nzType="left"></span>
-                  {{'general.anterior'|translate}}
-                </button>
-                <button nz-button nzType="primary">
-                  {{'general.siguiente'|translate}}
-                  <span nz-icon nzType="right"></span>
-                </button>
+              <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">Volver a empezar:</button>
+              <nz-button-group>
+                <button nz-button nzType="primary"><i nz-icon nzType="left"></i> Go back</button>
+                <button nz-button nzType="primary">Go forward<i nz-icon nzType="right"></i></button>
               </nz-button-group>
             </div>
           </div>
@@ -317,7 +317,7 @@
       <!-- Copyright -->
 
       <div class="footer-content justify-content-between">
-        <p class="m-b-0">Copyright © 2023 Theme_Nate. All rights reserved.</p>
+        <p class="m-b-0">Copyright © 2023 All rights reserved.</p>
         <span>
           <a href="https://laverix.com.ec/" class="text-gray m-r-15">Developed by: &amp; Laverix
           </a>

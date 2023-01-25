@@ -27,22 +27,7 @@ export class FillFormComponent implements OnInit {
   disable = false;
   subTopic: SubTopic;
   offsetTop = 2;
-  answers = {};
-  value = 3;
-
-  selectStep(id: number, index: number): void {
-    this.index = index;
-    this.subTopicService.find(id).subscribe((data: SubTopic) => {
-      this.subTopic = data;
-    }, err => {
-      this.message.create('error', `Error: ${err}`);
-    });
-  }
-
-  handleTabChange(event) {
-    this.subTopic = null;
-    this.index = 0;
-  }
+  subTopics: SubTopic[] = [];
 
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
@@ -63,6 +48,7 @@ export class FillFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.index = 0;
     try {
       this.formService.showActiveForm().subscribe((data: Form) => {
         this.form = data;
@@ -85,6 +71,18 @@ export class FillFormComponent implements OnInit {
         this.message.create('error', `Error ${e}`);
       }
     }
+
+    try {
+      this.subTopicService.getAll().subscribe((data: SubTopic[]) => {
+        this.subTopics = data;
+        this.subTopic = this.subTopics[0];
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+
   }
 
   submitForm(value: { name: string; email: string; company: string }): void {
@@ -99,6 +97,7 @@ export class FillFormComponent implements OnInit {
         this.emailEstablishment = value.email;
         this.localStore.saveData('email', this.emailEstablishment);
         this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
+        this.establishmentForm.reset();
         this.ngOnInit();
 
       }, err => {
@@ -130,6 +129,24 @@ export class FillFormComponent implements OnInit {
   onChange(idQuestion: number, answer: string, value: any): void {
     console.log(idQuestion, answer);
     console.log(value);
+  }
+
+  resetForm(): void {
+    this.localStore.removeData('email')
+    this.establishment = null;
+    this.emailEstablishment = '';
+    this.establishmentForm.reset();
+  }
+
+  selectStep(id: number, index: number): void {
+    this.index = index;
+
+    this.subTopic = this.subTopics.find(element => element['id'] == id)
+  }
+
+  handleTabChange(event) {
+    this.subTopic = this.subTopics.find(element => element['id'] == this.form.components[event]['sub_topics'][0]['id'])
+    this.index = 0;
   }
 
 }

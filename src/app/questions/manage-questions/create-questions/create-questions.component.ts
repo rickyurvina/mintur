@@ -86,6 +86,7 @@ export class CreateQuestionsComponent implements OnInit {
           children_type: this.question.children_type,
           children: this.question.children,
           dependent: this.question.dependent,
+
         })
 
         this.questionsRelated = data.children
