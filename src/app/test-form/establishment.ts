@@ -4,4 +4,5 @@ export interface Establishment {
   code:string,
   company:string,
   email:string,
+  percentage:string,
 }

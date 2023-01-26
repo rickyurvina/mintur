@@ -27,7 +27,6 @@ export class IndexComponentsComponent implements OnInit {
     try {
       this.compService.getAll().subscribe((data: Comp[]) => {
         this.components = data;
-        console.log(this.components)
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });

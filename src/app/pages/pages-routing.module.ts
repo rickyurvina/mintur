@@ -11,77 +11,77 @@ import { BlogListComponent } from './blog/blog-list/blog-list.component';
 import { BlogPostComponent } from './blog/blog-post/blog-post.component';
 
 const routes: Routes = [
-    {
-        path: 'profile',
-        component: ProfileComponent,
-        data: {
-            title: 'Profile'
-        }
-    },
-    {
-        path: 'invoice',
-        component: InvoiceComponent,
-        data: {
-            title: 'Invoice'
-        }
-    },
-    {
-        path: 'members',
-        component: MembersComponent,
-        data: {
-            title: 'Members',
-            headerDisplay: "none"
-        }
-    },
-    {
-        path: 'pricing',
-        component: PricingComponent,
-        data: {
-            title: 'Pricing'
-        }
-    },
-    {
-        path: 'setting',
-        component: SettingComponent,
-        data: {
-            title: 'Setting',
-            headerDisplay: "none"
-        }
-    },
-    {
-        path: 'blog',
-        data: {
-            title: 'Blog '
-        },
-        children: [
-            {
-                path: '',
-                redirectTo: '/dashboard',
-                pathMatch: 'full'
-            }, 
-            {
-                path: 'blog-grid',
-                component: BlogGridComponent,
-                data: {
-                    title: 'Blog Grid'
-                }
-            },
-            {
-                path: 'blog-list',
-                component: BlogListComponent,
-                data: {
-                    title: 'Blog List'
-                }
-            },
-            {
-                path: 'blog-post',
-                component: BlogPostComponent,
-                data: {
-                    title: 'Blog Post'
-                }
-            }
-        ]    
-    },
+    // {
+    //     path: 'profile',
+    //     component: ProfileComponent,
+    //     data: {
+    //         title: 'Profile'
+    //     }
+    // },
+    // {
+    //     path: 'invoice',
+    //     component: InvoiceComponent,
+    //     data: {
+    //         title: 'Invoice'
+    //     }
+    // },
+    // {
+    //     path: 'members',
+    //     component: MembersComponent,
+    //     data: {
+    //         title: 'Members',
+    //         headerDisplay: "none"
+    //     }
+    // },
+    // {
+    //     path: 'pricing',
+    //     component: PricingComponent,
+    //     data: {
+    //         title: 'Pricing'
+    //     }
+    // },
+    // {
+    //     path: 'setting',
+    //     component: SettingComponent,
+    //     data: {
+    //         title: 'Setting',
+    //         headerDisplay: "none"
+    //     }
+    // },
+    // {
+    //     path: 'blog',
+    //     data: {
+    //         title: 'Blog '
+    //     },
+    //     children: [
+    //         {
+    //             path: '',
+    //             redirectTo: '/dashboard',
+    //             pathMatch: 'full'
+    //         },
+    //         {
+    //             path: 'blog-grid',
+    //             component: BlogGridComponent,
+    //             data: {
+    //                 title: 'Blog Grid'
+    //             }
+    //         },
+    //         {
+    //             path: 'blog-list',
+    //             component: BlogListComponent,
+    //             data: {
+    //                 title: 'Blog List'
+    //             }
+    //         },
+    //         {
+    //             path: 'blog-post',
+    //             component: BlogPostComponent,
+    //             data: {
+    //                 title: 'Blog Post'
+    //             }
+    //         }
+    //     ]
+    // },
 ];
 
 @NgModule({

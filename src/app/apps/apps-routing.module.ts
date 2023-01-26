@@ -11,86 +11,86 @@ import { ProductsListComponent } from './e-commerce/products-list/products-list.
 import { ProductComponent } from './e-commerce/product/product.component';
 
 const routes: Routes = [
-    {
-        path: 'chat',
-        component: ChatComponent,
-        data: {
-            title: 'Chat',
-            headerDisplay: "none"
-        }
-    },
-    {
-        path: 'file-manager',
-        component: FileManagerComponent,
-        data: {
-            title: 'File Manager',
-            headerDisplay: "none"
-        }
-    },
-    {
-        path: 'mail',
-        component: MailComponent,
-        data: {
-            title: 'Mail',
-            headerDisplay: "none"
-        }
-    },
-    {
-        path: 'projects',
-        children: [
-            {
-                path: 'project-list',
-                component: ProjectListComponent,
-                data: {
-                    title: 'Project List',
-                    headerDisplay: "none"
-                }
-            },
-            {
-                path: 'project-details',
-                component: ProjectDetailsComponent,
-                data: {
-                    title: 'Project Details',
-                    headerDisplay: "none"
-                }
-            }
-        ]
-    },
-    {
-        path: 'e-commerce',
-        data: {
-            title: 'E-commerce'
-        },
-        children: [
-            {
-                path: '',
-                redirectTo: '/dashboard',
-                pathMatch: 'full'
-            },
-            {
-                path: 'orders-list',
-                component: OrdersListComponent,
-                data: {
-                    title: 'Orders List'
-                }
-            },
-            {
-                path: 'product',
-                component: ProductComponent,
-                data: {
-                    title: 'Product',
-                    headerDisplay: "none"
-                }
-            },
-            {
-                path: 'products-list',
-                component: ProductsListComponent,
-                data: {
-                    title: 'Products List'
-                }
-            }
-        ]
-    }
+    // {
+    //     path: 'chat',
+    //     component: ChatComponent,
+    //     data: {
+    //         title: 'Chat',
+    //         headerDisplay: "none"
+    //     }
+    // },
+    // {
+    //     path: 'file-manager',
+    //     component: FileManagerComponent,
+    //     data: {
+    //         title: 'File Manager',
+    //         headerDisplay: "none"
+    //     }
+    // },
+    // {
+    //     path: 'mail',
+    //     component: MailComponent,
+    //     data: {
+    //         title: 'Mail',
+    //         headerDisplay: "none"
+    //     }
+    // },
+    // {
+    //     path: 'projects',
+    //     children: [
+    //         {
+    //             path: 'project-list',
+    //             component: ProjectListComponent,
+    //             data: {
+    //                 title: 'Project List',
+    //                 headerDisplay: "none"
+    //             }
+    //         },
+    //         {
+    //             path: 'project-details',
+    //             component: ProjectDetailsComponent,
+    //             data: {
+    //                 title: 'Project Details',
+    //                 headerDisplay: "none"
+    //             }
+    //         }
+    //     ]
+    // },
+    // {
+    //     path: 'e-commerce',
+    //     data: {
+    //         title: 'E-commerce'
+    //     },
+    //     children: [
+    //         {
+    //             path: '',
+    //             redirectTo: '/dashboard',
+    //             pathMatch: 'full'
+    //         },
+    //         {
+    //             path: 'orders-list',
+    //             component: OrdersListComponent,
+    //             data: {
+    //                 title: 'Orders List'
+    //             }
+    //         },
+    //         {
+    //             path: 'product',
+    //             component: ProductComponent,
+    //             data: {
+    //                 title: 'Product',
+    //                 headerDisplay: "none"
+    //             }
+    //         },
+    //         {
+    //             path: 'products-list',
+    //             component: ProductsListComponent,
+    //             data: {
+    //                 title: 'Products List'
+    //             }
+    //         }
+    //     ]
+    // }
 ];
 
 @NgModule({
