@@ -5,4 +5,6 @@ export interface Establishment {
   company:string,
   email:string,
   percentage:string,
+  results:any[],
+  questions:any[]
 }
