@@ -1,3 +1,5 @@
+import { EstablishmentType } from "./establishment-type";
+
 export interface Establishment {
   id:number,
   name:string,
@@ -6,5 +8,6 @@ export interface Establishment {
   email:string,
   percentage:string,
   results:any[],
-  questions:any[]
+  questions:any[],
+  establishmentType:EstablishmentType
 }

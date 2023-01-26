@@ -5,14 +5,14 @@
         <img class="img-fluid" alt="logo_min_tur" src="assets/images/logo/logo-min.png">
       </div>
       <div nz-col nzFlex="4">
-        <h1 class="w-90 m-h-auto" *ngIf="form" style="font-size: 20px">
-          {{form.name}}
+        <h1 class="w-90 m-h-auto" *ngIf="formDisplay" style="font-size: 20px">
+          {{formDisplay.name}}
         </h1>
         <p *ngIf="form" class="w-90 m-h-auto m-b-30">
-          {{form.description}}
+          {{formDisplay.description}}
         </p>
       </div>
-      <div nz-col nzFlex="1">
+      <div nz-col nzFlex="1" *ngIf="establishment">
         <nz-progress nzType="circle" nzPercent="{{percentage}}"
           [nzStrokeColor]="{ '0%': '#108ee9', '50%': '#2db7f5', '100%': '#87d068' }"></nz-progress>
       </div>
@@ -20,7 +20,7 @@
   </nz-header>
 
   <nz-content style=" padding-left: 6rem; padding-right: 6rem; height: auto; overflow-x: auto;">
-    <nz-tabset class="page-header-tab" *ngIf="form" (nzSelectedIndexChange)="handleTabChange($event)">
+    <nz-tabset class="page-header-tab"  (nzSelectedIndexChange)="handleTabChange($event)">
       <nz-tab nzTitle="Registro" *ngIf="!establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
@@ -61,7 +61,19 @@
                     </nz-form-item>
 
                     <nz-form-item>
-                      <nz-form-label nzFor="company">{{'general.empresa'|translate}}</nz-form-label>
+                      <nz-form-label [nzSpan]="7" nzRequired>{{"general.tipo" | translate}}</nz-form-label>
+                      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="establishmentTypeErrorTpl">
+                        <nz-select nzAllowClear formControlName="establishmentType" name="establishmentType" id="establishmentType" [nzPlaceHolder]="'general.escoge'|translate">
+                          <nz-option *ngFor="let option of establishmentTypes" [nzValue]="option.id" [nzLabel]="option.name"></nz-option>
+                        </nz-select>
+                        <ng-template #establishmentTypeErrorTpl let-control>
+                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
+                        </ng-template>
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item>
+                      <nz-form-label nzRequired nzFor="company">{{'general.empresa'|translate}}</nz-form-label>
                       <nz-form-control>
                         <nz-input-group [nzPrefix]="prefixCompany">
                           <input type="text" nz-input formControlName="company"
@@ -94,7 +106,7 @@
           <div nz-row>
             <div nz-col nzFlex="160px">
               <nz-steps nzDirection="vertical" [nzCurrent]="index">
-                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index" (click)="selectStep(subTopic.id, i)"
+                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index" (click)="selectStep(subTopic.resultable.id, i)"
                   style="cursor: pointer" nzTitle="{{subTopic.resultable.name}}"
                   nzDescription="{{subTopic.resultable.description}}"></nz-step>
               </nz-steps>
@@ -173,7 +185,7 @@
         </nz-tab>
       </div>
 
-      <nz-tab nzTitle="Evaluación">
+      <nz-tab nzTitle="Evaluación" *ngIf="establishment">
         <div class="container" style="width: 100%;">
           <div class="row">
             <div class="col-md-12 mx-auto w-100">
@@ -192,7 +204,7 @@
                   </div>
                   <div nz-col nzFlex="1">
                     <nz-tag [nzColor]="'blue'">Calificaciones por pregunta</nz-tag>
-                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona el Sub Tema" [(ngModel)]="selectedValue">
+                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona el Sub Tema" (ngModel)="3">
                       <nz-option nzLabel="Sub Tema 1" nzValue="1"></nz-option>
                       <nz-option nzLabel="Sub Tema 2" nzValue="2"></nz-option>
                       <nz-option nzLabel="Sub Tema 3" nzValue="3"></nz-option>

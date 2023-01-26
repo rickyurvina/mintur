@@ -17,6 +17,8 @@ import {
 import { Question } from 'src/app/questions/manage-questions/question';
 import * as echarts from 'echarts';
 import { Component as Comp } from 'src/app/questions/manage-components/component';
+import { EstablishmentType } from '../establishment-type';
+import { EstablishmentTypeService } from '../establishment-type.service';
 @Component({
   selector: 'app-fill-form',
   templateUrl: './fill-form.component.html',
@@ -30,6 +32,8 @@ export class FillFormComponent implements OnInit {
   encapsulation: ViewEncapsulation.None
   establishmentForm: FormGroup;
   form: Form;
+  formDisplay: Form;
+
   emailEstablishment: string;
   establishment: Establishment;
   index = 0;
@@ -41,6 +45,7 @@ export class FillFormComponent implements OnInit {
   components: Comp[] = [];
   questions: Question[] = [];
   questionsSteps: Question[] = [];
+  establishmentTypes: EstablishmentType[] = [];
 
   listOfData: Question[] = [
     {
@@ -54,7 +59,8 @@ export class FillFormComponent implements OnInit {
       value: null,
       children_type: null,
       children: null,
-      dependent: null
+      dependent: null,
+      establishment_type:null
     },
     {
       id: 1,
@@ -67,7 +73,9 @@ export class FillFormComponent implements OnInit {
       value: null,
       children_type: null,
       children: null,
-      dependent: null
+      dependent: null,
+      establishment_type:null
+
     },
     {
       id: 1,
@@ -80,13 +88,13 @@ export class FillFormComponent implements OnInit {
       value: null,
       children_type: null,
       children: null,
-      dependent: null
+      dependent: null,
+      establishment_type:null
+
     },
   ];
 
   selectedValue = null;
-  /*variables para el velocimentro*/
-  chart: any;
   percentage: string
 
   constructor(private fb: FormBuilder,
@@ -96,12 +104,14 @@ export class FillFormComponent implements OnInit {
     private establishmentService: EstablishmentService,
     private localStore: LocalService,
     private subTopicService: SubTopicService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private establishmentTypeService: EstablishmentTypeService
   ) {
     this.establishmentForm = this.fb.group({
       name: ['', [Validators.required]],
-      company: ['', []],
+      company: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
+      establishmentType: ['', [Validators.required]],
     });
 
     translate.addLangs(['es', 'en']);
@@ -110,6 +120,22 @@ export class FillFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.index = 0;
+    /*get establishment types*/
+    try {
+      this.establishmentTypeService.getAll().subscribe((data: EstablishmentType[]) => {
+        this.establishmentTypes = data;
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+
+    this.formService.showActiveForm().subscribe((data: Form) => {
+      this.formDisplay = data;
+    }, err => {
+      this.message.create('error', `Error: ${err}`);
+    });
 
     if (this.localStore.getData('email')) {
       try {
@@ -126,16 +152,14 @@ export class FillFormComponent implements OnInit {
 
           this.subTopicsSteps = subTopics.filter(element => element.resultable['component_id'] == this.components[0]['resultable_id']);
           this.subTopic = subTopics[0];
-          console.log(this.subTopic['resultable_id']);
           var questions = this.establishment.questions
           this.questions = questions;
-          var subTo=this.subTopic['resultable_id']
-          this.questionsSteps = this.questions.filter(function (element, subT) {
+          var subTo = this.subTopic['resultable_id']
+          this.questionsSteps = this.questions.filter(function (element) {
             if (element['resultable']['sub_topics'].length > 0) {
-               return element['resultable']['sub_topics'][0]['id']==subTo
+              return element['resultable']['sub_topics'][0]['id'] == subTo
             }
           })
-          console.log(this.questionsSteps)
 
           this.percentage = this.establishment.percentage
         }, err => {
@@ -145,21 +169,9 @@ export class FillFormComponent implements OnInit {
         this.message.create('error', `Error ${e}`);
       }
     }
-
-    // try {
-    //   this.subTopicService.getAll().subscribe((data: SubTopic[]) => {
-    //     this.subTopics = data;
-    //     this.subTopic = this.subTopics[0];
-    //   }, err => {
-    //     this.message.create('error', `Error: ${err}`);
-    //   });
-    // } catch (e) {
-    //   this.message.create('error', `Error ${e}`);
-    // }
-
   }
 
-  submitForm(value: { name: string; email: string; company: string }): void {
+  submitForm(value: { name: string; email: string; company: string, establishmentType:number }): void {
     try {
       this.establishmentService.create(value).subscribe(res => {
         for (const key in this.establishmentForm.controls) {
@@ -213,8 +225,13 @@ export class FillFormComponent implements OnInit {
 
   selectStep(id: number, index: number): void {
     this.index = index;
-    this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable_id']);
-    this.subTopic = this.subTopics.find(element => element['id'] == id)
+    this.subTopic = this.subTopics.find(element => element['resultable']['id'] == id)
+
+    this.questionsSteps = this.questions.filter(function (element) {
+      if (element['resultable']['sub_topics'].length > 0) {
+        return element['resultable']['sub_topics'][0]['id'] == id
+      }
+    })
   }
 
   handleTabChange(event) {
@@ -223,7 +240,14 @@ export class FillFormComponent implements OnInit {
       this.subTopic = this.subTopics.find(element => element['resultable']['component_id'] == this.components[event]['resultable']['id'])
       this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[event]['resultable']['id']);
 
+      var id = this.subTopic['resultable_id'];
+      this.questionsSteps = this.questions.filter(function (element) {
+        if (element['resultable']['sub_topics'].length > 0) {
+          return element['resultable']['sub_topics'][0]['id'] == id
+        }
+      })
     }
+
     this.index = 0;
     this.changeDetector.detectChanges();
     this.showFormChart();

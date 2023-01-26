@@ -1,0 +1,24 @@
+<nz-table #basicTable [nzData]="establishments">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th># intentos</th>
+      <th>Correo</th>
+      <th>Empresa</th>
+      <th>Tipo</th>
+      <th>Calificacion más alta</th>
+      <th>Calificacion más baja</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data">
+      <td>{{ data.name }}</td>
+      <td># intentos</td>
+      <td>{{ data.email }}</td>
+      <td>{{ data.company ?? '' }}</td>
+      <td>{{ data.establishment_type ? data.establishment_type.name: '' }}</td>
+      <td>ca</td>
+      <td>cb</td>
+    </tr>
+  </tbody>
+</nz-table>

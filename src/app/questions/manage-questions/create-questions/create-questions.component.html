@@ -37,6 +37,18 @@
   </nz-form-item>
 
   <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Relacion establecimiento</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="establishmentTypeErrorTpl">
+      <nz-select nzAllowClear formControlName="establishmentType" name="establishmentType" id="establishmentType" [nzPlaceHolder]="'general.escoge'|translate">
+        <nz-option *ngFor="let option of establishmentTypes" [nzValue]="option.id" [nzLabel]="option.name"></nz-option>
+      </nz-select>
+      <ng-template #establishmentTypeErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
     <nz-form-label [nzSpan]="7" nzRequired>{{"general.dependiente" | translate}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dependentErrorTpl">
       <nz-select nzAllowClear formControlName="dependentQ" name="dependentQ" id="dependentQ" [nzPlaceHolder]="'general.dependiente'|translate">

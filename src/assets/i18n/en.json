@@ -59,7 +59,9 @@
     "dependiente":"Dependent",
     "dependiente_de":"Dependent of",
     "siguiente":"Forward",
-    "anterior":"Backward"
+    "anterior":"Backward",
+    "Establecimientos":"Establishments"
+
   },
   "validaciones":{
     "validando":"Validating...",

@@ -840,8 +840,8 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: '/admin/manage-questions',
-        title: 'Preguntas',
+        path: '/admin/manage-components',
+        title: 'Componentes',
         iconType: '',
         icon: '',
         iconTheme: '',
@@ -857,8 +857,16 @@ export const ROUTES: SideNavInterface[] = [
       },
 
       {
-        path: '/admin/manage-components',
-        title: 'Componentes',
+        path: '/admin/manage-questions',
+        title: 'Preguntas',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+      {
+        path: '/admin/manage-establishments',
+        title: 'Establecimientos',
         iconType: '',
         icon: '',
         iconTheme: '',

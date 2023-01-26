@@ -1,3 +1,5 @@
+import { EstablishmentType } from "src/app/test-form/establishment-type";
+
 export interface Form {
   id:number,
   name:string,
@@ -5,5 +7,5 @@ export interface Form {
   description:string,
   selectedComponents:[],
   components:[],
-  status:string
+  status:string,
 }

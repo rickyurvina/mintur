@@ -47,6 +47,13 @@
                 </span>
               </nz-tag>
             </div>
+            <div nz-col *ngIf="question.establishment_type">
+              <nz-tag [nzColor]="'blue'">
+                <span nzTooltipTitle="{{question.establishment_type.name}}" nzTooltipPlacement="top" nz-tooltip>
+                  {{question.establishment_type.name}}
+                </span>
+              </nz-tag>
+            </div>
           </div>
         </nz-card>
         <ng-template #extraTemplate>

@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 import { IndexQuestionsComponent } from '../index-questions/index-questions.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TranslateService } from '@ngx-translate/core';
-
+import { EstablishmentType } from 'src/app/test-form/establishment-type';
+import { EstablishmentTypeService } from 'src/app/test-form/establishment-type.service';
 @Component({
   selector: 'app-create-questions',
   templateUrl: './create-questions.component.html',
@@ -26,7 +27,7 @@ export class CreateQuestionsComponent implements OnInit {
   validateFormRelated: FormGroup;
   isCollapse = true;
   questionsRelated: any[] = [];
-
+  establishmentTypes: EstablishmentType[] = [];
   optionList = [
     { label: 'Si/No', value: 'si_no' },
     { label: 'Rango 1-5', value: 'rango_1_5' },
@@ -47,7 +48,9 @@ export class CreateQuestionsComponent implements OnInit {
     private router: Router,
     private indexQuestions: IndexQuestionsComponent,
     private message: NzMessageService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private establishmentTypeService: EstablishmentTypeService
+  ) {
 
     this.validateForm = this.fb.group({
       code: ['', [Validators.required], [this.codeAsyncValidator]],
@@ -55,6 +58,7 @@ export class CreateQuestionsComponent implements OnInit {
       type: ['', [Validators.required]],
       description: ['', []],
       children_type: ['', []],
+      establishmentType:['',[]],
       children: new FormControl(),
       dependent: new FormControl(),
       dependentQ: new FormControl(),
@@ -72,6 +76,17 @@ export class CreateQuestionsComponent implements OnInit {
       return element;
     })
 
+    /*get establishment types*/
+    try {
+      this.establishmentTypeService.getAll().subscribe((data: EstablishmentType[]) => {
+        this.establishmentTypes = data;
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+
     if (this.InputData) {
       this.id = this.InputData;
       this.questionService.find(this.id).subscribe((data: Question) => {
@@ -83,6 +98,7 @@ export class CreateQuestionsComponent implements OnInit {
           description: this.question.description,
           children_type: this.question.children_type,
           children: this.question.children,
+          establishmentType: data['establishment_type_id'],
           dependent: this.question['dependent_id'],
           dependentQ: this.question['dependent_id'] ? 'si' : 'no',
         })
@@ -108,7 +124,8 @@ export class CreateQuestionsComponent implements OnInit {
     description: string;
     questionsRelated: any[],
     children_type: string,
-    dependent: number
+    dependent: number,
+    establishmentType:number
   }): void {
     if (this.InputData) {
       try {
