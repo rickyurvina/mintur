@@ -68,7 +68,7 @@
       <nz-select nzAllowClear formControlName="children_type" name="children_type" id="children_type"
         [nzPlaceHolder]="'general.escoge'|translate">
         <nz-option *ngFor="let option of optionList2" [nzValue]="option.value"
-        nzLabel="{{option.code}}-{{option.name}}"></nz-option>
+        nzLabel="{{option.label}}"></nz-option>
       </nz-select>
       <ng-template #childrenTypeErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>

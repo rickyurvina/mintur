@@ -10,27 +10,27 @@ import { CommonLayout_ROUTES } from "./shared/routes/common-layout.routes";
 const appRoutes: Routes = [
     {
         path: '',
-        redirectTo: '/dashboard/default',
+        redirectTo: '/admin/manage-forms',
         pathMatch: 'full',
     },
-    { 
-        path: '', 
+    {
+        path: '',
         component: CommonLayoutComponent,
-        children: CommonLayout_ROUTES 
+        children: CommonLayout_ROUTES
     },
-    { 
-        path: '', 
-        component: FullLayoutComponent, 
+    {
+        path: '',
+        component: FullLayoutComponent,
         children: FullLayout_ROUTES
     }
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(appRoutes, { 
+        RouterModule.forRoot(appRoutes, {
             preloadingStrategy: PreloadAllModules,
             anchorScrolling: 'enabled',
-            scrollPositionRestoration: 'enabled' 
+            scrollPositionRestoration: 'enabled'
         })
     ],
     exports: [

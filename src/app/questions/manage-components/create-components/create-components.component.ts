@@ -65,7 +65,6 @@ export class CreateComponentsComponent implements OnInit {
   }
 
   submitForm(value: { code: string; name: string; }): void {
-    console.log(value);
     if (this.InputData) {
       try {
         this.compService.update(this.id, value).subscribe(res => {

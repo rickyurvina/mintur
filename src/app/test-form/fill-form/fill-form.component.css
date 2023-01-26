@@ -44,3 +44,9 @@ nz-layout nz-layout,
 nz-layout:last-child {
   margin: 2em;
 }
+
+#chart-container {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}

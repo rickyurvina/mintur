@@ -1,14 +1,14 @@
 <div class="header">
   <div class="logo logo-dark">
     <a href="">
-      <img src="assets/images/logo/logo.png" alt="Logo">
-      <img class="logo-fold" src="assets/images/logo/logo-fold.png" alt="Logo">
+      <img src="assets/images/logo/logo-min.png" width="200" height="80" alt="Logo">
+      <!-- <img class="logo-fold" src="assets/images/logo/logo-min.png" alt="Logo"> -->
     </a>
   </div>
   <div class="logo logo-white">
     <a href="">
-      <img src="assets/images/logo/logo-white.png" alt="Logo">
-      <img class="logo-fold" src="assets/images/logo/logo-fold-white.png" alt="Logo">
+      <img src="assets/images/logo/logo-min.png" width="200" height="80" alt="Logo">
+      <!-- <img class="logo-fold" src="assets/images/logo/logo-min.png" alt="Logo"> -->
     </a>
   </div>
   <div class="nav-wrap">
@@ -23,7 +23,7 @@
           <i nz-icon [nzType]="isExpand? 'menu-fold': 'menu-unfold'" theme="outline"></i>
         </a>
       </li>
-      <li>
+      <!-- <li>
         <a (click)="searchToggle()">
           <i nz-icon nzType="search" theme="outline"></i>
         </a>
@@ -31,7 +31,7 @@
           (nzOnClose)="searchToggle()">
           <app-search></app-search>
         </nz-drawer>
-      </li>
+      </li> -->
     </ul>
     <ul class="nav-right">
       <li *ngIf="isTranslated==true">
@@ -40,7 +40,7 @@
       <li *ngIf="isTranslated==false">
         <label nz-radio-button nzValue="small" (click)="useLanguage('en')">En</label>
       </li>
-      <li>
+      <!-- <li>
         <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="popNotification" [nzPlacement]="'bottomRight'">
           <nz-badge nzDot>
             <i nz-icon nzType="bell" theme="outline"></i>
@@ -77,9 +77,9 @@
             </perfect-scrollbar>
           </div>
         </nz-dropdown-menu>
-      </li>
+      </li> -->
 
-      <li>
+      <!-- <li>
         <span class="p-h-10 pointer" nz-dropdown [nzDropdownMenu]="profile" [nzTrigger]="'click'"
           [nzPlacement]="'bottomRight'">
           <nz-avatar [nzIcon]="'user'" nzSrc="assets/images/avatars/thumb-3.jpg"></nz-avatar>
@@ -133,8 +133,17 @@
             </li>
           </ul>
         </nz-dropdown-menu>
-      </li>
+      </li> -->
+
       <li>
+        <span class="p-h-10 pointer" nz-dropdown [nzTrigger]="'click'" [nzPlacement]="'bottomRight'">
+          <a href="/user/test-form">
+            <span nz-icon nzType="database" nzTheme="outline"></span>
+          </a>
+        </span>
+
+      </li>
+      <!-- <li>
         <a (click)="quickViewToggle()">
           <i nz-icon nzType="appstore" theme="outline"></i>
         </a>
@@ -144,7 +153,7 @@
             <app-quick-view></app-quick-view>
           </ng-container>
         </nz-drawer>
-      </li>
+      </li> -->
     </ul>
   </div>
 </div>

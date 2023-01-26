@@ -7,38 +7,38 @@ import { ProjectsDashboardComponent } from './projects/projects-dashboard.compon
 import { CrmDashboardComponent } from './crm/crm-dashboard.component';
 
 const routes: Routes = [
-    {
-        path: 'default',
-        component: DefaultDashboardComponent,
-        data: {
-            title: 'Dashboard ',
-            headerDisplay: "none"
-        }
-    },
-    {
-        path: 'e-commerce',
-        component: EcommerceDashboardComponent,
-        data: {
-            title: 'E-Commerce Dashboard ',
-            headerDisplay: "none"
-        }
-    },
-    {
-        path: 'projects',
-        component: ProjectsDashboardComponent,
-        data: {
-            title: 'Projects Dashboard ',
-            headerDisplay: "none"
-        }
-    },
-    {
-        path: 'crm',
-        component: CrmDashboardComponent,
-        data: {
-            title: 'CRM',
-            headerDisplay: "none"
-        }
-    }
+    // {
+    //     path: 'default',
+    //     component: DefaultDashboardComponent,
+    //     data: {
+    //         title: 'Dashboard ',
+    //         headerDisplay: "none"
+    //     }
+    // },
+    // {
+    //     path: 'e-commerce',
+    //     component: EcommerceDashboardComponent,
+    //     data: {
+    //         title: 'E-Commerce Dashboard ',
+    //         headerDisplay: "none"
+    //     }
+    // },
+    // {
+    //     path: 'projects',
+    //     component: ProjectsDashboardComponent,
+    //     data: {
+    //         title: 'Projects Dashboard ',
+    //         headerDisplay: "none"
+    //     }
+    // },
+    // {
+    //     path: 'crm',
+    //     component: CrmDashboardComponent,
+    //     data: {
+    //         title: 'CRM',
+    //         headerDisplay: "none"
+    //     }
+    // }
 ];
 
 @NgModule({

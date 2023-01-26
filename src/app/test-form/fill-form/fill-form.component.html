@@ -13,7 +13,7 @@
         </p>
       </div>
       <div nz-col nzFlex="1">
-        <nz-progress nzType="circle" [nzPercent]="90"
+        <nz-progress nzType="circle" nzPercent="{{percentage}}"
           [nzStrokeColor]="{ '0%': '#108ee9', '50%': '#2db7f5', '100%': '#87d068' }"></nz-progress>
       </div>
     </div>
@@ -21,7 +21,7 @@
 
   <nz-content style=" padding-left: 6rem; padding-right: 6rem; height: auto; overflow-x: auto;">
     <nz-tabset class="page-header-tab" *ngIf="form" (nzSelectedIndexChange)="handleTabChange($event)">
-      <nz-tab nzTitle="{{'general.antes_de_empezar'|translate}}" *ngIf="!establishment">
+      <nz-tab nzTitle="Registro" *ngIf="!establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
             <div class="d-flex flex-column justify-content-between h-100">
@@ -109,7 +109,7 @@
                         <nz-list-item>
                           <nz-list-item-meta [nzTitle]="networkName" [nzAvatar]="networkIcon">
                             <ng-template #networkName>
-                              <div class="font-size-15 font-weight-semibold m-t-2">
+                              <div class="font-size-15 font-weight-semibold">
                                 <nz-tag [nzColor]="'gold'"> {{question.code}}</nz-tag>{{question.name}}
                               </div>
                             </ng-template>
@@ -122,7 +122,6 @@
                           </nz-radio-group>
                         </div>
                         <div *ngIf="question.type=='rango_1_5'">
-
                           <nz-radio-group>
                             <label nz-radio nzValue="1" >1</label>
                             <label nz-radio nzValue="2">2</label>
@@ -130,23 +129,6 @@
                             <label nz-radio nzValue="4">4</label>
                             <label nz-radio nzValue="5">5</label>
                           </nz-radio-group>
-
-                          <!-- <nz-rate [ngModel]="3" (ngModelChange)="onChange(question.id,'',$event)"
-                            [nzCharacter]="characterNumber" class="large"></nz-rate>
-                          <ng-template #characterNumber let-index>
-                            {{ index+1 }}
-                          </ng-template>
-                          <ng-template #characterIcon let-index>
-                            <ng-container [ngSwitch]="index">
-                              <span nz-icon *ngSwitchCase="0"></span>
-                              <span nz-icon *ngSwitchCase="1"></span>
-                              <span nz-icon *ngSwitchCase="2"></span>
-                              <span nz-icon *ngSwitchCase="3"></span>
-                              <span nz-icon *ngSwitchCase="4"></span>
-                              <span nz-icon *ngSwitchCase="5"></span>
-                              <span nz-icon *ngSwitchCase="6"></span>
-                            </ng-container>
-                          </ng-template> -->
                         </div>
                         <div *ngIf="question.type=='relacionada'">
                           <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="onChange(question.id ,'',$event)">
@@ -186,40 +168,58 @@
                 <button nz-button nzType="primary"><i nz-icon nzType="left"></i> Go back</button>
                 <button nz-button nzType="primary">Go forward<i nz-icon nzType="right"></i></button>
               </nz-button-group>
+              <nz-tag [nzColor]="'blue'" class="mt-2"># Intentos: {{establishment.attempts}}</nz-tag>
+
             </div>
           </div>
         </nz-tab>
       </div>
 
-      <nz-tab nzTitle="{{'general.resumen'|translate}}">
-        <div class="container">
+      <nz-tab nzTitle="Evaluación">
+        <div class="container" style="width: 100%;">
           <div class="row">
-            <div class="col-md-8 mx-auto">
-              <nz-card nzTitle="Notification Config">
-                <nz-list [nzDataSource]="notificationConfigList" [nzRenderItem]="'general.resumen'"
-                  [nzItemLayout]="'horizontal'">
-                  <ng-template #resumen let-item>
-                    <nz-list-item [nzActions]="[configStatus]">
-                      <ng-template #configStatus>
-                        <nz-switch [ngModel]="item.status" [nzCheckedChildren]="checkedTemplate2nd"
-                          [nzUnCheckedChildren]="unCheckedTemplate2nd"></nz-switch>
-                        <ng-template #checkedTemplate2nd><i class="font-size-12" nz-icon
-                            nzType="check"></i></ng-template>
-                        <ng-template #unCheckedTemplate2nd><i class="font-size-12" nz-icon
-                            nzType="close"></i></ng-template>
-                      </ng-template>
-                      <nz-list-item-meta [nzTitle]="notificationTitle" [nzAvatar]="notificationIcon">
-                        <ng-template #notificationIcon>
-                          <nz-avatar [nzIcon]="item.icon" [ngClass]="item.color" class="m-t-5"></nz-avatar>
-                        </ng-template>
-                        <ng-template #notificationTitle>
-                          <h5 class="font-weight-semibold m-b-0">{{item.title}}</h5>
-                          <p class="m-b-0 font-weight-normal">{{item.desc}}</p>
-                        </ng-template>
-                      </nz-list-item-meta>
-                    </nz-list-item>
-                  </ng-template>
-                </nz-list>
+            <div class="col-md-12 mx-auto w-100">
+              <nz-card nzTitle="Evaluación">
+                <div nz-row>
+                  <div nz-col nzFlex="2">
+                    <div id="chartForm" #contentPlaceholder   style="height: 400px"></div>
+                  </div>
+                  <div nz-col nzFlex="3">
+                    <div id="chartComponentsForm" #contentPlaceholder   style="height: 400px"></div>
+                  </div>
+                </div>
+                <div nz-row>
+                  <div nz-col nzFlex="2">
+                    <div id="chartSubTopicsForm" #contentPlaceholder   style="height: 400px"></div>
+                  </div>
+                  <div nz-col nzFlex="1">
+                    <nz-tag [nzColor]="'blue'">Calificaciones por pregunta</nz-tag>
+                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona el Sub Tema" [(ngModel)]="selectedValue">
+                      <nz-option nzLabel="Sub Tema 1" nzValue="1"></nz-option>
+                      <nz-option nzLabel="Sub Tema 2" nzValue="2"></nz-option>
+                      <nz-option nzLabel="Sub Tema 3" nzValue="3"></nz-option>
+                    </nz-select>
+                    <nz-table #basicTable [nzData]="listOfData">
+                      <thead>
+                        <tr>
+                          <th>Nombre</th>
+                          <th>Calificación</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let data of basicTable.data">
+                          <td>{{ data.name }}</td>
+                          <td>{{ data.code }}</td>
+                          <td>
+                            <a>Action 一 {{ data.name }}</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </nz-table>
+                  </div>
+                </div>
               </nz-card>
             </div>
           </div>
@@ -247,43 +247,19 @@
                 <img class="img-fluid" alt="" src="assets/images/logo/logo-min.png">
               </h6>
             </div>
-            <!-- Grid column -->
 
-            <!-- Grid column -->
-            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-              <!-- Links -->
-
-              <p>
-                <img class="img-fluid" alt="" src="assets/images/logo/cge_logo.jpg">
-              </p>
-
-            </div>
-            <!-- Grid column -->
-
-            <!-- Grid column -->
-            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
-              <!-- Links -->
-
-              <p>
-                <img class="img-fluid" alt="logo_laverix" width="100" height="100"
-                  src="assets/images/logo/logo_laverix.png">
-              </p>
-            </div>
-            <!-- Grid column -->
-
-            <!-- Grid column -->
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
               <!-- Links -->
               <h6 class="text-uppercase fw-bold mb-4">
-                Contact
+                Contacto
               </h6>
-              <p><i class="fas fa-home me-3"></i> New York, NY 10012, US</p>
               <p>
                 <i class="fas fa-envelope me-3"></i>
-                info@example.com
+                <a href="https://www.cgesplan.com.ec/" class="mr-4 text-reset">
+                  CGESPLAN
+                </a>
               </p>
-              <p><i class="fas fa-phone me-3"></i> + 01 234 567 88</p>
-              <p><i class="fas fa-print me-3"></i> + 01 234 567 89</p>
+              <p><i class="fas fa-phone me-3"></i> +593 99 821 7498</p>
             </div>
             <!-- Grid column -->
           </div>
@@ -293,23 +269,17 @@
       <!-- Section: Links  -->
       <section class="d-flex justify-content-center justify-content-lg-between p-4">
         <div class="container text-center text-md-start">
-          <a href="" class="mr-4 text-reset">
+          <a href="https://www.facebook.com/MinisterioTurismoEcuador" class="mr-4 text-reset">
             <i class="fab fa-facebook-f"></i>
           </a>
-          <a href="" class="mr-4 text-reset">
+          <a href="https://twitter.com/TurismoEc" class="mr-4 text-reset">
             <i class="fab fa-twitter"></i>
           </a>
-          <a href="" class="mr-4 text-reset">
+          <a href="https://www.turismo.gob.ec/" class="mr-4 text-reset">
             <i class="fab fa-google"></i>
           </a>
-          <a href="" class="mr-4 text-reset">
+          <a href="https://www.instagram.com/ministerioturismoec/" class="mr-4 text-reset">
             <i class="fab fa-instagram"></i>
-          </a>
-          <a href="" class="mr-4 text-reset">
-            <i class="fab fa-linkedin"></i>
-          </a>
-          <a href="" class="mr-4 text-reset">
-            <i class="fab fa-github"></i>
           </a>
         </div>
         <!-- Right -->
@@ -319,9 +289,9 @@
       <div class="footer-content justify-content-between">
         <p class="m-b-0">Copyright © 2023 All rights reserved.</p>
         <span>
-          <a href="https://laverix.com.ec/" class="text-gray m-r-15">Developed by: &amp; Laverix
+          <a href="https://laverix.com.ec/" class="text-gray m-r-15">Developed by: Laverix
           </a>
-          <a href="" class="text-gray">Privacy &amp; Policy</a>
+          <a href="https://www.linkedin.com/in/ricardo-urvina-142222182/" class="text-gray">&amp; R.U</a>
         </span>
       </div>
     </footer>

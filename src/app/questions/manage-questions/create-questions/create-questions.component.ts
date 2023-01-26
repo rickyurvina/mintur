@@ -21,7 +21,7 @@ export class CreateQuestionsComponent implements OnInit {
   codes: string[] = [];
   id: number;
   question: Question;
-  questions: Question[]=[];
+  questions: Question[] = [];
   validateForm: FormGroup;
   validateFormRelated: FormGroup;
   isCollapse = true;
@@ -71,13 +71,11 @@ export class CreateQuestionsComponent implements OnInit {
     this.questions = this.FormsData.map(element => {
       return element;
     })
-    console.log(this.questions)
 
     if (this.InputData) {
       this.id = this.InputData;
       this.questionService.find(this.id).subscribe((data: Question) => {
         this.question = data;
-
         this.validateForm.setValue({
           name: this.question.name,
           code: this.question.code,
@@ -85,8 +83,8 @@ export class CreateQuestionsComponent implements OnInit {
           description: this.question.description,
           children_type: this.question.children_type,
           children: this.question.children,
-          dependent: this.question.dependent,
-
+          dependent: this.question['dependent_id'],
+          dependentQ: this.question['dependent_id'] ? 'si' : 'no',
         })
 
         this.questionsRelated = data.children
