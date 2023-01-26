@@ -90,38 +90,38 @@
       </nz-tab>
 
       <div *ngIf="establishment">
-        <nz-tab *ngFor=" let component of form.components" nzTitle="{{component.name}}">
+        <nz-tab *ngFor=" let component of components" nzTitle="{{component.resultable.name}}">
           <div nz-row>
             <div nz-col nzFlex="160px">
               <nz-steps nzDirection="vertical" [nzCurrent]="index">
-                <nz-step *ngFor="let subTopic of component.sub_topics; let i=index" (click)="selectStep(subTopic.id, i)"
-                  style="cursor: pointer" nzTitle="{{subTopic.name}}"
-                  nzDescription="{{subTopic.description}}"></nz-step>
+                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index" (click)="selectStep(subTopic.id, i)"
+                  style="cursor: pointer" nzTitle="{{subTopic.resultable.name}}"
+                  nzDescription="{{subTopic.resultable.description}}"></nz-step>
               </nz-steps>
             </div>
             <div nz-col nzFlex="auto" *ngIf="subTopic">
               <div class="container">
                 <div class="row">
                   <nz-card [nzTitle]="subTopicName" class="col-md-12 mx-auto">
-                    <nz-list [nzDataSource]="subTopic.questions" [nzRenderItem]="subTopicTemplate"
+                    <nz-list [nzDataSource]="questionsSteps" [nzRenderItem]="subTopicTemplate"
                       [nzItemLayout]="'horizontal'" style="text-align:start">
                       <ng-template #subTopicTemplate let-question>
                         <nz-list-item>
                           <nz-list-item-meta [nzTitle]="networkName" [nzAvatar]="networkIcon">
                             <ng-template #networkName>
                               <div class="font-size-15 font-weight-semibold">
-                                <nz-tag [nzColor]="'gold'"> {{question.code}}</nz-tag>{{question.name}}
+                                <nz-tag [nzColor]="'gold'"> {{question.resultable.code}}</nz-tag>{{question.resultable.name}}
                               </div>
                             </ng-template>
                           </nz-list-item-meta>
                         </nz-list-item>
-                        <div *ngIf="question.type=='si_no'">
+                        <div *ngIf="question.resultable.type=='si_no'">
                           <nz-radio-group nzButtonStyle="solid" [nzDefaultValue]="'si'">
-                            <label nz-radio-button nzValue="si" (click)="onChange(question.id,'si',$event)">Si</label>
-                            <label nz-radio-button nzValue="no" (click)="onChange(question.id,'si',$event)">No</label>
+                            <label nz-radio-button nzValue="si" (click)="onChange(question.resultable.id,'si',$event)">Si</label>
+                            <label nz-radio-button nzValue="no" (click)="onChange(question.resultable.id,'si',$event)">No</label>
                           </nz-radio-group>
                         </div>
-                        <div *ngIf="question.type=='rango_1_5'">
+                        <div *ngIf="question.resultable.type=='rango_1_5'">
                           <nz-radio-group>
                             <label nz-radio nzValue="1" >1</label>
                             <label nz-radio nzValue="2">2</label>
@@ -130,20 +130,18 @@
                             <label nz-radio nzValue="5">5</label>
                           </nz-radio-group>
                         </div>
-                        <div *ngIf="question.type=='relacionada'">
+                        <div *ngIf="question.resultable.type=='relacionada'">
                           <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="onChange(question.id ,'',$event)">
                             <div nz-row>
-                              <div nz-col nzSpan="12" *ngFor="let child of question.children">
+                              <div nz-col nzSpan="12" *ngFor="let child of question.resultable.children">
                                 <div *ngIf="child.id==2">
                                   <label nz-checkbox nzChecked nzValue="{{child.id}}">{{child.name}}
                                   </label>
                                 </div>
-
-                                <div *ngIf="question.id!='2'">
+                                <div *ngIf="question.resultable.id!='2'">
                                   <label nz-checkbox nzValue="{{child.id}}">{{child.name}}
                                   </label>
                                 </div>
-
                               </div>
                             </div>
                           </nz-checkbox-wrapper>
@@ -153,7 +151,7 @@
                     <ng-template #subTopicName>
                       <div class="text-center">
                         <h2>
-                          <nz-tag [nzColor]="'lime'" style="font-size: 20px">{{subTopic.name}}</nz-tag>
+                          <nz-tag [nzColor]="'lime'" style="font-size: 20px">{{subTopic.resultable.name}}</nz-tag>
                         </h2>
                       </div>
                     </ng-template>

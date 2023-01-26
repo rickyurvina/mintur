@@ -16,7 +16,7 @@ import {
 } from 'src/app/questions/manage-subtopic/sub-topic.service';
 import { Question } from 'src/app/questions/manage-questions/question';
 import * as echarts from 'echarts';
-
+import { Component as Comp } from 'src/app/questions/manage-components/component';
 @Component({
   selector: 'app-fill-form',
   templateUrl: './fill-form.component.html',
@@ -37,6 +37,11 @@ export class FillFormComponent implements OnInit {
   subTopic: SubTopic;
   offsetTop = 2;
   subTopics: SubTopic[] = [];
+  subTopicsSteps: SubTopic[] = [];
+  components: Comp[] = [];
+  questions: Question[] = [];
+  questionsSteps: Question[] = [];
+
   listOfData: Question[] = [
     {
       id: 1,
@@ -78,6 +83,7 @@ export class FillFormComponent implements OnInit {
       dependent: null
     },
   ];
+
   selectedValue = null;
   /*variables para el velocimentro*/
   chart: any;
@@ -104,21 +110,33 @@ export class FillFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.index = 0;
-    try {
-      this.formService.showActiveForm().subscribe((data: Form) => {
-        this.form = data;
-      }, err => {
-        this.message.create('error', `Error: ${err}`);
-      });
-    } catch (e) {
-      this.message.create('error', `Error ${e}`);
-    }
 
     if (this.localStore.getData('email')) {
       try {
         this.emailEstablishment = this.localStore.getData('email');
         this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
           this.establishment = data;
+          var form = this.establishment.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
+          this.form = form.resultable;
+          var components = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
+          this.components = components;
+
+          var subTopics = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
+          this.subTopics = subTopics;
+
+          this.subTopicsSteps = subTopics.filter(element => element.resultable['component_id'] == this.components[0]['resultable_id']);
+          this.subTopic = subTopics[0];
+          console.log(this.subTopic['resultable_id']);
+          var questions = this.establishment.questions
+          this.questions = questions;
+          var subTo=this.subTopic['resultable_id']
+          this.questionsSteps = this.questions.filter(function (element, subT) {
+            if (element['resultable']['sub_topics'].length > 0) {
+               return element['resultable']['sub_topics'][0]['id']==subTo
+            }
+          })
+          console.log(this.questionsSteps)
+
           this.percentage = this.establishment.percentage
         }, err => {
           this.message.create('error', `Error: ${err}`);
@@ -128,20 +146,16 @@ export class FillFormComponent implements OnInit {
       }
     }
 
-    try {
-      this.subTopicService.getAll().subscribe((data: SubTopic[]) => {
-        this.subTopics = data;
-        this.subTopic = this.subTopics[0];
-      }, err => {
-        this.message.create('error', `Error: ${err}`);
-      });
-    } catch (e) {
-      this.message.create('error', `Error ${e}`);
-    }
-
-    /*logica para el velocimentro*/
-    // Create the echarts instance
-
+    // try {
+    //   this.subTopicService.getAll().subscribe((data: SubTopic[]) => {
+    //     this.subTopics = data;
+    //     this.subTopic = this.subTopics[0];
+    //   }, err => {
+    //     this.message.create('error', `Error: ${err}`);
+    //   });
+    // } catch (e) {
+    //   this.message.create('error', `Error ${e}`);
+    // }
 
   }
 
@@ -199,12 +213,16 @@ export class FillFormComponent implements OnInit {
 
   selectStep(id: number, index: number): void {
     this.index = index;
+    this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable_id']);
     this.subTopic = this.subTopics.find(element => element['id'] == id)
   }
 
   handleTabChange(event) {
-    if (this.form.components[event]) {
-      this.subTopic = this.subTopics.find(element => element['id'] == this.form.components[event]['sub_topics'][0]['id'])
+
+    if (this.components[event]) {
+      this.subTopic = this.subTopics.find(element => element['resultable']['component_id'] == this.components[event]['resultable']['id'])
+      this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[event]['resultable']['id']);
+
     }
     this.index = 0;
     this.changeDetector.detectChanges();
@@ -330,7 +348,7 @@ export class FillFormComponent implements OnInit {
       },
       xAxis: {
         type: 'category',
-        data: this.form.components.map(element => element['name']),
+        data: this.components.map(element => element['resultable']['name']),
       },
       yAxis: {
         type: 'value',
@@ -391,7 +409,6 @@ export class FillFormComponent implements OnInit {
           [9.5, 9.5, 'Orange Juice'],
           [3.3, 3.3, 'Lemon Juice'],
           [5.5, 5.5, 'Walnut Brownie']
-
         ]
       },
       grid: { containLabel: true },
