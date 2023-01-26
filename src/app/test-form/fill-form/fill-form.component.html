@@ -8,7 +8,7 @@
         <h1 class="w-90 m-h-auto" *ngIf="formDisplay" style="font-size: 20px">
           {{formDisplay.name}}
         </h1>
-        <p *ngIf="form" class="w-90 m-h-auto m-b-30">
+        <p *ngIf="formDisplay" class="w-90 m-h-auto m-b-30">
           {{formDisplay.description}}
         </p>
       </div>
@@ -129,8 +129,8 @@
                         </nz-list-item>
                         <div *ngIf="question.resultable.type=='si_no'">
                           <nz-radio-group nzButtonStyle="solid" [nzDefaultValue]="'si'">
-                            <label nz-radio-button nzValue="si" (click)="onChange(question.resultable.id,'si',$event)">Si</label>
-                            <label nz-radio-button nzValue="no" (click)="onChange(question.resultable.id,'si',$event)">No</label>
+                            <label nz-radio-button nzValue="si" (click)="onChange(question.id,'si',$event,'si_no')">Si</label>
+                            <label nz-radio-button nzValue="no" (click)="onChange(question.id,'si',$event,'si_no')">No</label>
                           </nz-radio-group>
                         </div>
                         <div *ngIf="question.resultable.type=='rango_1_5'">
@@ -143,17 +143,22 @@
                           </nz-radio-group>
                         </div>
                         <div *ngIf="question.resultable.type=='relacionada'">
-                          <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="onChange(question.id ,'',$event)">
+                          <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="onChange(question.id ,'',$event,'relacionada')">
                             <div nz-row>
                               <div nz-col nzSpan="12" *ngFor="let child of question.resultable.children">
-                                <div *ngIf="child.id==2">
-                                  <label nz-checkbox nzChecked nzValue="{{child.id}}">{{child.name}}
+                                <div *ngIf="child.results[0].score==1">
+                                  <label nz-checkbox nzChecked nzValue="{{child.results[0].resultable.name}}">{{child.results[0].resultable.name}}
                                   </label>
                                 </div>
-                                <div *ngIf="question.resultable.id!='2'">
-                                  <label nz-checkbox nzValue="{{child.id}}">{{child.name}}
+
+                                <div *ngIf="child.results[0].score!=1">
+                                  <label nz-checkbox nzValue="{{child.results[0].resultable.name}}">{{child.results[0].resultable.name}}
                                   </label>
                                 </div>
+                                <!-- <div *ngIf="child.results[0].score!==1">
+                                  <label nz-checkbox nzChecked nzValue="{{child.results[0].resultable.id}}">{{child.results[0].resultable.name}}
+                                  </label>
+                                </div> -->
                               </div>
                             </div>
                           </nz-checkbox-wrapper>
@@ -240,12 +245,7 @@
 
   </nz-content>
   <nz-footer>
-
     <footer class="footer">
-
-      <!-- Section: Social media -->
-
-      <!-- Section: Links  -->
       <section class="">
         <div class="container text-center text-md-start mt-5">
           <!-- Grid row -->
@@ -276,7 +276,6 @@
           <!-- Grid row -->
         </div>
       </section>
-      <!-- Section: Links  -->
       <section class="d-flex justify-content-center justify-content-lg-between p-4">
         <div class="container text-center text-md-start">
           <a href="https://www.facebook.com/MinisterioTurismoEcuador" class="mr-4 text-reset">
@@ -294,8 +293,6 @@
         </div>
         <!-- Right -->
       </section>
-      <!-- Copyright -->
-
       <div class="footer-content justify-content-between">
         <p class="m-b-0">Copyright © 2023 All rights reserved.</p>
         <span>

@@ -19,6 +19,9 @@ import * as echarts from 'echarts';
 import { Component as Comp } from 'src/app/questions/manage-components/component';
 import { EstablishmentType } from '../establishment-type';
 import { EstablishmentTypeService } from '../establishment-type.service';
+import { ResultsService } from '../results.service';
+import { Result } from '../result';
+
 @Component({
   selector: 'app-fill-form',
   templateUrl: './fill-form.component.html',
@@ -60,7 +63,7 @@ export class FillFormComponent implements OnInit {
       children_type: null,
       children: null,
       dependent: null,
-      establishment_type:null
+      establishment_type: null
     },
     {
       id: 1,
@@ -74,7 +77,7 @@ export class FillFormComponent implements OnInit {
       children_type: null,
       children: null,
       dependent: null,
-      establishment_type:null
+      establishment_type: null
 
     },
     {
@@ -89,13 +92,14 @@ export class FillFormComponent implements OnInit {
       children_type: null,
       children: null,
       dependent: null,
-      establishment_type:null
+      establishment_type: null
 
     },
   ];
 
   selectedValue = null;
   percentage: string
+  validateForm: FormGroup;
 
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
@@ -105,7 +109,8 @@ export class FillFormComponent implements OnInit {
     private localStore: LocalService,
     private subTopicService: SubTopicService,
     private changeDetector: ChangeDetectorRef,
-    private establishmentTypeService: EstablishmentTypeService
+    private establishmentTypeService: EstablishmentTypeService,
+    public resultsService: ResultsService
   ) {
     this.establishmentForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -119,6 +124,7 @@ export class FillFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.index = 0;
     /*get establishment types*/
     try {
@@ -169,28 +175,39 @@ export class FillFormComponent implements OnInit {
         this.message.create('error', `Error ${e}`);
       }
     }
+
+    this.validateForm = this.fb.group({
+      score: ['', []],
+      type: ['', []],
+      model: ['', []],
+    });
   }
 
-  submitForm(value: { name: string; email: string; company: string, establishmentType:number }): void {
-    try {
-      this.establishmentService.create(value).subscribe(res => {
-        for (const key in this.establishmentForm.controls) {
-          if (this.establishmentForm.controls.hasOwnProperty(key)) {
-            this.establishmentForm.controls[key].markAsDirty();
-            this.establishmentForm.controls[key].updateValueAndValidity();
+  submitForm(value: { name: string; email: string; company: string, establishmentType: number }): void {
+    if (this.formDisplay.name) {
+      try {
+        this.establishmentService.create(value).subscribe(res => {
+          for (const key in this.establishmentForm.controls) {
+            if (this.establishmentForm.controls.hasOwnProperty(key)) {
+              this.establishmentForm.controls[key].markAsDirty();
+              this.establishmentForm.controls[key].updateValueAndValidity();
+            }
           }
-        }
-        this.emailEstablishment = value.email;
-        this.localStore.saveData('email', this.emailEstablishment);
-        this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
-        this.establishmentForm.reset();
-        this.ngOnInit();
-      }, err => {
-        this.showErrors(err)
-      });
-    } catch (e) {
-      this.message.create('error', `Error ${e}`);
+          this.emailEstablishment = value.email;
+          this.localStore.saveData('email', this.emailEstablishment);
+          this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
+          this.establishmentForm.reset();
+          this.ngOnInit();
+        }, err => {
+          this.showErrors(err)
+        });
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    } else {
+      this.message.create('error', "No se puede iniciar, No existe un formulario acitvo")
     }
+
   }
 
   showErrors(err) {
@@ -211,9 +228,33 @@ export class FillFormComponent implements OnInit {
     });
   }
 
-  onChange(idQuestion: number, answer: string, value: any): void {
-    console.log(idQuestion, answer);
-    console.log(value);
+  onChange(idQuestion: number, answer: string, value: any, type: string): void {
+
+
+    console.log(idQuestion, answer, value, type);
+    if (type === 'relacionada') {
+
+      try {
+        this.validateForm.setValue({
+          score: 1,
+          type: 'relacionada',
+          model:"App\\Models\\Forms\\Question"
+        })
+
+        value.forEach(function (element) {
+
+          this.resultsService.update(element, this.validateForm.value).subscribe(res => {
+            // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
+          }, err => {
+            this.showErrors(err)
+          });
+        }.bind(this))
+
+
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    }
   }
 
   resetForm(): void {
@@ -226,7 +267,6 @@ export class FillFormComponent implements OnInit {
   selectStep(id: number, index: number): void {
     this.index = index;
     this.subTopic = this.subTopics.find(element => element['resultable']['id'] == id)
-
     this.questionsSteps = this.questions.filter(function (element) {
       if (element['resultable']['sub_topics'].length > 0) {
         return element['resultable']['sub_topics'][0]['id'] == id
