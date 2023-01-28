@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 import { IndexQuestionsComponent } from '../index-questions/index-questions.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TranslateService } from '@ngx-translate/core';
-
+import { EstablishmentType } from 'src/app/test-form/establishment-type';
+import { EstablishmentTypeService } from 'src/app/test-form/establishment-type.service';
 @Component({
   selector: 'app-create-questions',
   templateUrl: './create-questions.component.html',
@@ -26,11 +27,13 @@ export class CreateQuestionsComponent implements OnInit {
   validateFormRelated: FormGroup;
   isCollapse = true;
   questionsRelated: any[] = [];
-
+  establishmentTypes: EstablishmentType[] = [];
   optionList = [
     { label: 'Si/No', value: 'si_no' },
     { label: 'Rango 1-5', value: 'rango_1_5' },
     { label: 'Relacionada', value: 'relacionada' },
+    { label: 'Informativa', value: 'informativa' },
+
   ];
 
   optionList2 = [
@@ -38,6 +41,7 @@ export class CreateQuestionsComponent implements OnInit {
     { label: 'Rango 1-5', value: 'rango_1_5' },
     { label: 'Multiple', value: 'multiple' },
     { label: 'Una Opción', value: 'una_opcion' },
+    { label: 'Frecuencia de Actualización', value: 'frecuencia_actualizacion' },
 
   ];
 
@@ -47,7 +51,9 @@ export class CreateQuestionsComponent implements OnInit {
     private router: Router,
     private indexQuestions: IndexQuestionsComponent,
     private message: NzMessageService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private establishmentTypeService: EstablishmentTypeService
+  ) {
 
     this.validateForm = this.fb.group({
       code: ['', [Validators.required], [this.codeAsyncValidator]],
@@ -55,14 +61,18 @@ export class CreateQuestionsComponent implements OnInit {
       type: ['', [Validators.required]],
       description: ['', []],
       children_type: ['', []],
+      establishmentTypes: new FormControl(),
       children: new FormControl(),
       dependent: new FormControl(),
       dependentQ: new FormControl(),
+      importance: new FormControl(),
+      verificationMeans: new FormControl(),
+      hasScore: new FormControl()
     });
 
     this.validateFormRelated = this.fb.group({
       name: ['', [Validators.required]],
-      value: ['', [Validators.pattern("^[0-9]*$")]],
+      value: ['', []],
     });
   }
 
@@ -71,6 +81,17 @@ export class CreateQuestionsComponent implements OnInit {
     this.questions = this.FormsData.map(element => {
       return element;
     })
+
+    /*get establishment types*/
+    try {
+      this.establishmentTypeService.getAll().subscribe((data: EstablishmentType[]) => {
+        this.establishmentTypes = data;
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
 
     if (this.InputData) {
       this.id = this.InputData;
@@ -85,6 +106,12 @@ export class CreateQuestionsComponent implements OnInit {
           children: this.question.children,
           dependent: this.question['dependent_id'],
           dependentQ: this.question['dependent_id'] ? 'si' : 'no',
+          importance:  this.question.importance,
+          verificationMeans:  this.question.verification_means,
+          establishmentTypes: this.question['establishment_types'].map(function (value) {
+            return value['id'];
+          }),
+          hasScore:this.question.has_score
         })
 
         this.questionsRelated = data.children
@@ -108,7 +135,10 @@ export class CreateQuestionsComponent implements OnInit {
     description: string;
     questionsRelated: any[],
     children_type: string,
-    dependent: number
+    dependent: number,
+    establishmentTypes:any[],
+    importance:string,
+    verificationMeans:string
   }): void {
     if (this.InputData) {
       try {

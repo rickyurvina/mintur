@@ -1,8 +1,8 @@
-<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)">
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)"
+  style="width: 100% !important; max-width: 100% !important;">
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{"general.codigo" | translate}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzValidatingTip]="'validaciones.validando' | translate"
-      [nzErrorTip]="userErrorTpl">
+    <nz-form-label [nzSpan]="4" nzRequired>{{"general.codigo" | translate}}</nz-form-label>
+    <nz-form-control nzHasFeedback [nzValidatingTip]="'validaciones.validando' | translate" [nzErrorTip]="userErrorTpl">
       <input nz-input formControlName="code" id="code" [placeholder]="'general.codigo' | translate" />
       <ng-template #userErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{"validaciones.codigo_requerido" |
@@ -13,9 +13,10 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{"general.nombre" | translate}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
-      <input nz-input formControlName="name" [placeholder]="'general.nombre' | translate" />
+    <nz-form-label [nzSpan]="4" nzRequired>{{"general.nombre" | translate}}</nz-form-label>
+    <nz-form-control nzHasFeedback [nzErrorTip]="nameErrorTpl">
+      <textarea nz-input [placeholder]="'general.nombre'|translate" formControlName="name"
+        [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
       <ng-template #nameErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{"validaciones.nombre_requerido" |
           translate}}</ng-container>
@@ -23,14 +24,14 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label [nzSpan]="7">{{"general.descripcion" | translate}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback>
-      <textarea nz-input [placeholder]="'general.descripcion'|translate"  formControlName="description"
+    <nz-form-label [nzSpan]="4">{{"general.descripcion" | translate}}</nz-form-label>
+    <nz-form-control nzHasFeedback>
+      <textarea nz-input [placeholder]="'general.descripcion'|translate" formControlName="description"
         [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-control [nzOffset]="7" [nzSpan]="12">
+    <nz-form-control [nzOffset]="8">
       <button nz-button nzType="primary" [disabled]="!validateForm.valid">{{"general.guardar" | translate}}</button>
       <button nz-button (click)="resetForm($event)">{{"general.resetear" | translate}}</button>
     </nz-form-control>

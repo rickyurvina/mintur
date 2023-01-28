@@ -1,3 +1,4 @@
+import { EstablishmentType } from "src/app/test-form/establishment-type";
 export interface Question {
   id:number,
   name:string,
@@ -9,5 +10,9 @@ export interface Question {
   value:number,
   children_type:string,
   children:any[],
-  dependent:number
+  dependent:number,
+  establishmentTypes:any[],
+  importance:string,
+  verification_means:string,
+  has_score:boolean
 }

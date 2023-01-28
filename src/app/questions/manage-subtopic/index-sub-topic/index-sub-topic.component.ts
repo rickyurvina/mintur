@@ -60,13 +60,14 @@ export class IndexSubTopicComponent implements OnInit {
   showModalCreate(id = null) {
     try {
       const modal = this.modalService.create({
-        nzTitle: id ? this.translate.instant('general.actualizar') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.sub_tema'),
+        nzTitle: id ? this.translate.instant('general.actualizar')+ ' ' + this.translate.instant('general.sub_tema') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.sub_tema'),
         nzContent: CreateSubTopicComponent,
         nzFooter: null,
         nzComponentParams: {
           InputData: id,
           FormsData: this.subTopics
-        }
+        },
+        nzWidth: '800px',
       });
       modal.afterClose.subscribe(() => this.ngOnInit());
 

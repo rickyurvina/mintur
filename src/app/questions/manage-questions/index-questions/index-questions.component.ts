@@ -25,6 +25,7 @@ export class IndexQuestionsComponent implements OnInit {
     try {
       this.questionService.getAll().subscribe((data: Question[]) => {
         this.questions = data;
+        console.log(this.questions)
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
@@ -59,13 +60,14 @@ export class IndexQuestionsComponent implements OnInit {
   showModalCreate(id = null) {
     try {
       const modal = this.modalService.create({
-        nzTitle: id ? this.translate.instant('general.actualizar') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.Pregunta'),
+        nzTitle: id ? this.translate.instant('general.actualizar')+ ' ' + this.translate.instant('general.Pregunta') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.Pregunta'),
         nzContent: CreateQuestionsComponent,
         nzFooter: null,
         nzComponentParams: {
           InputData: id,
           FormsData: this.questions
         },
+        nzWidth: '800px',
       });
       modal.afterClose.subscribe(() => this.ngOnInit());
 

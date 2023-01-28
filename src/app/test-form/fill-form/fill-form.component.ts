@@ -1,6 +1,5 @@
 import {
-  Component, OnInit, ViewEncapsulation, ViewChild,
-  AfterViewInit, ElementRef, ChangeDetectorRef
+  Component, OnInit, ChangeDetectorRef
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -17,6 +16,12 @@ import {
 import { Question } from 'src/app/questions/manage-questions/question';
 import * as echarts from 'echarts';
 import { Component as Comp } from 'src/app/questions/manage-components/component';
+import { EstablishmentType } from '../establishment-type';
+import { EstablishmentTypeService } from '../establishment-type.service';
+import { ResultsService } from '../results.service';
+import { GeographichClassifierService } from 'src/app/services/geographich-classifier.service';
+import { GeographichClassifier } from 'src/app/services/geographich-classifier';
+
 @Component({
   selector: 'app-fill-form',
   templateUrl: './fill-form.component.html',
@@ -24,37 +29,56 @@ import { Component as Comp } from 'src/app/questions/manage-components/component
 })
 
 export class FillFormComponent implements OnInit {
-  display = false;
-  dynamicContent = '';
 
-  encapsulation: ViewEncapsulation.None
   establishmentForm: FormGroup;
+  establishmentFormUpdate: FormGroup;
   form: Form;
+  formDisplay: Form;
   emailEstablishment: string;
   establishment: Establishment;
   index = 0;
-  disable = false;
   subTopic: SubTopic;
-  offsetTop = 2;
   subTopics: SubTopic[] = [];
   subTopicsSteps: SubTopic[] = [];
+  subTopicsCharts: SubTopic[] = [];
   components: Comp[] = [];
   questions: Question[] = [];
   questionsSteps: Question[] = [];
+  establishmentTypes: EstablishmentType[] = [];
+  provinces: GeographichClassifier[] = [];
+  cantons: GeographichClassifier[] = [];
+  cantonsShow: GeographichClassifier[] = [];
+  parrishes: GeographichClassifier[] = [];
+  parrishesShow: GeographichClassifier[] = [];
+  listOfData: any[] = [
+    {
+      id: 1,
+      name: 'q1',
+      code: '001',
+      type: 'si_no',
+      max_score: null,
+      description: 'string',
+      parent_id: null,
+      value: null,
+      children_type: null,
+      children: null,
+      dependent: null,
+      establishment_type: null
+    },
+    {
+      id: 1,
+      name: 'q1',
+      code: '001',
+      type: 'si_no',
+      max_score: null,
+      description: 'string',
+      parent_id: null,
+      value: null,
+      children_type: null,
+      children: null,
+      dependent: null,
+      establishment_type: null
 
-  listOfData: Question[] = [
-    {
-      id: 1,
-      name: 'q1',
-      code: '001',
-      type: 'si_no',
-      max_score: null,
-      description: 'string',
-      parent_id: null,
-      value: null,
-      children_type: null,
-      children: null,
-      dependent: null
     },
     {
       id: 1,
@@ -67,27 +91,15 @@ export class FillFormComponent implements OnInit {
       value: null,
       children_type: null,
       children: null,
-      dependent: null
-    },
-    {
-      id: 1,
-      name: 'q1',
-      code: '001',
-      type: 'si_no',
-      max_score: null,
-      description: 'string',
-      parent_id: null,
-      value: null,
-      children_type: null,
-      children: null,
-      dependent: null
+      dependent: null,
+      establishment_type: null
+
     },
   ];
 
-  selectedValue = null;
-  /*variables para el velocimentro*/
-  chart: any;
   percentage: string
+  validateForm: FormGroup;
+  years: any[] = [];
 
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
@@ -96,12 +108,27 @@ export class FillFormComponent implements OnInit {
     private establishmentService: EstablishmentService,
     private localStore: LocalService,
     private subTopicService: SubTopicService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private establishmentTypeService: EstablishmentTypeService,
+    public resultsService: ResultsService,
+    private geographicClassifierService: GeographichClassifierService
   ) {
     this.establishmentForm = this.fb.group({
       name: ['', [Validators.required]],
-      company: ['', []],
+      company: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
+
+    });
+
+    this.establishmentFormUpdate = this.fb.group({
+      ruc: ['', [Validators.required]],
+      establishmentType: ['', [Validators.required]],
+      typeOfTaxpayer: ['', [Validators.required]],
+      province: ['', [Validators.required]],
+      canton: ['', [Validators.required]],
+      parrish: ['', [Validators.required]],
+      direction: ['', [Validators.required]],
+      startYearOperations: ['', [Validators.required]],
     });
 
     translate.addLangs(['es', 'en']);
@@ -110,34 +137,31 @@ export class FillFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.index = 0;
+    /*get establishment types*/
+    try {
+      this.establishmentTypeService.getAll().subscribe((data: EstablishmentType[]) => {
+        this.establishmentTypes = data;
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+
+    this.formService.showActiveForm().subscribe((data: Form) => {
+      this.formDisplay = data;
+    }, err => {
+      this.message.create('error', `Error: ${err}`);
+    });
 
     if (this.localStore.getData('email')) {
       try {
         this.emailEstablishment = this.localStore.getData('email');
-        this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
+        this.establishmentService.showActiveEstablishmentForm(this.emailEstablishment).subscribe((data: Establishment) => {
           this.establishment = data;
-          var form = this.establishment.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
-          this.form = form.resultable;
-          var components = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
-          this.components = components;
-
-          var subTopics = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
-          this.subTopics = subTopics;
-
-          this.subTopicsSteps = subTopics.filter(element => element.resultable['component_id'] == this.components[0]['resultable_id']);
-          this.subTopic = subTopics[0];
-          console.log(this.subTopic['resultable_id']);
-          var questions = this.establishment.questions
-          this.questions = questions;
-          var subTo=this.subTopic['resultable_id']
-          this.questionsSteps = this.questions.filter(function (element, subT) {
-            if (element['resultable']['sub_topics'].length > 0) {
-               return element['resultable']['sub_topics'][0]['id']==subTo
-            }
-          })
-          console.log(this.questionsSteps)
-
-          this.percentage = this.establishment.percentage
+          if (this.establishment.province) {
+            this.chargeData();
+          }
         }, err => {
           this.message.create('error', `Error: ${err}`);
         });
@@ -146,38 +170,81 @@ export class FillFormComponent implements OnInit {
       }
     }
 
-    // try {
-    //   this.subTopicService.getAll().subscribe((data: SubTopic[]) => {
-    //     this.subTopics = data;
-    //     this.subTopic = this.subTopics[0];
-    //   }, err => {
-    //     this.message.create('error', `Error: ${err}`);
-    //   });
-    // } catch (e) {
-    //   this.message.create('error', `Error ${e}`);
-    // }
+    this.validateForm = this.fb.group({
+      score: ['', []],
+      type: ['', []],
+      model: ['', []],
+      establishment: ['', []],
+      ids: ['', []]
+    });
+
+    try {
+      this.geographicClassifierService.getAll().subscribe((data: GeographichClassifier[]) => {
+        this.provinces = data.filter(element => element['type'] == 'PROVINCE');
+        this.cantons = data.filter(element => element['type'] == 'CANTON');
+        this.parrishes = data.filter(element => element['type'] == 'PARISH');
+
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+
+    const currentYear = new Date().getFullYear();
+    const startYear = 1940;
+    this.years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i);
 
   }
 
   submitForm(value: { name: string; email: string; company: string }): void {
-    try {
-      this.establishmentService.create(value).subscribe(res => {
-        for (const key in this.establishmentForm.controls) {
-          if (this.establishmentForm.controls.hasOwnProperty(key)) {
-            this.establishmentForm.controls[key].markAsDirty();
-            this.establishmentForm.controls[key].updateValueAndValidity();
+    if (this.formDisplay.name) {
+      try {
+        this.establishmentService.create(value).subscribe(res => {
+          for (const key in this.establishmentForm.controls) {
+            if (this.establishmentForm.controls.hasOwnProperty(key)) {
+              this.establishmentForm.controls[key].markAsDirty();
+              this.establishmentForm.controls[key].updateValueAndValidity();
+            }
           }
-        }
-        this.emailEstablishment = value.email;
-        this.localStore.saveData('email', this.emailEstablishment);
-        this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
-        this.establishmentForm.reset();
-        this.ngOnInit();
-      }, err => {
-        this.showErrors(err)
-      });
-    } catch (e) {
-      this.message.create('error', `Error ${e}`);
+          this.emailEstablishment = value.email;
+          this.localStore.saveData('email', this.emailEstablishment);
+          this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
+          this.establishmentForm.reset();
+          this.ngOnInit();
+        }, err => {
+          this.showErrors(err)
+        });
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    } else {
+      this.message.create('error', "No se puede iniciar, No existe un formulario acitvo")
+    }
+  }
+
+  updateForm(value: { ruc: string; establishmentType: string; typeOfTaxpayer: string; province: string; canton: string; parrish: string; direction: string, startYearOperations: string }): void {
+
+    if (this.formDisplay.name) {
+      try {
+        this.establishmentService.update(this.establishment.id, value).subscribe(res => {
+          for (const key in this.establishmentFormUpdate.controls) {
+            if (this.establishmentForm.controls.hasOwnProperty(key)) {
+              this.establishmentForm.controls[key].markAsDirty();
+              this.establishmentForm.controls[key].updateValueAndValidity();
+            }
+          }
+          this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
+          this.establishmentFormUpdate.reset();
+          this.chargeData();
+        }, err => {
+          this.showErrors(err)
+        });
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    } else {
+      this.message.create('error', "No se puede iniciar, No existe un formulario acitvo")
     }
   }
 
@@ -199,9 +266,88 @@ export class FillFormComponent implements OnInit {
     });
   }
 
-  onChange(idQuestion: number, answer: string, value: any): void {
-    console.log(idQuestion, answer);
-    console.log(value);
+  onChange(idQuestion: number, answer: string, value: any, type: string): void {
+
+    if (type === 'relacionada') {
+      try {
+        this.validateForm.setValue({
+          score: 1,
+          type: 'relacionada',
+          model: "App\\Models\\Forms\\Question",
+          establishment: this.establishment.id,
+          ids: value
+        })
+
+        this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
+        }, err => {
+          this.showErrors(err)
+        });
+
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    }
+
+    if (type === 'si_no') {
+      try {
+        this.validateForm.setValue({
+          score: answer == 'si' ? 1 : 0,
+          type: 'si_no',
+          model: "App\\Models\\Forms\\Question",
+          establishment: this.establishment.id,
+          ids: value
+        })
+
+        this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
+          // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
+        }, err => {
+          this.showErrors(err)
+        });
+
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    }
+
+    if (type === 'rango_1_5') {
+      try {
+        this.validateForm.setValue({
+          score: answer,
+          type: 'rango_1_5',
+          model: "App\\Models\\Forms\\Question",
+          establishment: this.establishment.id,
+          ids: value
+        })
+
+        this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
+          // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
+        }, err => {
+          this.showErrors(err)
+        });
+
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    }
+
+    if (type === 'una_opcion') {
+      try {
+        this.validateForm.setValue({
+          score: answer,
+          type: 'una_opcion',
+          model: "App\\Models\\Forms\\Question",
+          establishment: this.establishment.id,
+          ids: value
+        })
+        this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
+        }, err => {
+          this.showErrors(err)
+        });
+
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    }
   }
 
   resetForm(): void {
@@ -213,8 +359,13 @@ export class FillFormComponent implements OnInit {
 
   selectStep(id: number, index: number): void {
     this.index = index;
-    this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable_id']);
-    this.subTopic = this.subTopics.find(element => element['id'] == id)
+    this.subTopic = this.subTopics.find(element => element['resultable']['id'] == id)
+    this.questionsSteps = this.questions.filter(function (element) {
+      if (element['resultable']['sub_topics'].length > 0) {
+        return element['resultable']['sub_topics'][0]['id'] == id
+      }
+    })
+
   }
 
   handleTabChange(event) {
@@ -223,7 +374,14 @@ export class FillFormComponent implements OnInit {
       this.subTopic = this.subTopics.find(element => element['resultable']['component_id'] == this.components[event]['resultable']['id'])
       this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[event]['resultable']['id']);
 
+      var id = this.subTopic['resultable_id'];
+      this.questionsSteps = this.questions.filter(function (element) {
+        if (element['resultable']['sub_topics'].length > 0) {
+          return element['resultable']['sub_topics'][0]['id'] == id
+        }
+      })
     }
+
     this.index = 0;
     this.changeDetector.detectChanges();
     this.showFormChart();
@@ -332,50 +490,60 @@ export class FillFormComponent implements OnInit {
       useDirtyRect: false
     });
 
-    var option = {
-      title: {
-        text: 'Calificaciones por Componente',
-        left: 'center'
-      },
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'shadow'
-        },
-        formatter: function (value) {
-          return value[0]['value'];
-        }
-      },
-      xAxis: {
-        type: 'category',
-        data: this.components.map(element => element['resultable']['name']),
-      },
-      yAxis: {
-        type: 'value',
-        min: 0,
-        max: 10
-      },
-      series: [
-        {
-          data: [
-            9.5,
-            {
-              value: 3,
-              itemStyle: {
-                color: '#a90000'
+    var  option = {
+        series: [
+          {
+            type: 'gauge',
+            progress: {
+              show: true,
+              width: 18
+            },
+            axisLine: {
+              lineStyle: {
+                width: 18
               }
             },
-            7,
-          ],
-
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'inside'
-          },
-        }
-      ]
+            axisTick: {
+              show: false
+            },
+            splitLine: {
+              length: 15,
+              lineStyle: {
+                width: 2,
+                color: '#999'
+              }
+            },
+            axisLabel: {
+              distance: 25,
+              color: '#999',
+              fontSize: 20
+            },
+            anchor: {
+              show: true,
+              showAbove: true,
+              size: 25,
+              itemStyle: {
+                borderWidth: 10
+              }
+            },
+            title: {
+              show: false
+            },
+            detail: {
+              valueAnimation: true,
+              fontSize: 80,
+              offsetCenter: [0, '70%']
+            },
+            data: [
+              {
+                value: 70
+              }
+            ]
+          }
+        ]
     };
+
+
 
     if (option && typeof option === 'object') {
       myChart.setOption(option);
@@ -383,12 +551,23 @@ export class FillFormComponent implements OnInit {
   }
 
   showSubTopicsChart() {
+    console.log(this.subTopicsCharts)
     var dom = document.getElementById('chartSubTopicsForm');
     var myChart = echarts.init(dom, null, {
       renderer: 'canvas',
       useDirtyRect: false
     });
-
+    var data = [];
+    data.push(['score', 'amount', 'product']);
+    this.subTopicsCharts.forEach(function (item) {
+      data.push([
+        item['score'] ?? 0,
+        item['score'] ?? 0,
+        item['resultable']['name'],
+      ]
+      )
+    })
+    console.log(data)
     var option = {
       title: {
         text: 'Calificaciones por Sub Temas',
@@ -398,18 +577,8 @@ export class FillFormComponent implements OnInit {
         trigger: 'item'
       },
       dataset: {
-        source: [
-          ['score', 'amount', 'product'],
-          [8.9, 8.9, 'Matcha Latte'],
-          [5.6, 5.6, 'Milk Tea'],
-          [7.7, 7.7, 'Cheese Cocoa'],
-          [8, 8, 'Cheese Brownie'],
-          [7.2, 7.2, 'Matcha Cocoa'],
-          [4.5, 4.5, 'Tea'],
-          [9.5, 9.5, 'Orange Juice'],
-          [3.3, 3.3, 'Lemon Juice'],
-          [5.5, 5.5, 'Walnut Brownie']
-        ]
+        source:
+          data
       },
       grid: { containLabel: true },
       xAxis: { name: 'Calificación' },
@@ -447,6 +616,57 @@ export class FillFormComponent implements OnInit {
     if (option && typeof option === 'object') {
       myChart.setOption(option);
     }
+  }
+
+  updateCantons(value: any) {
+    this.cantonsShow = this.cantons.filter(element => element['parent_id'] == value)
+  }
+
+  updateParrishes(value: any) {
+    this.parrishesShow = this.parrishes.filter(element => element['parent_id'] == value)
+  }
+
+  chargeData() {
+    try {
+      this.emailEstablishment = this.localStore.getData('email');
+      this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
+        this.establishment = data;
+        var form = this.establishment.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
+        this.form = form.resultable;
+        var components = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
+        this.components = components;
+
+        var subTopics = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
+        this.subTopics = subTopics;
+
+        this.subTopicsSteps = subTopics.filter(element => element.resultable['component_id'] == this.components[0]['resultable_id']);
+        this.subTopic = subTopics[0];
+        var questions = this.establishment.questions
+        this.questions = questions;
+        var subTo = this.subTopic['resultable_id']
+        this.questionsSteps = this.questions.filter(function (element) {
+          if (element['resultable']['sub_topics'].length > 0) {
+            return element['resultable']['sub_topics'][0]['id'] == subTo
+          }
+        })
+
+        this.percentage = this.establishment.percentage
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+  }
+
+  handleTabChangeTabCharts(event) {
+
+    if (this.components[event]) {
+      this.subTopicsCharts = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[event]['resultable']['id']);
+    }
+    this.index = 0;
+    this.changeDetector.detectChanges();
+    this.showSubTopicsChart();
   }
 
 }
