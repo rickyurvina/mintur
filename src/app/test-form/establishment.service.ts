@@ -63,6 +63,13 @@ export class EstablishmentService {
     )
   }
 
+  showActiveEstablishmentForm(email): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-active-form/"+email)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
 
   errorHandler(error) {
     let errorMessage = '';

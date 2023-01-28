@@ -47,10 +47,10 @@
                 </span>
               </nz-tag>
             </div>
-            <div nz-col *ngIf="question.establishment_type">
-              <nz-tag [nzColor]="'blue'">
-                <span nzTooltipTitle="{{question.establishment_type.name}}" nzTooltipPlacement="top" nz-tooltip>
-                  {{question.establishment_type.name}}
+            <div nz-col>
+              <nz-tag [nzColor]="'blue'" *ngFor="let option of question['establishment_types']">
+                <span nzTooltipTitle="{{option.name}}" nzTooltipPlacement="top" nz-tooltip>
+                  {{option.name}}
                 </span>
               </nz-tag>
             </div>

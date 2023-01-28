@@ -11,5 +11,8 @@ export interface Question {
   children_type:string,
   children:any[],
   dependent:number,
-  establishment_type:EstablishmentType
+  establishmentTypes:any[],
+  importance:string,
+  verification_means:string,
+  has_score:boolean
 }

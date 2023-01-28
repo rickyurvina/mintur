@@ -60,13 +60,14 @@ export class IndexQuestionsComponent implements OnInit {
   showModalCreate(id = null) {
     try {
       const modal = this.modalService.create({
-        nzTitle: id ? this.translate.instant('general.actualizar') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.Pregunta'),
+        nzTitle: id ? this.translate.instant('general.actualizar')+ ' ' + this.translate.instant('general.Pregunta') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.Pregunta'),
         nzContent: CreateQuestionsComponent,
         nzFooter: null,
         nzComponentParams: {
           InputData: id,
           FormsData: this.questions
         },
+        nzWidth: '800px',
       });
       modal.afterClose.subscribe(() => this.ngOnInit());
 

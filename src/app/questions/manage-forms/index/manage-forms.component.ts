@@ -60,13 +60,14 @@ export class ManageFormsComponent implements OnInit {
   showModalCreate(id = null) {
     try {
       const modal = this.modalService.create({
-        nzTitle: id ? this.translate.instant('general.crear') : this.translate.instant('general.actualizar') + ' ' + this.translate.instant('general.sub_tema'),
+        nzTitle: id ? this.translate.instant('general.actualizar')+ ' ' + this.translate.instant('general.formulario') : this.translate.instant('general.crear') + ' ' + this.translate.instant('general.formulario'),
         nzContent: CreateFormComponent,
         nzComponentParams: {
           InputData: id,
           FormsData: this.forms
         },
         nzFooter: null,
+        nzWidth: '800px',
       });
       modal.afterClose.subscribe(() => this.ngOnInit());
     } catch (e) {

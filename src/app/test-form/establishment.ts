@@ -9,5 +9,13 @@ export interface Establishment {
   percentage:string,
   results:any[],
   questions:any[],
-  establishmentType:EstablishmentType
+  establishmentType:EstablishmentType,
+  ruc:string,
+  type_of_taxpayer:string,
+  province:string,
+  canton:string,
+  parrish:string,
+  direction:string,
+  start_year_operations:string,
+  location:string
 }

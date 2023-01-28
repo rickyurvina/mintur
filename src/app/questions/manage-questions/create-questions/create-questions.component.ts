@@ -32,6 +32,8 @@ export class CreateQuestionsComponent implements OnInit {
     { label: 'Si/No', value: 'si_no' },
     { label: 'Rango 1-5', value: 'rango_1_5' },
     { label: 'Relacionada', value: 'relacionada' },
+    { label: 'Informativa', value: 'informativa' },
+
   ];
 
   optionList2 = [
@@ -39,6 +41,7 @@ export class CreateQuestionsComponent implements OnInit {
     { label: 'Rango 1-5', value: 'rango_1_5' },
     { label: 'Multiple', value: 'multiple' },
     { label: 'Una Opción', value: 'una_opcion' },
+    { label: 'Frecuencia de Actualización', value: 'frecuencia_actualizacion' },
 
   ];
 
@@ -58,15 +61,18 @@ export class CreateQuestionsComponent implements OnInit {
       type: ['', [Validators.required]],
       description: ['', []],
       children_type: ['', []],
-      establishmentType:['',[]],
+      establishmentTypes: new FormControl(),
       children: new FormControl(),
       dependent: new FormControl(),
       dependentQ: new FormControl(),
+      importance: new FormControl(),
+      verificationMeans: new FormControl(),
+      hasScore: new FormControl()
     });
 
     this.validateFormRelated = this.fb.group({
       name: ['', [Validators.required]],
-      value: ['', [Validators.pattern("^[0-9]*$")]],
+      value: ['', []],
     });
   }
 
@@ -98,9 +104,14 @@ export class CreateQuestionsComponent implements OnInit {
           description: this.question.description,
           children_type: this.question.children_type,
           children: this.question.children,
-          establishmentType: data['establishment_type_id'],
           dependent: this.question['dependent_id'],
           dependentQ: this.question['dependent_id'] ? 'si' : 'no',
+          importance:  this.question.importance,
+          verificationMeans:  this.question.verification_means,
+          establishmentTypes: this.question['establishment_types'].map(function (value) {
+            return value['id'];
+          }),
+          hasScore:this.question.has_score
         })
 
         this.questionsRelated = data.children
@@ -125,7 +136,9 @@ export class CreateQuestionsComponent implements OnInit {
     questionsRelated: any[],
     children_type: string,
     dependent: number,
-    establishmentType:number
+    establishmentTypes:any[],
+    importance:string,
+    verificationMeans:string
   }): void {
     if (this.InputData) {
       try {
