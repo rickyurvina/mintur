@@ -39,6 +39,8 @@ export class FillFormComponent implements OnInit {
   emailEstablishment: string;
   establishment: Establishment;
   index = 0;
+  indexTabs = 0;
+
   subTopic: SubTopic;
   subTopics: SubTopic[] = [];
   subTopicsSteps: SubTopic[] = [];
@@ -396,6 +398,9 @@ export class FillFormComponent implements OnInit {
         }
       })
     }
+    this.indexTabs=event;
+    console.log(this.indexTabs)
+    console.log(this.components)
 
     this.index = 0;
     this.changeDetector.detectChanges();
@@ -670,18 +675,30 @@ export class FillFormComponent implements OnInit {
         })
 
         this.questionsChart = this.establishment.questions.filter(function (element) {
-          return element['resultable']['code'] != "";
+          if (element['resultable']['type']=='relacionada'){
+            if(element['score']/10<5){
+              return element['resultable']['code'];
+            }
+
+          }else if(element['resultable']['type']=='si_no'){
+            if(element['score']*10<5){
+              return element['resultable']['code'];
+            }
+          }else if(element['resultable']['type']=='rango_1_5'){
+            if(element['score']*5<5){
+              return element['resultable']['code'];
+            }
+          }
+
         })
         this.subTopicsCharts = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable']['id']);
-
-
         this.updateProgress()
 
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        // this.message.create('error', `Error: ${err}`);
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      // this.message.create('error', `Error ${e}`);
     }
 
   }
@@ -692,6 +709,7 @@ export class FillFormComponent implements OnInit {
       this.subTopicsCharts = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[event]['resultable']['id']);
     }
     this.index = 0;
+
     this.changeDetector.detectChanges();
     this.showSubTopicsChart();
   }
@@ -699,7 +717,20 @@ export class FillFormComponent implements OnInit {
   handleSelectionChange(value: any) {
 
     this.questionsChart = this.establishment.questions.filter(function (element) {
-      return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value;
+      if (element['resultable']['type']=='relacionada'){
+        if(element['score']/10<5){
+          return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value
+        }
+
+      }else if(element['resultable']['type']=='si_no'){
+        if(element['score']*10<5){
+          return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value
+        }
+      }else if(element['resultable']['type']=='rango_1_5'){
+        if(element['score']*5<5){
+          return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value
+        }
+      }
     })
 
   }
@@ -715,7 +746,6 @@ export class FillFormComponent implements OnInit {
     if (numberQuestions > 0) {
       let operation = dataQuestionsProgress.length / numberQuestions*100
       let formattedNum = operation.toFixed(2);
-      console.log(formattedNum)
       this.percentage = formattedNum;
     }
   }

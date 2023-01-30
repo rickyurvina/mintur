@@ -423,8 +423,9 @@
             </div>
 
             <div nz-col nzFlex="160px">
-              <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">Volver a empezar</button>
-              <button nz-button nzType="default" nzPrimary class="mb-2" (click)="reloadPage()">Recargar Resultados</button>
+              <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">CANCELAR</button>
+              <button nz-button nzType="primary" class="mb-2" (click)="reloadPage()" *ngIf="indexTabs+1==this.components.length">FINALIZAR</button>
+
               <nz-divider></nz-divider>
               <nz-tag [nzColor]="'blue'" class="mt-2"># Intentos: {{establishment.attempts}}</nz-tag>
               <nz-tag [nzColor]="'green'" class="mt-2">Tipo de establecimiento:
@@ -434,25 +435,48 @@
         </nz-tab>
       </div>
 
-      <nz-tab nzTitle="Evaluación" *ngIf="percentage==100">
+      <nz-tab nzTitle="EVALUACIÓN" *ngIf="percentage==100">
         <div class="container" style="width: 100%;">
           <div class="row">
             <div class="col-md-12 mx-auto w-100">
               <nz-card [nzTitle]="titleCardEvaluation">
                 <div nz-row>
                   <div nz-col nzFlex="2">
-                  <nz-tag [nzColor]="'green'">Calificación del Formulario</nz-tag>
-
+                    <nz-tag [nzColor]="'green'">CALIFICACIÓN DEL FORMULARIO</nz-tag>
                     <div id="chartForm" style="height: 400px"></div>
                   </div>
                   <div nz-col nzFlex="3">
-                  <nz-tag [nzColor]="'geekblue'">Calificaciones por Componente</nz-tag>
+                    <nz-tag [nzColor]="'geekblue'">CALFICACIONES POR COMPONENTE</nz-tag>
 
                     <div style="background: #ECECEC; padding: 15px;">
                       <nz-row [nzGutter]="8">
                         <nz-col [nzSpan]="12" *ngFor="let option of components">
                           <nz-card>
-                            <div  [id]="'chartComponentsForm' + option['resultable_id']" style="height: 150px"></div>
+                            <div [id]="'chartComponentsForm' + option['resultable_id']" style="height: 150px"></div>
+                          </nz-card>
+                        </nz-col>
+
+                        <nz-col [nzSpan]="12" >
+                          <nz-card>
+                            <div class="row">
+                              <div class="col" >
+                                  <ul class="list-unstyled">
+                                    <li class="row">
+                                      <p class="col-sm-12 col-12 font-weight-semibold text-dark">
+                                        <span>CALIFICACIÓN MÍNIMA: </span>
+
+                                      </p>
+                                      <p class="col font-weight-semibold"> 0</p>
+                                  </li>
+                                      <li class="row">
+                                          <p class="col-sm-12 col-12 font-weight-semibold text-dark">
+                                              <span>CALIFICACIÓN MÁXIMA: </span>
+                                          </p>
+                                          <p class="col font-weight-semibold"> 10</p>
+                                      </li>
+                                  </ul>
+                              </div>
+                          </div>
                           </nz-card>
                         </nz-col>
                       </nz-row>
@@ -460,10 +484,10 @@
 
                   </div>
                 </div>
-                <div nz-row  style="margin-top: 50px; margin-bottom: 50px;">
+                <div nz-row style="margin-top: 50px; margin-bottom: 50px;">
 
                   <div nz-col nzFlex="2">
-                  <nz-tag [nzColor]="'cyan'">Calificaciones por Sub Temas</nz-tag>
+                    <nz-tag [nzColor]="'cyan'">CALIFICACIONES POR SUB TEMAS</nz-tag>
 
                     <nz-tabset nzTabPosition="left" (nzSelectedIndexChange)="handleTabChangeTabCharts($event)">
                       <nz-tab *ngFor="let option of components" [nzTitle]="option.resultable.name">
@@ -475,7 +499,7 @@
                 </div>
                 <div nz-row>
                   <div nz-col nzFlex="auto">
-                    <nz-tag [nzColor]="'blue'">Calificaciones por pregunta</nz-tag>
+                    <nz-tag [nzColor]="'blue'">SELECCIONAR EL SUB TEMA --></nz-tag>
                     <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona el Sub Tema"
                       [(ngModel)]="selectedSubTopic" (ngModelChange)="handleSelectionChange($event)" style="width:30%">
                       <nz-option *ngFor="let option of subTopics" [nzLabel]="option.resultable.name"
@@ -489,30 +513,38 @@
                     <nz-table #basicTable [nzData]="questionsChart">
                       <thead>
                         <tr>
-                          <th>Codigo</th>
-                          <th>Nombre</th>
-                          <th>Importancia</th>
-                          <th>Medios de Verificación</th>
-                          <th>Calificación</th>
+                          <th colspan="5">
+
+                            A CONTINUACIÓN SE MUESTRA LA IMPORTANCIA Y MEDIOS DE VERIFICACIÓN DE LAS PREGUNTAS CON BAJA
+                            CALIFICACIÓN
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>PREGUNTA</th>
+                          <th>SUB TEMA</th>
+                          <th>IMPORTANCIA</th>
+                          <th>MEDIOS DE VERIFICACIÓN</th>
+                          <th>CALIFICACIÓN</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let data of basicTable.data">
-                          <td>{{ data.resultable.code }}</td>
                           <td>{{ data.resultable.name }}</td>
+                          <td>{{ data.resultable['sub_topics'][0].name }}</td>
+
                           <td>{{ data.resultable.importance }}</td>
                           <td>{{ data.resultable.verification_means }}</td>
 
                           <td *ngIf="data.resultable.type=='relacionada'">
-                            <nz-tag [nzColor]="'gold'">  {{ data.score/10 | number:'.1' }}</nz-tag>
+                            <nz-tag [nzColor]="'gold'"> {{data.score/10 | number: '1.2-2'}}</nz-tag>
                           </td>
                           <td *ngIf="data.resultable.type=='si_no'">
-                            <nz-tag [nzColor]="'gold'"> {{ data.score*10 }}</nz-tag>
+                            <nz-tag [nzColor]="'gold'"> {{data.score*10| number: '1.2-2'}}</nz-tag>
 
-                           </td>
+                          </td>
                           <td *ngIf="data.resultable.type=='rango_1_5'">
-                            <nz-tag [nzColor]="'gold'"> {{ data.score*5 }}</nz-tag>
-                           </td>
+                            <nz-tag [nzColor]="'gold'"> {{data.score*5 | number: '1.2-2'}}</nz-tag>
+                          </td>
                         </tr>
                       </tbody>
                     </nz-table>
@@ -520,13 +552,16 @@
                 </div>
                 <ng-template #titleCardEvaluation let-control>
                   <div nz-row>
-                    <div nz-col nzFlex="3">
-                        <h2><nz-tag [nzColor]="'lime'">{{establishment.name+' '+establishment.company}}</nz-tag>
-                    </h2>
-                  </div>
-                    <div nz-col nzFlex="3" style="display:contents; align-items:end">
-                      <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">Volver a empezar</button>
-                      <button nz-button nzType="default" nzPrimary class="mb-2" (click)="reloadPage()">Recargar Resultados</button>
+                    <div nz-col nzFlex="1">
+                      <span>ÚLTIMA ACTUALIZACIÓN: {{formDisplayChart['updated_at']}}</span>
+
+                    </div>
+                    <div nz-col nzFlex="5">
+                      <h2><nz-tag [nzColor]="'lime'">{{establishment.name+' '+establishment.company}}</nz-tag>
+                      </h2>
+                    </div>
+                    <div nz-col nzFlex="1" style="display:contents; align-items:end">
+                      <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">CANCELAR</button>
                     </div>
                   </div>
 
@@ -594,7 +629,8 @@
         <span>
           <a href="https://laverix.com.ec/" target="_blank" class="text-gray m-r-15">Developed by: Laverix
           </a>
-          <a href="https://www.linkedin.com/in/ricardo-urvina-142222182/" target="_blank" class="text-gray">&amp; R.U</a>
+          <a href="https://www.linkedin.com/in/ricardo-urvina-142222182/" target="_blank" class="text-gray">&amp;
+            R.U</a>
         </span>
       </div>
     </footer>
