@@ -19,6 +19,8 @@ import { IndexSubTopicComponent } from './manage-subtopic/index-sub-topic/index-
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { ManageEstablishmentsComponent } from './manage-establishments/manage-establishments.component';
+import { ShowEstablishmentComponent } from './manage-establishments/show-establishment/show-establishment.component';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 
 const antdModule= [
     NzFormModule,
@@ -30,7 +32,8 @@ const antdModule= [
     NzTagModule,
     NzDividerModule,
     NzToolTipModule,
-    NzTableModule
+    NzTableModule,
+    NzProgressModule
 ]
 
 @NgModule({
@@ -48,6 +51,7 @@ const antdModule= [
         CreateComponentsComponent,
         IndexSubTopicComponent,
         ManageEstablishmentsComponent,
+        ShowEstablishmentComponent
     ]
 })
 

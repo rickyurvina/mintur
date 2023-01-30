@@ -8,19 +8,20 @@
         <h1 class="w-90 m-h-auto" *ngIf="formDisplay" style="font-size: 20px">
           {{formDisplay.name}}
         </h1>
-        <p *ngIf="formDisplay" class="w-90 m-h-auto m-b-30">
+        <p *ngIf="formDisplay" class="w-90 m-h-auto m-b-10">
           {{formDisplay.description}}
         </p>
       </div>
-      <div nz-col nzFlex="1" *ngIf="establishment">
+      <div nz-col nzFlex="1" *ngIf="establishment" class="p-3">
         <nz-progress nzType="circle" nzPercent="{{percentage}}"
           [nzStrokeColor]="{ '0%': '#108ee9', '50%': '#2db7f5', '100%': '#87d068' }"></nz-progress>
       </div>
+
     </div>
   </nz-header>
 
   <nz-content style=" padding-left: 6rem; padding-right: 6rem; height: auto; overflow-x: auto;">
-    <nz-tabset class="page-header-tab"  (nzSelectedIndexChange)="handleTabChange($event)">
+    <nz-tabset class="page-header-tab" (nzSelectedIndexChange)="handleTabChange($event)">
       <nz-tab nzTitle="Registro" *ngIf="!establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
@@ -88,7 +89,7 @@
           </nz-card>
         </div>
       </nz-tab>
-      <nz-tab nzTitle="Información del establecimiento" *ngIf="!percentage">
+      <nz-tab nzTitle="Información del establecimiento" *ngIf="isValidAttemp==true">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
             <div class="d-flex flex-column justify-content-between h-100">
@@ -113,63 +114,75 @@
 
                     <nz-form-item>
                       <nz-form-label nzRequired>{{"general.tipo" | translate}}</nz-form-label>
-                      <nz-form-control  nzHasFeedback [nzErrorTip]="establishmentTypeErrorTpl">
-                        <nz-select nzAllowClear formControlName="establishmentType" name="establishmentType" id="establishmentType" [nzPlaceHolder]="'general.escoge'|translate">
-                          <nz-option *ngFor="let option of establishmentTypes" [nzValue]="option.id" [nzLabel]="option.name"></nz-option>
+                      <nz-form-control nzHasFeedback [nzErrorTip]="establishmentTypeErrorTpl">
+                        <nz-select nzAllowClear formControlName="establishmentType" name="establishmentType"
+                          id="establishmentType" [nzPlaceHolder]="'general.escoge'|translate">
+                          <nz-option *ngFor="let option of establishmentTypes" [nzValue]="option.id"
+                            [nzLabel]="option.name"></nz-option>
                         </nz-select>
                         <ng-template #establishmentTypeErrorTpl let-control>
-                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
+                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" |
+                            translate}}</ng-container>
                         </ng-template>
                       </nz-form-control>
                     </nz-form-item>
 
                     <nz-form-item>
-                      <nz-form-label  nzRequired>Tipo de contribuyente</nz-form-label>
-                      <nz-form-control  nzHasFeedback [nzErrorTip]="typeOfTaxpayerTypeErrorTpl">
-                        <nz-select nzAllowClear formControlName="typeOfTaxpayer" name="typeOfTaxpayer" id="typeOfTaxpayer" nzPlaceHolder="Tipo de contribuyente">
-                          <nz-option  nzValue="Persona natural" nzLabel="Persona natural"></nz-option>
-                          <nz-option  nzValue="Persona jurídica" nzLabel="Persona jurídica"></nz-option>
+                      <nz-form-label nzRequired>Tipo de contribuyente</nz-form-label>
+                      <nz-form-control nzHasFeedback [nzErrorTip]="typeOfTaxpayerTypeErrorTpl">
+                        <nz-select nzAllowClear formControlName="typeOfTaxpayer" name="typeOfTaxpayer"
+                          id="typeOfTaxpayer" nzPlaceHolder="Tipo de contribuyente">
+                          <nz-option nzValue="Persona natural" nzLabel="Persona natural"></nz-option>
+                          <nz-option nzValue="Persona jurídica" nzLabel="Persona jurídica"></nz-option>
                         </nz-select>
                         <ng-template #typeOfTaxpayerTypeErrorTpl let-control>
-                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
+                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" |
+                            translate}}</ng-container>
                         </ng-template>
                       </nz-form-control>
                     </nz-form-item>
 
                     <nz-form-item>
                       <nz-form-label nzRequired>Provincia</nz-form-label>
-                      <nz-form-control  nzHasFeedback [nzErrorTip]="provinceTypeErrorTpl">
-                        <nz-select nzAllowClear formControlName="province" name="province" id="province" [nzPlaceHolder]="'general.escoge'|translate"
-                        (ngModelChange)="updateCantons($event)">
-                          <nz-option *ngFor="let option of provinces" [nzValue]="option.id" [nzLabel]="option.description"></nz-option>
+                      <nz-form-control nzHasFeedback [nzErrorTip]="provinceTypeErrorTpl">
+                        <nz-select nzAllowClear formControlName="province" name="province" id="province"
+                          [nzPlaceHolder]="'general.escoge'|translate" (ngModelChange)="updateCantons($event)">
+                          <nz-option *ngFor="let option of provinces" [nzValue]="option.id"
+                            [nzLabel]="option.description"></nz-option>
                         </nz-select>
                         <ng-template #provinceTypeErrorTpl let-control>
-                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
+                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" |
+                            translate}}</ng-container>
                         </ng-template>
                       </nz-form-control>
                     </nz-form-item>
 
                     <nz-form-item *ngIf="establishmentFormUpdate.value.province">
                       <nz-form-label nzRequired>Cantón</nz-form-label>
-                      <nz-form-control  nzHasFeedback [nzErrorTip]="cantonTypeErrorTpl">
-                        <nz-select nzAllowClear formControlName="canton" name="canton" id="canton" [nzPlaceHolder]="'general.escoge'|translate"
-                         (ngModelChange)="updateParrishes($event)">
-                          <nz-option *ngFor="let option of cantonsShow" [nzValue]="option.id" [nzLabel]="option.description"></nz-option>
+                      <nz-form-control nzHasFeedback [nzErrorTip]="cantonTypeErrorTpl">
+                        <nz-select nzAllowClear formControlName="canton" name="canton" id="canton"
+                          [nzPlaceHolder]="'general.escoge'|translate" (ngModelChange)="updateParrishes($event)">
+                          <nz-option *ngFor="let option of cantonsShow" [nzValue]="option.id"
+                            [nzLabel]="option.description"></nz-option>
                         </nz-select>
                         <ng-template #cantonTypeErrorTpl let-control>
-                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
+                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" |
+                            translate}}</ng-container>
                         </ng-template>
                       </nz-form-control>
                     </nz-form-item>
 
                     <nz-form-item *ngIf="establishmentFormUpdate.value.canton">
                       <nz-form-label nzRequired>Parroquia</nz-form-label>
-                      <nz-form-control  nzHasFeedback [nzErrorTip]="parrishTypeErrorTpl">
-                        <nz-select nzAllowClear formControlName="parrish" name="parrish" id="parrish" [nzPlaceHolder]="'general.escoge'|translate">
-                          <nz-option *ngFor="let option of parrishesShow" [nzValue]="option.id" [nzLabel]="option.description"></nz-option>
+                      <nz-form-control nzHasFeedback [nzErrorTip]="parrishTypeErrorTpl">
+                        <nz-select nzAllowClear formControlName="parrish" name="parrish" id="parrish"
+                          [nzPlaceHolder]="'general.escoge'|translate">
+                          <nz-option *ngFor="let option of parrishesShow" [nzValue]="option.id"
+                            [nzLabel]="option.description"></nz-option>
                         </nz-select>
                         <ng-template #provinceTypeErrorTpl let-control>
-                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
+                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" |
+                            translate}}</ng-container>
                         </ng-template>
                       </nz-form-control>
                     </nz-form-item>
@@ -189,12 +202,14 @@
 
                     <nz-form-item>
                       <nz-form-label nzRequired>Año de inicio de actividades</nz-form-label>
-                      <nz-form-control  nzHasFeedback [nzErrorTip]="startYearOperationsTypeErrorTpl">
-                        <nz-select nzAllowClear formControlName="startYearOperations" name="startYearOperations" id="startYearOperations" [nzPlaceHolder]="'general.escoge'|translate">
+                      <nz-form-control nzHasFeedback [nzErrorTip]="startYearOperationsTypeErrorTpl">
+                        <nz-select nzAllowClear formControlName="startYearOperations" name="startYearOperations"
+                          id="startYearOperations" [nzPlaceHolder]="'general.escoge'|translate">
                           <nz-option *ngFor="let option of years" [nzValue]="option" [nzLabel]="option"></nz-option>
                         </nz-select>
                         <ng-template #startYearOperationsTypeErrorTpl let-control>
-                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
+                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" |
+                            translate}}</ng-container>
                         </ng-template>
                       </nz-form-control>
                     </nz-form-item>
@@ -216,14 +231,14 @@
         </div>
       </nz-tab>
 
-      <div *ngIf="establishment">
+      <div *ngIf="establishment && isValidAttemp==false">
         <nz-tab *ngFor=" let component of components" nzTitle="{{component.resultable.name}}">
           <div nz-row>
             <div nz-col nzFlex="160px">
               <nz-steps nzDirection="vertical" [nzCurrent]="index">
-                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index" (click)="selectStep(subTopic.resultable.id, i)"
-                  style="cursor: pointer" nzTitle="{{subTopic.resultable.name}}"
-                  nzDescription="{{subTopic.resultable.description}}"></nz-step>
+                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index"
+                  (click)="selectStep(subTopic.resultable.id, i)" style="cursor: pointer"
+                  nzTitle="{{subTopic.resultable.name}}" nzDescription="{{subTopic.resultable.description}}"></nz-step>
               </nz-steps>
             </div>
             <div nz-col nzFlex="auto" *ngIf="subTopic">
@@ -234,11 +249,13 @@
                       [nzItemLayout]="'horizontal'" style="text-align:start">
                       <ng-template #subTopicTemplate let-question>
 
+
                         <nz-list-item>
                           <nz-list-item-meta [nzTitle]="networkName" [nzAvatar]="networkIcon">
                             <ng-template #networkName>
                               <div class="font-size-15 font-weight-semibold">
-                                <nz-tag [nzColor]="'gold'"> {{question.resultable.code}}</nz-tag>{{question.resultable.name}}
+                                <nz-tag [nzColor]="'gold'">
+                                  {{question.resultable.code}}</nz-tag>{{question.resultable.name}}
                               </div>
                             </ng-template>
                           </nz-list-item-meta>
@@ -246,34 +263,54 @@
                         <div>
                           <div *ngIf="question.resultable.type=='si_no'">
                             <nz-radio-group nzButtonStyle="solid" *ngIf="question.score==1" ngModel="si">
-                              <label nz-radio-button  nzValue="si"  (click)="onChange(question.id,'si',$event,'si_no')">Si</label>
-                              <label nz-radio-button   nzValue="no"  (click)="onChange(question.id,'no',$event,'si_no')">No</label>
+                              <label nz-radio-button nzValue="si"
+                                (click)="onChange(question.id,'si',$event,'si_no')">Si</label>
+                              <label nz-radio-button nzValue="no"
+                                (click)="onChange(question.id,'no',$event,'si_no')">No</label>
                             </nz-radio-group>
 
                             <nz-radio-group nzButtonStyle="solid" *ngIf="question.score==0" ngModel="no">
-                              <label nz-radio-button  nzValue="si"  (click)="onChange(question.id,'si',$event,'si_no')">Si</label>
-                              <label nz-radio-button  nzValue="no"  (click)="onChange(question.id,'no',$event,'si_no')">No</label>
+                              <label nz-radio-button nzValue="si"
+                                (click)="onChange(question.id,'si',$event,'si_no')">Si</label>
+                              <label nz-radio-button nzValue="no"
+                                (click)="onChange(question.id,'no',$event,'si_no')">No</label>
                             </nz-radio-group>
 
                             <nz-radio-group nzButtonStyle="solid" *ngIf="question.score==null">
-                              <label nz-radio-button  nzValue="si"  (click)="onChange(question.id,'si',$event,'si_no')">Si</label>
-                              <label nz-radio-button  nzValue="no"  (click)="onChange(question.id,'no',$event,'si_no')">No</label>
+                              <label nz-radio-button nzValue="si"
+                                (click)="onChange(question.id,'si',$event,'si_no')">Si</label>
+                              <label nz-radio-button nzValue="no"
+                                (click)="onChange(question.id,'no',$event,'si_no')">No</label>
                             </nz-radio-group>
                           </div>
 
                           <div *ngIf="question.resultable.type=='rango_1_5'">
                             <nz-radio-group ngModel='{{question.score}}'>
-                              <label nz-radio nzValue="0" (click)="onChange(question.id,'0',$event,'rango_1_5')">0</label>
-                              <label nz-radio nzValue="1" (click)="onChange(question.id,'1',$event,'rango_1_5')">1</label>
-                              <label nz-radio nzValue="2" (click)="onChange(question.id,'2',$event,'rango_1_5')">2</label>
-                              <label nz-radio nzValue="3" (click)="onChange(question.id,'3',$event,'rango_1_5')">3</label>
-                              <label nz-radio nzValue="4" (click)="onChange(question.id,'4',$event,'rango_1_5')">4</label>
-                              <label nz-radio nzValue="5" (click)="onChange(question.id,'5',$event,'rango_1_5')">5</label>
+                              <label nz-radio nzValue="0"
+                                (click)="onChange(question.id,'0',$event,'rango_1_5')">0</label>
+                              <label nz-radio nzValue="1"
+                                (click)="onChange(question.id,'1',$event,'rango_1_5')">1</label>
+                              <label nz-radio nzValue="2"
+                                (click)="onChange(question.id,'2',$event,'rango_1_5')">2</label>
+                              <label nz-radio nzValue="3"
+                                (click)="onChange(question.id,'3',$event,'rango_1_5')">3</label>
+                              <label nz-radio nzValue="4"
+                                (click)="onChange(question.id,'4',$event,'rango_1_5')">4</label>
+                              <label nz-radio nzValue="5"
+                                (click)="onChange(question.id,'5',$event,'rango_1_5')">5</label>
                             </nz-radio-group>
                           </div>
+
+                          <div *ngIf="question.resultable.type=='informativa'">
+                            <input nz-input placeholder="Ingresar Información" [value]="question.answer"
+                              (input)="inputValue = $event.target.value; onChange(question.id,'',inputValue,'informativa')" />
+                          </div>
+
+
                           <div *ngIf="question.resultable.type=='relacionada'">
                             <div *ngIf="question.resultable.children_type=='multiple'">
-                              <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="onChange(question.id ,'',$event,'relacionada')">
+                              <nz-checkbox-wrapper style="width: 100%;"
+                                (nzOnChange)="onChange(question.id ,'',$event,'relacionada')">
                                 <div nz-row>
                                   <div nz-col nzSpan="12" *ngFor="let child of question.resultable.children">
                                     <div *ngIf="child.results[0].score==1">
@@ -290,13 +327,86 @@
                                 </div>
                               </nz-checkbox-wrapper>
                             </div>
+
                             <div *ngIf="question.resultable.children_type=='una_opcion'">
                               <nz-radio-group ngModel="{{question.score}}">
-                                <label nz-radio *ngFor="let child of question.resultable.children" nzValue="{{child.value}}"
-                                (click)="onChange(child.id,child.value,$event,'una_opcion')">{{child.name}}</label>
+                                <label nz-radio *ngFor="let child of question.resultable.children"
+                                  nzValue="{{child.value}}"
+                                  (click)="onChange(child.id,child.value,$event,'una_opcion')">{{child.name}}</label>
                               </nz-radio-group>
                             </div>
+
+                            <div *ngIf="question.resultable.children_type=='rango_1_5'">
+                              <div *ngFor="let child of question.resultable.children">
+
+                                <div nz-row>
+                                  <div nz-col nzFlex="3">
+                                    <span>
+                                      {{child.name}}
+                                    </span>
+                                  </div>
+                                  <div nz-col nzFlex="auto">
+                                    <nz-radio-group ngModel='{{child.results[0].score}}'>
+                                      <label nz-radio nzValue="0"
+                                        (click)="onChange(child.results['0'].id,'0',$event,'rango_1_5')">0</label>
+                                      <label nz-radio nzValue="1"
+                                        (click)="onChange(child.results['0'].id,'1',$event,'rango_1_5')">1</label>
+                                      <label nz-radio nzValue="2"
+                                        (click)="onChange(child.results['0'].id,'2',$event,'rango_1_5')">2</label>
+                                      <label nz-radio nzValue="3"
+                                        (click)="onChange(child.results['0'].id,'3',$event,'rango_1_5')">3</label>
+                                      <label nz-radio nzValue="4"
+                                        (click)="onChange(child.results['0'].id,'4',$event,'rango_1_5')">4</label>
+                                      <label nz-radio nzValue="5"
+                                        (click)="onChange(child.results['0'].id,'5',$event,'rango_1_5')">5</label>
+                                    </nz-radio-group>
+                                  </div>
+                                </div>
+
+
+                              </div>
+                            </div>
+
+                            <div *ngIf="question.resultable.children_type=='si_no'">
+                              <div *ngFor="let child of question.resultable.children">
+                                <div nz-row style="margin-top: 10px;">
+                                  <div nz-col nzFlex="3">
+                                    <span>
+                                      {{child.name}}
+                                    </span>
+                                  </div>
+                                  <div nz-col nzFlex="auto">
+                                    <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==1"
+                                      ngModel="si">
+                                      <label nz-radio-button nzValue="si"
+                                        (click)="onChange(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                      <label nz-radio-button nzValue="no"
+                                        (click)="onChange(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                    </nz-radio-group>
+
+                                    <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==0"
+                                      ngModel="no">
+                                      <label nz-radio-button nzValue="si"
+                                        (click)="onChange(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                      <label nz-radio-button nzValue="no"
+                                        (click)="onChange(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                    </nz-radio-group>
+
+                                    <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==null">
+                                      <label nz-radio-button nzValue="si"
+                                        (click)="onChange(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                      <label nz-radio-button nzValue="no"
+                                        (click)="onChange(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                    </nz-radio-group>
+                                  </div>
+                                </div>
+
+
+                              </div>
+                            </div>
                           </div>
+
+
                         </div>
                       </ng-template>
                     </nz-list>
@@ -313,30 +423,36 @@
             </div>
 
             <div nz-col nzFlex="160px">
-              <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">Volver a empezar:</button>
+              <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">Volver a empezar</button>
+              <button nz-button nzType="default" nzPrimary class="mb-2" (click)="reloadPage()">Recargar Resultados</button>
               <nz-divider></nz-divider>
               <nz-tag [nzColor]="'blue'" class="mt-2"># Intentos: {{establishment.attempts}}</nz-tag>
-              <nz-tag [nzColor]="'green'" class="mt-2">Tipo de establecimiento: {{establishment.establishment_type.name}}</nz-tag>
+              <nz-tag [nzColor]="'green'" class="mt-2">Tipo de establecimiento:
+                {{establishment.establishment_type.name}}</nz-tag>
             </div>
           </div>
         </nz-tab>
       </div>
 
-      <nz-tab nzTitle="Evaluación" *ngIf="percentage">
+      <nz-tab nzTitle="Evaluación" *ngIf="percentage==100">
         <div class="container" style="width: 100%;">
           <div class="row">
             <div class="col-md-12 mx-auto w-100">
-              <nz-card nzTitle="Evaluación">
+              <nz-card [nzTitle]="titleCardEvaluation">
                 <div nz-row>
                   <div nz-col nzFlex="2">
+                  <nz-tag [nzColor]="'green'">Calificación del Formulario</nz-tag>
+
                     <div id="chartForm" style="height: 400px"></div>
                   </div>
                   <div nz-col nzFlex="3">
+                  <nz-tag [nzColor]="'geekblue'">Calificaciones por Componente</nz-tag>
+
                     <div style="background: #ECECEC; padding: 15px;">
                       <nz-row [nzGutter]="8">
                         <nz-col [nzSpan]="12" *ngFor="let option of components">
                           <nz-card>
-                              <div id="chartComponentsForm"  style="height: 150px"></div>
+                            <div  [id]="'chartComponentsForm' + option['resultable_id']" style="height: 150px"></div>
                           </nz-card>
                         </nz-col>
                       </nz-row>
@@ -344,48 +460,77 @@
 
                   </div>
                 </div>
-                <div nz-row>
+                <div nz-row  style="margin-top: 50px; margin-bottom: 50px;">
+
                   <div nz-col nzFlex="2">
-                    <nz-tabset
-                    nzTabPosition="left" (nzSelectedIndexChange)="handleTabChangeTabCharts($event)">
+                  <nz-tag [nzColor]="'cyan'">Calificaciones por Sub Temas</nz-tag>
+
+                    <nz-tabset nzTabPosition="left" (nzSelectedIndexChange)="handleTabChangeTabCharts($event)">
                       <nz-tab *ngFor="let option of components" [nzTitle]="option.resultable.name">
-                        <div id="chartSubTopicsForm" style="height: 400px">
+                        <div id="chartSubTopicsForm" style="height: 300px">
                         </div>
                       </nz-tab>
                     </nz-tabset>
                   </div>
                 </div>
-
+                <div nz-row>
+                  <div nz-col nzFlex="auto">
+                    <nz-tag [nzColor]="'blue'">Calificaciones por pregunta</nz-tag>
+                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona el Sub Tema"
+                      [(ngModel)]="selectedSubTopic" (ngModelChange)="handleSelectionChange($event)" style="width:30%">
+                      <nz-option *ngFor="let option of subTopics" [nzLabel]="option.resultable.name"
+                        [nzValue]="option.resultable_id"></nz-option>
+                    </nz-select>
+                  </div>
+                </div>
                 <div nz-row>
 
                   <div nz-col nzFlex="1">
-                    <nz-tag [nzColor]="'blue'">Calificaciones por pregunta</nz-tag>
-                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona el Sub Tema" (ngModel)="3">
-                      <nz-option nzLabel="Sub Tema 1" nzValue="1"></nz-option>
-                      <nz-option nzLabel="Sub Tema 2" nzValue="2"></nz-option>
-                      <nz-option nzLabel="Sub Tema 3" nzValue="3"></nz-option>
-                    </nz-select>
-                    <nz-table #basicTable [nzData]="listOfData">
+                    <nz-table #basicTable [nzData]="questionsChart">
                       <thead>
                         <tr>
+                          <th>Codigo</th>
                           <th>Nombre</th>
+                          <th>Importancia</th>
+                          <th>Medios de Verificación</th>
                           <th>Calificación</th>
-                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let data of basicTable.data">
-                          <td>{{ data.name }}</td>
-                          <td>{{ data.code }}</td>
-                          <td>
-                            <a>Action 一 {{ data.name }}</a>
-                            <nz-divider nzType="vertical"></nz-divider>
+                          <td>{{ data.resultable.code }}</td>
+                          <td>{{ data.resultable.name }}</td>
+                          <td>{{ data.resultable.importance }}</td>
+                          <td>{{ data.resultable.verification_means }}</td>
+
+                          <td *ngIf="data.resultable.type=='relacionada'">
+                            <nz-tag [nzColor]="'gold'">  {{ data.score/10 | number:'.1' }}</nz-tag>
                           </td>
+                          <td *ngIf="data.resultable.type=='si_no'">
+                            <nz-tag [nzColor]="'gold'"> {{ data.score*10 }}</nz-tag>
+
+                           </td>
+                          <td *ngIf="data.resultable.type=='rango_1_5'">
+                            <nz-tag [nzColor]="'gold'"> {{ data.score*5 }}</nz-tag>
+                           </td>
                         </tr>
                       </tbody>
                     </nz-table>
                   </div>
                 </div>
+                <ng-template #titleCardEvaluation let-control>
+                  <div nz-row>
+                    <div nz-col nzFlex="3">
+                        <h2><nz-tag [nzColor]="'lime'">{{establishment.name+' '+establishment.company}}</nz-tag>
+                    </h2>
+                  </div>
+                    <div nz-col nzFlex="3" style="display:contents; align-items:end">
+                      <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">Volver a empezar</button>
+                      <button nz-button nzType="default" nzPrimary class="mb-2" (click)="reloadPage()">Recargar Resultados</button>
+                    </div>
+                  </div>
+
+                </ng-template>
               </nz-card>
             </div>
           </div>
@@ -447,9 +592,9 @@
       <div class="footer-content justify-content-between">
         <p class="m-b-0">Copyright © 2023 All rights reserved.</p>
         <span>
-          <a href="https://laverix.com.ec/" class="text-gray m-r-15">Developed by: Laverix
+          <a href="https://laverix.com.ec/" target="_blank" class="text-gray m-r-15">Developed by: Laverix
           </a>
-          <a href="https://www.linkedin.com/in/ricardo-urvina-142222182/" class="text-gray">&amp; R.U</a>
+          <a href="https://www.linkedin.com/in/ricardo-urvina-142222182/" target="_blank" class="text-gray">&amp; R.U</a>
         </span>
       </div>
     </footer>

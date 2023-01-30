@@ -9,7 +9,7 @@
   <div style="background: #ECECEC;padding:30px;">
     <div nz-row [nzGutter]="8">
       <div nz-col [nzSpan]="8" *ngFor="let component of components">
-        <nz-card nzTitle="{{component.name}}-{{component.code}}" [nzExtra]="extraTemplate">
+        <nz-card nzTitle="{{component.code}}-{{component.name}}" [nzExtra]="extraTemplate">
           <p>{{component.description}}</p>
           <nz-divider [nzText]="'general.sub_tema'|translate"></nz-divider>
           <nz-tag [nzColor]="'magenta'" *ngFor="let subTopic of component.sub_topics">

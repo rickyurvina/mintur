@@ -100,6 +100,22 @@
   </nz-form-item>
 
   <nz-form-item>
+    <nz-form-label [nzSpan]="4">Importancia</nz-form-label>
+    <nz-form-control nzHasFeedback>
+      <textarea nz-input placeholder="Importancia" formControlName="importance"
+        [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4">Medios de Verificación</nz-form-label>
+    <nz-form-control nzHasFeedback>
+      <textarea nz-input placeholder="Medios de Verificación" formControlName="verificationMeans"
+        [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
     <nz-form-label [nzSpan]="4">Tiene calificación</nz-form-label>
     <nz-form-control nzHasFeedback>
         <nz-switch [ngModel]="true" nzCheckedChildren="Si" nzUnCheckedChildren="No" formControlName="hasScore"></nz-switch>
