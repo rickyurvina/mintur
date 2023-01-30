@@ -39,6 +39,8 @@ export class FillFormComponent implements OnInit {
   emailEstablishment: string;
   establishment: Establishment;
   index = 0;
+  indexTabs = 0;
+
   subTopic: SubTopic;
   subTopics: SubTopic[] = [];
   subTopicsSteps: SubTopic[] = [];
@@ -396,6 +398,9 @@ export class FillFormComponent implements OnInit {
         }
       })
     }
+    this.indexTabs=event;
+    console.log(this.indexTabs)
+    console.log(this.components)
 
     this.index = 0;
     this.changeDetector.detectChanges();
@@ -687,15 +692,13 @@ export class FillFormComponent implements OnInit {
 
         })
         this.subTopicsCharts = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable']['id']);
-
-
         this.updateProgress()
 
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        // this.message.create('error', `Error: ${err}`);
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      // this.message.create('error', `Error ${e}`);
     }
 
   }
