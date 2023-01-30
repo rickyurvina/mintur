@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } fro
 import { Observable, Observer } from 'rxjs';
 import { FormService } from '../form.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
 import { ManageFormsComponent } from '../index/manage-forms.component';
 import { Form } from '../form';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -37,7 +36,6 @@ export class CreateFormComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private formService: FormService,
     private modalService: NzModalService,
-    private router: Router,
     private manageForms: ManageFormsComponent,
     private message: NzMessageService,
     private translate: TranslateService,
@@ -132,7 +130,6 @@ export class CreateFormComponent implements OnInit {
           this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
           this.modalService.closeAll();
           this.manageForms.ngOnInit();
-          this.router.navigate(['admin/manage-forms'])
         }, err => {
           this.showErrors(err)
         });
@@ -140,7 +137,6 @@ export class CreateFormComponent implements OnInit {
         this.message.create('error', `Error ${e}`);
       }
     }
-    // this.router.navigateByUrl('forms/manage-forms')
   }
 
   resetForm(e: MouseEvent): void {

@@ -21,7 +21,7 @@ import { EstablishmentTypeService } from '../establishment-type.service';
 import { ResultsService } from '../results.service';
 import { GeographichClassifierService } from 'src/app/services/geographich-classifier.service';
 import { GeographichClassifier } from 'src/app/services/geographich-classifier';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-fill-form',
   templateUrl: './fill-form.component.html',
@@ -34,6 +34,8 @@ export class FillFormComponent implements OnInit {
   establishmentFormUpdate: FormGroup;
   form: Form;
   formDisplay: Form;
+  formDisplayChart: Form;
+
   emailEstablishment: string;
   establishment: Establishment;
   index = 0;
@@ -42,64 +44,23 @@ export class FillFormComponent implements OnInit {
   subTopicsSteps: SubTopic[] = [];
   subTopicsCharts: SubTopic[] = [];
   components: Comp[] = [];
+  componentsCharts: Comp[] = [];
   questions: Question[] = [];
   questionsSteps: Question[] = [];
+  questionsChart: Question[] = [];
+
   establishmentTypes: EstablishmentType[] = [];
   provinces: GeographichClassifier[] = [];
   cantons: GeographichClassifier[] = [];
   cantonsShow: GeographichClassifier[] = [];
   parrishes: GeographichClassifier[] = [];
   parrishesShow: GeographichClassifier[] = [];
-  listOfData: any[] = [
-    {
-      id: 1,
-      name: 'q1',
-      code: '001',
-      type: 'si_no',
-      max_score: null,
-      description: 'string',
-      parent_id: null,
-      value: null,
-      children_type: null,
-      children: null,
-      dependent: null,
-      establishment_type: null
-    },
-    {
-      id: 1,
-      name: 'q1',
-      code: '001',
-      type: 'si_no',
-      max_score: null,
-      description: 'string',
-      parent_id: null,
-      value: null,
-      children_type: null,
-      children: null,
-      dependent: null,
-      establishment_type: null
 
-    },
-    {
-      id: 1,
-      name: 'q1',
-      code: '001',
-      type: 'si_no',
-      max_score: null,
-      description: 'string',
-      parent_id: null,
-      value: null,
-      children_type: null,
-      children: null,
-      dependent: null,
-      establishment_type: null
-
-    },
-  ];
-
-  percentage: string
+  percentage: any
   validateForm: FormGroup;
   years: any[] = [];
+  selectedSubTopic: number
+  isValidAttemp: boolean = false;
 
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
@@ -107,17 +68,15 @@ export class FillFormComponent implements OnInit {
     private translate: TranslateService,
     private establishmentService: EstablishmentService,
     private localStore: LocalService,
-    private subTopicService: SubTopicService,
     private changeDetector: ChangeDetectorRef,
     private establishmentTypeService: EstablishmentTypeService,
     public resultsService: ResultsService,
-    private geographicClassifierService: GeographichClassifierService
+    private geographicClassifierService: GeographichClassifierService,
   ) {
     this.establishmentForm = this.fb.group({
       name: ['', [Validators.required]],
       company: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-
     });
 
     this.establishmentFormUpdate = this.fb.group({
@@ -136,6 +95,7 @@ export class FillFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.index = 0;
     /*get establishment types*/
     try {
@@ -159,9 +119,11 @@ export class FillFormComponent implements OnInit {
         this.emailEstablishment = this.localStore.getData('email');
         this.establishmentService.showActiveEstablishmentForm(this.emailEstablishment).subscribe((data: Establishment) => {
           this.establishment = data;
-          if (this.establishment.province) {
-            this.chargeData();
+          if (!data['name']) {
+            this.localStore.removeData('email')
+            this.ngOnInit();
           }
+          this.chargeData();
         }, err => {
           this.message.create('error', `Error: ${err}`);
         });
@@ -207,6 +169,8 @@ export class FillFormComponent implements OnInit {
               this.establishmentForm.controls[key].updateValueAndValidity();
             }
           }
+          this.isValidAttemp=true;
+
           this.emailEstablishment = value.email;
           this.localStore.saveData('email', this.emailEstablishment);
           this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
@@ -223,7 +187,12 @@ export class FillFormComponent implements OnInit {
     }
   }
 
-  updateForm(value: { ruc: string; establishmentType: string; typeOfTaxpayer: string; province: string; canton: string; parrish: string; direction: string, startYearOperations: string }): void {
+  updateForm(value: {
+    ruc: string; establishmentType: string;
+    typeOfTaxpayer: string; province: string;
+    canton: string; parrish: string;
+    direction: string, startYearOperations: string
+  }): void {
 
     if (this.formDisplay.name) {
       try {
@@ -237,6 +206,8 @@ export class FillFormComponent implements OnInit {
           this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
           this.establishmentFormUpdate.reset();
           this.chargeData();
+          this.isValidAttemp=false;
+
         }, err => {
           this.showErrors(err)
         });
@@ -246,6 +217,7 @@ export class FillFormComponent implements OnInit {
     } else {
       this.message.create('error', "No se puede iniciar, No existe un formulario acitvo")
     }
+
   }
 
   showErrors(err) {
@@ -300,6 +272,7 @@ export class FillFormComponent implements OnInit {
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
           // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
+
         }, err => {
           this.showErrors(err)
         });
@@ -308,6 +281,28 @@ export class FillFormComponent implements OnInit {
         this.message.create('error', `Error ${e}`);
       }
     }
+
+    if (type === 'informativa') {
+      try {
+        this.validateForm.setValue({
+          score: value,
+          type: 'informativa',
+          model: "App\\Models\\Forms\\Question",
+          establishment: this.establishment.id,
+          ids: value
+        })
+
+        this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
+
+        }, err => {
+          this.showErrors(err)
+        });
+
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+    }
+
 
     if (type === 'rango_1_5') {
       try {
@@ -351,10 +346,30 @@ export class FillFormComponent implements OnInit {
   }
 
   resetForm(): void {
+
+
     this.localStore.removeData('email')
     this.establishment = null;
+    this.subTopicsSteps = null;
+    this.subTopicsCharts = null;
+    this.components = null;
+    this.componentsCharts = null;
+    this.subTopic = null;
+    this.subTopics = null;
+    this.questionsSteps = null;
+    this.questionsChart = null;
+    this.form = null;
+    this.formDisplay = null;
+    this.formDisplayChart = null;
     this.emailEstablishment = '';
+    this.index = 0;
+    this.validateForm.reset();
+
     this.establishmentForm.reset();
+    this.establishmentFormUpdate.reset();
+    this.percentage = 0;
+    this.reloadPage();
+    this.isValidAttemp=false;
   }
 
   selectStep(id: number, index: number): void {
@@ -399,10 +414,6 @@ export class FillFormComponent implements OnInit {
     var option;
 
     option = {
-      title: {
-        text: 'Calificación del Formulario',
-        left: 'center'
-      },
       series: [
 
         {
@@ -470,8 +481,8 @@ export class FillFormComponent implements OnInit {
           },
           data: [
             {
-              value: 0.9,
-              name: 'Calificación'
+              value: this.formDisplayChart['score'] / 10,
+              name: `Calificación ${this.formDisplayChart['score']}`
             }
           ]
         }
@@ -484,16 +495,27 @@ export class FillFormComponent implements OnInit {
   }
 
   showComponentsChart() {
-    var dom = document.getElementById('chartComponentsForm');
-    var myChart = echarts.init(dom, null, {
-      renderer: 'canvas',
-      useDirtyRect: false
-    });
 
-    var  option = {
+    this.componentsCharts.forEach(function (element) {
+      var dom = document.getElementById('chartComponentsForm' + element['resultable_id']);
+      var myChart = echarts.init(dom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
+      });
+
+      var option = {
+        title: {
+          text: element['resultable']['name'],
+          left: 'center',
+          button: 10,
+          textStyle: {
+            fontSize: 10
+          },
+        },
         series: [
           {
             type: 'gauge',
+            max: 10,
             progress: {
               show: true,
               width: 18
@@ -516,7 +538,7 @@ export class FillFormComponent implements OnInit {
             axisLabel: {
               distance: 25,
               color: '#999',
-              fontSize: 20
+              fontSize: 10
             },
             anchor: {
               show: true,
@@ -526,32 +548,30 @@ export class FillFormComponent implements OnInit {
                 borderWidth: 10
               }
             },
-            title: {
-              show: false
-            },
             detail: {
               valueAnimation: true,
-              fontSize: 80,
+              fontSize: 10,
               offsetCenter: [0, '70%']
             },
             data: [
               {
-                value: 70
+                value: element['score']
               }
             ]
           }
         ]
-    };
+      };
 
 
 
-    if (option && typeof option === 'object') {
-      myChart.setOption(option);
-    }
+      if (option && typeof option === 'object') {
+        myChart.setOption(option);
+      }
+    })
+
   }
 
   showSubTopicsChart() {
-    console.log(this.subTopicsCharts)
     var dom = document.getElementById('chartSubTopicsForm');
     var myChart = echarts.init(dom, null, {
       renderer: 'canvas',
@@ -567,12 +587,7 @@ export class FillFormComponent implements OnInit {
       ]
       )
     })
-    console.log(data)
     var option = {
-      title: {
-        text: 'Calificaciones por Sub Temas',
-        left: 'center'
-      },
       tooltip: {
         trigger: 'item'
       },
@@ -631,10 +646,14 @@ export class FillFormComponent implements OnInit {
       this.emailEstablishment = this.localStore.getData('email');
       this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
         this.establishment = data;
+
         var form = this.establishment.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
         this.form = form.resultable;
+        this.formDisplayChart = form;
+
         var components = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
         this.components = components;
+        this.componentsCharts = components;
 
         var subTopics = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
         this.subTopics = subTopics;
@@ -650,13 +669,21 @@ export class FillFormComponent implements OnInit {
           }
         })
 
-        this.percentage = this.establishment.percentage
+        this.questionsChart = this.establishment.questions.filter(function (element) {
+          return element['resultable']['code'] != "";
+        })
+        this.subTopicsCharts = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable']['id']);
+
+
+        this.updateProgress()
+
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }
+
   }
 
   handleTabChangeTabCharts(event) {
@@ -669,4 +696,27 @@ export class FillFormComponent implements OnInit {
     this.showSubTopicsChart();
   }
 
+  handleSelectionChange(value: any) {
+
+    this.questionsChart = this.establishment.questions.filter(function (element) {
+      return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value;
+    })
+
+  }
+  reloadPage() {
+    window.location.reload();
+  }
+
+  updateProgress() {
+    var numberQuestions = this.questionsChart.length;
+    var dataQuestionsProgress = this.questionsChart.filter(function (question) {
+      return question['score'] != null
+    })
+    if (numberQuestions > 0) {
+      let operation = dataQuestionsProgress.length / numberQuestions*100
+      let formattedNum = operation.toFixed(2);
+      console.log(formattedNum)
+      this.percentage = formattedNum;
+    }
+  }
 }
