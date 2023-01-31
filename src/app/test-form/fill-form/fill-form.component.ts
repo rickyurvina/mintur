@@ -21,7 +21,8 @@ import { EstablishmentTypeService } from '../establishment-type.service';
 import { ResultsService } from '../results.service';
 import { GeographichClassifierService } from 'src/app/services/geographich-classifier.service';
 import { GeographichClassifier } from 'src/app/services/geographich-classifier';
-import { Location } from '@angular/common';
+import { NzModalService } from 'ng-zorro-antd/modal';
+
 @Component({
   selector: 'app-fill-form',
   templateUrl: './fill-form.component.html',
@@ -62,18 +63,18 @@ export class FillFormComponent implements OnInit {
   validateForm: FormGroup;
   years: any[] = [];
   selectedSubTopic: number
-  isValidAttemp: boolean = false;
 
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private formService: FormService,
     private translate: TranslateService,
     private establishmentService: EstablishmentService,
-    private localStore: LocalService,
+    public localStore: LocalService,
     private changeDetector: ChangeDetectorRef,
     private establishmentTypeService: EstablishmentTypeService,
     public resultsService: ResultsService,
     private geographicClassifierService: GeographichClassifierService,
+    private modalService: NzModalService,
   ) {
     this.establishmentForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -98,6 +99,7 @@ export class FillFormComponent implements OnInit {
 
   ngOnInit(): void {
 
+    console.log(this.localStore.getData('attemp'))
     this.index = 0;
     /*get establishment types*/
     try {
@@ -121,15 +123,22 @@ export class FillFormComponent implements OnInit {
         this.emailEstablishment = this.localStore.getData('email');
         this.establishmentService.showActiveEstablishmentForm(this.emailEstablishment).subscribe((data: Establishment) => {
           this.establishment = data;
-          if (!data['name']) {
+          if (!this.establishment) {
             this.localStore.removeData('email')
             this.ngOnInit();
           }
-          this.chargeData();
+
+
+          if (this.localStore.getData('attemp') == '0') {
+            this.chargeData();
+          }
         }, err => {
+          this.localStore.removeData('email')
           this.message.create('error', `Error: ${err}`);
         });
       } catch (e) {
+        this.localStore.removeData('email')
+
         this.message.create('error', `Error ${e}`);
       }
     }
@@ -171,7 +180,7 @@ export class FillFormComponent implements OnInit {
               this.establishmentForm.controls[key].updateValueAndValidity();
             }
           }
-          this.isValidAttemp=true;
+          this.localStore.saveData('attemp', '1');
 
           this.emailEstablishment = value.email;
           this.localStore.saveData('email', this.emailEstablishment);
@@ -196,29 +205,42 @@ export class FillFormComponent implements OnInit {
     direction: string, startYearOperations: string
   }): void {
 
-    if (this.formDisplay.name) {
-      try {
-        this.establishmentService.update(this.establishment.id, value).subscribe(res => {
-          for (const key in this.establishmentFormUpdate.controls) {
-            if (this.establishmentForm.controls.hasOwnProperty(key)) {
-              this.establishmentForm.controls[key].markAsDirty();
-              this.establishmentForm.controls[key].updateValueAndValidity();
+    try {
+      var message = "<p>Bienvenidas/os al aplicativo para evaluar el nivel de competitividad de su producto / destino turístico. Este aplicativo le permitirá conocer cuán preparado se encuentra su establecimiento para competir en el sector turístico ante las exigencias actuales del mercado con un enfoque de gestión de calidad. Para la evaluación deberá responder a 63 preguntas sobre 3 temáticas específicas:</p><p></p><ol><li>Sostenibilidad empresarial</li><li>Desarrollo turístico sostenible</li><li>Transformación digital</li></ol><p></p><p>Cada temática consta de subtemáticas que permiten abarcar todos los aspectos inherentes a la competitividad, por lo que se necesita que todas las preguntas sean respondidas en base a la realidad de su negocio. La calificación final se mostrará en una escala del 1 al 10 debidamente semaforizado, es decir que, según el resultado usted podrá conocer si su establecimiento es poco competitivo (rojo) medianamente competitivo (amarillo) o altamente competitivo (verde). De la misma forma, al final del proceso, podrá observar la importancia de mejorar en los aspectos en los que su negocio no se encuentra preparado, así como también los medios para verificar que así sea.</p><p></p><p>El formulario consta de preguntas de opción múltiple y tiene una duración estimada de 30 minutos.</p>"
+      this.modalService.confirm({
+        nzTitle: 'Introducción al formulario',
+        nzContent: message,
+        nzWidth: '850px',
+        nzOnOk: () => {
+          if (this.formDisplay.name) {
+            try {
+              this.establishmentService.update(this.establishment.id, value).subscribe(res => {
+                for (const key in this.establishmentFormUpdate.controls) {
+                  if (this.establishmentForm.controls.hasOwnProperty(key)) {
+                    this.establishmentForm.controls[key].markAsDirty();
+                    this.establishmentForm.controls[key].updateValueAndValidity();
+                  }
+                }
+                this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
+                this.establishmentFormUpdate.reset();
+                this.localStore.saveData('attemp', '0');
+                this.chargeData();
+              }, err => {
+                this.showErrors(err)
+              });
+            } catch (e) {
+              this.message.create('error', `Error ${e}`);
             }
+          } else {
+            this.message.create('error', "No se puede iniciar, No existe un formulario acitvo")
           }
-          this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
-          this.establishmentFormUpdate.reset();
-          this.chargeData();
-          this.isValidAttemp=false;
-
-        }, err => {
-          this.showErrors(err)
-        });
-      } catch (e) {
-        this.message.create('error', `Error ${e}`);
-      }
-    } else {
-      this.message.create('error', "No se puede iniciar, No existe un formulario acitvo")
+        }
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
     }
+
+
 
   }
 
@@ -345,12 +367,13 @@ export class FillFormComponent implements OnInit {
         this.message.create('error', `Error ${e}`);
       }
     }
+
   }
 
   resetForm(): void {
-
-
     this.localStore.removeData('email')
+    this.localStore.removeData('attemp')
+
     this.establishment = null;
     this.subTopicsSteps = null;
     this.subTopicsCharts = null;
@@ -371,10 +394,10 @@ export class FillFormComponent implements OnInit {
     this.establishmentFormUpdate.reset();
     this.percentage = 0;
     this.reloadPage();
-    this.isValidAttemp=false;
   }
 
   selectStep(id: number, index: number): void {
+    this.chargeSubtopicsQuestions();
     this.index = index;
     this.subTopic = this.subTopics.find(element => element['resultable']['id'] == id)
     this.questionsSteps = this.questions.filter(function (element) {
@@ -398,15 +421,14 @@ export class FillFormComponent implements OnInit {
         }
       })
     }
-    this.indexTabs=event;
-    console.log(this.indexTabs)
-    console.log(this.components)
+    this.indexTabs = event;
 
     this.index = 0;
     this.changeDetector.detectChanges();
     this.showFormChart();
     this.showComponentsChart();
     this.showSubTopicsChart();
+
   }
 
   showFormChart() {
@@ -434,9 +456,9 @@ export class FillFormComponent implements OnInit {
             lineStyle: {
               width: 6,
               color: [
-                [0.33, '#FF6E76'],
-                [0.66, '#FDDD60'],
-                [1, '#7CFFB2']
+                [0.50, '#FF6E76'],
+                [0.749, '#FDDD60'],
+                [1, '#65B581']
               ]
             }
           },
@@ -480,14 +502,13 @@ export class FillFormComponent implements OnInit {
             offsetCenter: [0, '-35%'],
             valueAnimation: true,
             formatter: function (value) {
-              return Math.round(value * 10) + '';
+              return value * 10;
             },
             color: 'inherit'
           },
           data: [
             {
               value: this.formDisplayChart['score'] / 10,
-              name: `Calificación ${this.formDisplayChart['score']}`
             }
           ]
         }
@@ -501,12 +522,76 @@ export class FillFormComponent implements OnInit {
 
   showComponentsChart() {
 
+    var colors = ['', '#FDDD60', '#65B581']
     this.componentsCharts.forEach(function (element) {
       var dom = document.getElementById('chartComponentsForm' + element['resultable_id']);
       var myChart = echarts.init(dom, null, {
         renderer: 'canvas',
         useDirtyRect: false
       });
+      // var option = {
+      //   title: {
+      //     text: element['resultable']['name'],
+      //     left: 'center',
+      //     button: 10,
+      //     textStyle: {
+      //       fontSize: 10
+      //     },
+      //   },
+      //   series: [
+      //     {
+      //       type: 'gauge',
+      //       max: 10,
+      //       progress: {
+      //         show: true,
+      //         width: 18
+      //       },
+      //       axisLine: {
+      //         lineStyle: {
+      //           width: 18
+      //         }
+      //       },
+      //       axisTick: {
+      //         show: false
+      //       },
+      //       splitLine: {
+      //         length: 15,
+      //         lineStyle: {
+      //           width: 2,
+      //           color: [
+      //             [0.50, '#FF6E76'],
+      //             [0.749, '#FDDD60'],
+      //             [1, '#65B581']
+      //           ]
+      //         }
+      //       },
+      //       axisLabel: {
+      //         distance: 25,
+      //         color: '#fff',
+      //         fontSize: 10
+      //       },
+      //       anchor: {
+      //         show: true,
+      //         showAbove: true,
+      //         size: 25,
+      //         itemStyle: {
+      //           borderWidth: 10
+      //         }
+      //       },
+      //       detail: {
+      //         valueAnimation: true,
+      //         fontSize: 10,
+      //         color:'inherit',
+      //         offsetCenter: [0, '70%']
+      //       },
+      //       data: [
+      //         {
+      //           value: element['score']
+      //         }
+      //       ]
+      //     }
+      //   ]
+      // };
 
       var option = {
         title: {
@@ -520,53 +605,60 @@ export class FillFormComponent implements OnInit {
         series: [
           {
             type: 'gauge',
-            max: 10,
-            progress: {
-              show: true,
-              width: 18
-            },
             axisLine: {
               lineStyle: {
-                width: 18
+                width: 8,
+                color: [
+                  [0.50, '#FF6E76'],
+                  [0.749, '#FDDD60'],
+                  [1, '#65B581']
+                ]
+              }
+            },
+            pointer: {
+              itemStyle: {
+                color: 'inherit'
               }
             },
             axisTick: {
-              show: false
+              distance: -30,
+              length: 8,
+              lineStyle: {
+                color: '#fff',
+                width: 2
+              }
             },
             splitLine: {
-              length: 15,
+              distance: -30,
+              length: 30,
               lineStyle: {
-                width: 2,
-                color: '#999'
+                color: '#fff',
+                width: 4
               }
             },
             axisLabel: {
-              distance: 25,
-              color: '#999',
-              fontSize: 10
-            },
-            anchor: {
-              show: true,
-              showAbove: true,
-              size: 25,
-              itemStyle: {
-                borderWidth: 10
-              }
+              color: 'inherit',
+              distance: 20,
+              fontSize: 10,
+              formatter: function (value) {
+                return Math.round(value) / 10 + '';
+              },
             },
             detail: {
               valueAnimation: true,
-              fontSize: 10,
-              offsetCenter: [0, '70%']
+              color: 'inherit',
+              formatter: function (value) {
+                return value / 10;
+              },
             },
             data: [
               {
-                value: element['score']
+                value: element['score'] * 10
               }
             ]
           }
         ]
       };
-
 
 
       if (option && typeof option === 'object') {
@@ -600,24 +692,27 @@ export class FillFormComponent implements OnInit {
         source:
           data
       },
+
       grid: { containLabel: true },
-      xAxis: { name: 'Calificación' },
-      yAxis: { type: 'category' },
-      visualMap: {
-        orient: 'horizontal',
-        left: 'center',
-        min: 0,
+      xAxis: {
+        name: 'Calificación',
         max: 10,
-        text: ['Calificación alta', 'Calificación baja'],
-        // Map the score column to color
-        dimension: 0,
-        inRange: {
-          color: ['#FD665F', '#FFCE34', '#65B581']
-        }
       },
+      yAxis: { type: 'category' },
       series: [
         {
           type: 'bar',
+          itemStyle: {
+            color: function (params) {
+              if (params.value[0] < 5) {
+                return '#FF6E76';
+              } else if (params.value[0] >= 5 && params.value[0] < 7.5) {
+                return '#FDDD60';
+              } else {
+                return '#65B581';
+              }
+            }
+          },
           encode: {
             // Map the "amount" column to X axis.
             x: 'amount',
@@ -649,6 +744,7 @@ export class FillFormComponent implements OnInit {
   chargeData() {
     try {
       this.emailEstablishment = this.localStore.getData('email');
+
       this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
         this.establishment = data;
 
@@ -662,30 +758,31 @@ export class FillFormComponent implements OnInit {
 
         var subTopics = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
         this.subTopics = subTopics;
-
-        this.subTopicsSteps = subTopics.filter(element => element.resultable['component_id'] == this.components[0]['resultable_id']);
-        this.subTopic = subTopics[0];
         var questions = this.establishment.questions
         this.questions = questions;
-        var subTo = this.subTopic['resultable_id']
-        this.questionsSteps = this.questions.filter(function (element) {
-          if (element['resultable']['sub_topics'].length > 0) {
-            return element['resultable']['sub_topics'][0]['id'] == subTo
-          }
-        })
+        if (this.index == 0) {
+          this.subTopicsSteps = subTopics.filter(element => element.resultable['component_id'] == this.components[0]['resultable_id']);
+          this.subTopic = subTopics[0];
+          var subTo = this.subTopic['resultable_id']
+          this.questionsSteps = this.questions.filter(function (element) {
+            if (element['resultable']['sub_topics'].length > 0) {
+              return element['resultable']['sub_topics'][0]['id'] == subTo
+            }
+          })
+        }
 
         this.questionsChart = this.establishment.questions.filter(function (element) {
-          if (element['resultable']['type']=='relacionada'){
-            if(element['score']/10<5){
+          if (element['resultable']['type'] == 'relacionada') {
+            if (element['score'] / 10 < 5) {
               return element['resultable']['code'];
             }
 
-          }else if(element['resultable']['type']=='si_no'){
-            if(element['score']*10<5){
+          } else if (element['resultable']['type'] == 'si_no') {
+            if (element['score'] * 10 < 5) {
               return element['resultable']['code'];
             }
-          }else if(element['resultable']['type']=='rango_1_5'){
-            if(element['score']*5<5){
+          } else if (element['resultable']['type'] == 'rango_1_5') {
+            if (element['score'] * 5 < 5) {
               return element['resultable']['code'];
             }
           }
@@ -695,10 +792,11 @@ export class FillFormComponent implements OnInit {
         this.updateProgress()
 
       }, err => {
-        // this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: ${err}`);
       });
+
     } catch (e) {
-      // this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error ${e}`);
     }
 
   }
@@ -717,23 +815,24 @@ export class FillFormComponent implements OnInit {
   handleSelectionChange(value: any) {
 
     this.questionsChart = this.establishment.questions.filter(function (element) {
-      if (element['resultable']['type']=='relacionada'){
-        if(element['score']/10<5){
+      if (element['resultable']['type'] == 'relacionada') {
+        if (element['score'] / 10 < 5) {
           return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value
         }
 
-      }else if(element['resultable']['type']=='si_no'){
-        if(element['score']*10<5){
+      } else if (element['resultable']['type'] == 'si_no') {
+        if (element['score'] * 10 < 5) {
           return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value
         }
-      }else if(element['resultable']['type']=='rango_1_5'){
-        if(element['score']*5<5){
+      } else if (element['resultable']['type'] == 'rango_1_5') {
+        if (element['score'] * 5 < 5) {
           return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value
         }
       }
     })
 
   }
+
   reloadPage() {
     window.location.reload();
   }
@@ -744,9 +843,47 @@ export class FillFormComponent implements OnInit {
       return question['score'] != null
     })
     if (numberQuestions > 0) {
-      let operation = dataQuestionsProgress.length / numberQuestions*100
+      let operation = dataQuestionsProgress.length / numberQuestions * 100
       let formattedNum = operation.toFixed(2);
       this.percentage = formattedNum;
+    }
+  }
+
+  chargeSubtopicsQuestions(){
+    try {
+      this.emailEstablishment = this.localStore.getData('email');
+
+      this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
+        this.establishment = data;
+        var subTopics = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
+        this.subTopics = subTopics;
+        var questions = this.establishment.questions
+        this.questions = questions;
+
+        this.questionsChart = this.establishment.questions.filter(function (element) {
+          if (element['resultable']['type'] == 'relacionada') {
+            if (element['score'] / 10 < 10) {
+              return element['resultable']['code'];
+            }
+
+          } else if (element['resultable']['type'] == 'si_no') {
+            if (element['score'] * 10 < 10) {
+              return element['resultable']['code'];
+            }
+          } else if (element['resultable']['type'] == 'rango_1_5') {
+            if (element['score'] * 5 < 10) {
+              return element['resultable']['code'];
+            }
+          }
+        })
+        this.updateProgress()
+
+      }, err => {
+        this.message.create('error', `Error: ${err}`);
+      });
+
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
     }
   }
 }
