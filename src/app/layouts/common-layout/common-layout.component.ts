@@ -48,8 +48,8 @@ export class CommonLayoutComponent  {
         );
         this.themeService.isMenuFoldedChanges.subscribe(isFolded => this.isFolded = isFolded);
         this.themeService.isSideNavDarkChanges.subscribe(isDark => this.isSideNavDark = isDark);
-        this.themeService.selectedHeaderColor.subscribe(color => this.selectedHeaderColor = color);   
-        this.themeService.isExpandChanges.subscribe(isExpand => this.isExpand = isExpand);     
+        this.themeService.selectedHeaderColor.subscribe(color => this.selectedHeaderColor = color);
+        this.themeService.isExpandChanges.subscribe(isExpand => this.isExpand = isExpand);
     }
 
     private buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadcrumb[] = []): IBreadcrumb[] {

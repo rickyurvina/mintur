@@ -8,16 +8,12 @@ import { FullLayout_ROUTES } from "./shared/routes/full-layout.routes";
 import { CommonLayout_ROUTES } from "./shared/routes/common-layout.routes";
 
 const appRoutes: Routes = [
-    {
-        path: '',
-        redirectTo: '/admin/manage-forms',
-        pathMatch: 'full',
-    },
-    {
-        path: '',
-        component: CommonLayoutComponent,
-        children: CommonLayout_ROUTES
-    },
+
+    // {
+    //     path: '',
+    //     component: CommonLayoutComponent,
+    //     children: CommonLayout_ROUTES
+    // },
     {
         path: '',
         component: FullLayoutComponent,
