@@ -63,6 +63,27 @@ export class EstablishmentService {
     )
   }
 
+  showPercentage(idEstablishment,idIntent): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-percentage/"+idEstablishment+"/"+idIntent)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  showQuestionsOfSubtopic(subTopicResultId,idEstablishment,idIntent): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-questions-subtopic/"+subTopicResultId+"/"+idEstablishment+"/"+idIntent)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  showQuestionsResults(subTopicResultId,idEstablishment,idIntent): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-questions-results/"+subTopicResultId+"/"+idEstablishment+"/"+idIntent)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   showActiveEstablishmentForm(email): Observable<Establishment> {
     return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-active-form/"+email)
     .pipe(

@@ -51,7 +51,6 @@ export class FillFormComponent implements OnInit {
   questions: Question[] = [];
   questionsSteps: Question[] = [];
   questionsChart: Question[] = [];
-  questionsForCalculateProgress: Question[] = [];
 
   establishmentTypes: EstablishmentType[] = [];
   provinces: GeographichClassifier[] = [];
@@ -129,21 +128,17 @@ export class FillFormComponent implements OnInit {
         this.emailEstablishment = this.localStore.getData('email');
         this.establishmentService.showActiveEstablishmentForm(this.emailEstablishment).subscribe((data: Establishment) => {
           this.establishment = data;
-          if (!this.establishment) {
-            this.localStore.removeData('email')
-            this.ngOnInit();
-          }
           if (this.localStore.getData('attemp') == '0') {
             this.chargeData();
           }
+          this.changeDetector.detectChanges();
+          this.showFormChart();
+          this.showComponentsChart();
+          this.showSubTopicsChart();
         }, err => {
-          this.localStore.removeData('email')
-          this.localStore.removeData('attemp')
           this.message.create('error', `Error: ${err}`);
         });
       } catch (e) {
-        this.localStore.removeData('email')
-
         this.message.create('error', `Error ${e}`);
       }
     }
@@ -186,7 +181,6 @@ export class FillFormComponent implements OnInit {
             }
           }
           this.localStore.saveData('attemp', '1');
-
           this.emailEstablishment = value.email;
           this.localStore.saveData('email', this.emailEstablishment);
           this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
@@ -265,7 +259,7 @@ export class FillFormComponent implements OnInit {
     });
   }
 
-  saveAnswer(idQuestion: number, answer: string, value: any, type: string): void {
+  saveAnswer(idQuestion: number, answer: string, value: any, type: string, numberQuestions:number=0): void {
 
     if (type === 'relacionada') {
       try {
@@ -278,8 +272,10 @@ export class FillFormComponent implements OnInit {
         })
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
-          this.chargeSubtopicsQuestions()
-
+          this.updateProgress()
+          if(numberQuestions>0){
+            this.chargeQuestionsOfSubtopic(this.localStore.getData('sub_topic_id'))
+          }
         }, err => {
           this.showErrors(err)
         });
@@ -301,8 +297,10 @@ export class FillFormComponent implements OnInit {
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
           // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
-          this.chargeSubtopicsQuestions()
-
+          this.updateProgress()
+          if(numberQuestions>0){
+            this.chargeQuestionsOfSubtopic(this.localStore.getData('sub_topic_id'))
+          }
         }, err => {
           this.showErrors(err)
         });
@@ -325,7 +323,7 @@ export class FillFormComponent implements OnInit {
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
           // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
-          this.chargeSubtopicsQuestions()
+          this.updateProgress()
 
         }, err => {
           this.showErrors(err)
@@ -347,6 +345,7 @@ export class FillFormComponent implements OnInit {
         })
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
+          this.updateProgress()
 
         }, err => {
           this.showErrors(err)
@@ -368,7 +367,7 @@ export class FillFormComponent implements OnInit {
         })
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
-          this.chargeSubtopicsQuestions()
+          this.updateProgress()
 
         }, err => {
           this.showErrors(err)
@@ -389,7 +388,7 @@ export class FillFormComponent implements OnInit {
           ids: value
         })
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
-          this.chargeSubtopicsQuestions()
+          this.updateProgress()
         }, err => {
           this.showErrors(err)
         });
@@ -411,7 +410,10 @@ export class FillFormComponent implements OnInit {
         this.localStore.removeData('email')
         this.localStore.removeData('attemp')
         this.localStore.removeData('finished');
-
+        this.localStore.removeData('idEstablishment');
+        this.localStore.removeData('intent_id');
+        this.localStore.removeData('sub_topic_id');
+        this.localStore.removeData('finished');
         this.establishment = null;
         this.subTopicsSteps = null;
         this.subTopicsCharts = null;
@@ -437,18 +439,19 @@ export class FillFormComponent implements OnInit {
 
   }
 
+  resetData() {
+    this.localStore.removeData('email')
+    this.localStore.removeData('attemp')
+    this.localStore.removeData('finished');
+    this.localStore.removeData('idEstablishment');
+    this.localStore.removeData('intent_id');
+    this.localStore.removeData('sub_topic_id');
+    this.reloadPage();
+  }
+
   selectStep(id: number, index: number): void {
-    this.chargeSubtopicsQuestions();
     this.index = index;
-    this.subTopic = this.subTopics.find(element => element['resultable']['id'] == id)
-    this.localStore.saveData('sub_topic_id', id.toString());
-
-    this.questionsSteps = this.questions.filter(function (element) {
-      if (element['resultable']['sub_topics'].length > 0) {
-        return element['resultable']['sub_topics'][0]['id'] == id && element['resultable']['question_dependents'].length <= 0
-      }
-    })
-
+    this.chargeQuestionsOfSubtopic(id)
   }
 
   handleChagTabComponent(event) {
@@ -456,41 +459,11 @@ export class FillFormComponent implements OnInit {
     if (this.components[event]) {
       this.subTopic = this.subTopics.find(element => element['resultable']['component_id'] == this.components[event]['resultable']['id'])
       this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[event]['resultable']['id']);
-
       var id = this.subTopic['resultable_id'];
-      this.localStore.saveData('sub_topic_id', id.toString());
-
-      this.questionsSteps = this.questions.filter(function (element) {
-        if (element['resultable']['sub_topics'].length > 0) {
-          return element['resultable']['sub_topics'][0]['id'] == id
-        }
-      })
+      this.chargeQuestionsOfSubtopic(id)
     }
-
-    this.questionsChart = this.establishment.questions.filter(function (element) {
-      if (element['resultable']['type'] == 'relacionada') {
-        if (element['score'] / 10 < 10) {
-          return element['resultable']['code'] && element['resultable']['has_score'] == '1';
-        }
-      } else if (element['resultable']['type'] == 'si_no') {
-        if (element['score'] * 10 < 10) {
-          return element['resultable']['code'] && element['resultable']['has_score'] == '1';
-        }
-      } else if (element['resultable']['type'] == 'rango_1_5') {
-        if (element['score'] * 5 < 10) {
-          return element['resultable']['code'] && element['resultable']['has_score'] == '1';
-        }
-      }
-    })
-
     this.indexTabs = event;
-
     this.index = 0;
-    this.changeDetector.detectChanges();
-    this.showFormChart();
-    this.showComponentsChart();
-    this.showSubTopicsChart();
-
   }
 
   showFormChart() {
@@ -564,13 +537,13 @@ export class FillFormComponent implements OnInit {
             offsetCenter: [0, '-35%'],
             valueAnimation: true,
             formatter: function (value) {
-              return value * 10;
+              return (value * 10).toFixed(2);
             },
             color: 'inherit'
           },
           data: [
             {
-              value: this.formDisplayChart['score'] / 10,
+              value: (this.formDisplayChart['score'] / 10).toFixed(2),
             }
           ]
         }
@@ -584,76 +557,13 @@ export class FillFormComponent implements OnInit {
 
   showComponentsChart() {
 
-    var colors = ['', '#FDDD60', '#65B581']
     this.componentsCharts.forEach(function (element) {
       var dom = document.getElementById('chartComponentsForm' + element['resultable_id']);
       var myChart = echarts.init(dom, null, {
         renderer: 'canvas',
         useDirtyRect: false
       });
-      // var option = {
-      //   title: {
-      //     text: element['resultable']['name'],
-      //     left: 'center',
-      //     button: 10,
-      //     textStyle: {
-      //       fontSize: 10
-      //     },
-      //   },
-      //   series: [
-      //     {
-      //       type: 'gauge',
-      //       max: 10,
-      //       progress: {
-      //         show: true,
-      //         width: 18
-      //       },
-      //       axisLine: {
-      //         lineStyle: {
-      //           width: 18
-      //         }
-      //       },
-      //       axisTick: {
-      //         show: false
-      //       },
-      //       splitLine: {
-      //         length: 15,
-      //         lineStyle: {
-      //           width: 2,
-      //           color: [
-      //             [0.50, '#FF6E76'],
-      //             [0.749, '#FDDD60'],
-      //             [1, '#65B581']
-      //           ]
-      //         }
-      //       },
-      //       axisLabel: {
-      //         distance: 25,
-      //         color: '#fff',
-      //         fontSize: 10
-      //       },
-      //       anchor: {
-      //         show: true,
-      //         showAbove: true,
-      //         size: 25,
-      //         itemStyle: {
-      //           borderWidth: 10
-      //         }
-      //       },
-      //       detail: {
-      //         valueAnimation: true,
-      //         fontSize: 10,
-      //         color:'inherit',
-      //         offsetCenter: [0, '70%']
-      //       },
-      //       data: [
-      //         {
-      //           value: element['score']
-      //         }
-      //       ]
-      //     }
-      //   ]
-      // };
+
 
       var option = {
         title: {
@@ -808,64 +718,69 @@ export class FillFormComponent implements OnInit {
 
       this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
         this.establishment = data;
-
+        this.localStore.saveData('idEstablishment', this.establishment['id'].toString());
+        this.localStore.saveData('intent_id', this.establishment['intent_id']);
         var form = this.establishment.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
         this.form = form.resultable;
         this.formDisplayChart = form;
-
         var components = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
         this.components = components;
         this.componentsCharts = components;
-
         var subTopics = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
         this.subTopics = subTopics;
-        var questions = this.establishment.questions
-        this.questions = questions;
+
         if (this.index == 0) {
           this.subTopicsSteps = subTopics.filter(element => element.resultable['component_id'] == this.components[0]['resultable_id']);
-          this.subTopic = subTopics[0];
-          var subTo = this.subTopic['resultable_id']
-          this.questionsSteps = this.questions.filter(function (element) {
-            if (element['resultable']['sub_topics'].length > 0) {
-              return element['resultable']['sub_topics'].find(e => e['id'] == subTo) && element['resultable']['question_dependents'].length <= 0
-            }
-          })
-
-          this.localStore.saveData('sub_topic_id', subTo.toString());
+          this.chargeQuestionsOfSubtopic(this.subTopicsSteps[0]['resultable_id'])
         }
-
-        this.questionsChart = this.questions.filter(function (element) {
-          if (element['resultable']['type'] == 'relacionada') {
-            if (element['score'] / 10 < 5) {
-              return element['resultable']['code'] && element['resultable']['has_score'] == '1';
-            }
-
-          } else if (element['resultable']['type'] == 'si_no') {
-            if (element['score'] * 10 < 5) {
-              return element['resultable']['code'] && element['resultable']['has_score'] == '1';
-            }
-          } else if (element['resultable']['type'] == 'rango_1_5') {
-            if (element['score'] * 5 < 5) {
-              return element['resultable']['code'] && element['resultable']['has_score'] == '1';
-            }
-          }
-
-        })
-        this.questionsForCalculateProgress = this.questions.filter(function (element) {
-          if (element['resultable']['sub_topics'].length > 0) {
-            return element;
-          }
-        })
         this.subTopicsCharts = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable']['id']);
-        this.updateProgress()
-
+        this.changeDetector.detectChanges();
+        this.showFormChart();
+        this.showComponentsChart();
+        this.showSubTopicsChart();
+        this.fillQuestionsChart();
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
-
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }
+    this.updateProgress();
+  }
+
+  chargeQuestionsOfSubtopic(subTopicId) {
+    let idEstablishment = this.localStore.getData('idEstablishment');
+    let intentId = this.localStore.getData('intent_id');
+    this.establishmentService.showQuestionsOfSubtopic(subTopicId, idEstablishment, intentId).subscribe((data: Establishment) => {
+      this.questionsSteps = data['questions'];
+    }, err => {
+      this.message.create('error', `Error: ${err}`);
+    });
+    this.localStore.saveData('sub_topic_id',subTopicId.toString())
+    this.subTopic = this.subTopics.find(element => element['resultable']['id'] == subTopicId)
+  }
+
+  fillQuestionsChart() {
+
+    this.establishmentService.showQuestionsResults(this.localStore.getData('sub_topic_id'), this.establishment['id'], this.establishment['intent_id']).subscribe((data: Establishment) => {
+      this.questionsChart = data['questions'].filter(function (element) {
+        if (element['resultable']['type'] == 'relacionada') {
+          if (element['score'] / 10 < 5) {
+            return element;
+          }
+        } else if (element['resultable']['type'] == 'si_no') {
+          if (element['score'] * 10 < 5) {
+            return element;
+          }
+        } else if (element['resultable']['type'] == 'rango_1_5') {
+          if (element['score'] * 5 < 5) {
+            return element;
+          }
+        }
+      })
+    }, err => {
+      this.message.create('error', `Error: ${err}`);
+    });
 
   }
 
@@ -882,21 +797,25 @@ export class FillFormComponent implements OnInit {
 
   handleSelectionChange(value: any) {
 
-    this.questionsChart = this.establishment.questions.filter(function (element) {
-      if (element['resultable']['type'] == 'relacionada') {
-        if (element['score'] / 10 < 5) {
-          return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value && element['resultable']['has_score'] == '1';
+    this.establishmentService.showQuestionsResults(this.localStore.getData('sub_topic_id'), this.establishment['id'], this.establishment['intent_id']).subscribe((data: Establishment) => {
+      this.questionsChart = data['questions'].filter(function (element) {
+        if (element['resultable']['type'] == 'relacionada') {
+          if (element['score'] / 10 < 5) {
+            return  element['resultable']['sub_topics'][0]['id'] == value;
+          }
+        } else if (element['resultable']['type'] == 'si_no') {
+          if (element['score'] * 10 < 5) {
+            return  element['resultable']['sub_topics'][0]['id'] == value;
+          }
+        } else if (element['resultable']['type'] == 'rango_1_5') {
+          if (element['score'] * 5 < 5) {
+            return element['resultable']['sub_topics'][0]['id'] == value;
+          }
         }
-      } else if (element['resultable']['type'] == 'si_no') {
-        if (element['score'] * 10 < 5) {
-          return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value && element['resultable']['has_score'] == '1';
-        }
-      } else if (element['resultable']['type'] == 'rango_1_5') {
-        if (element['score'] * 5 < 5) {
-          return element['resultable']['code'] != "" && element['resultable']['sub_topics'][0]['id'] == value && element['resultable']['has_score'] == '1';
-        }
-      }
-    })
+      })
+    }, err => {
+      this.message.create('error', `Error: ${err}`);
+    });
 
   }
 
@@ -905,49 +824,17 @@ export class FillFormComponent implements OnInit {
   }
 
   updateProgress() {
-    var numberQuestions = this.questionsForCalculateProgress.length;
-    var dataQuestionsProgress = this.questionsForCalculateProgress.filter(function (question) {
-      return question['score'] != null
-    })
-    if (numberQuestions > 0) {
-      let operation = dataQuestionsProgress.length / numberQuestions * 100
-      let formattedNum = operation.toFixed(2);
-      this.percentage = formattedNum;
-    }
 
-    console.log(this.questionsForCalculateProgress);
-  }
-
-  chargeSubtopicsQuestions() {
     try {
-      this.emailEstablishment = this.localStore.getData('email');
-
-      this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
-        this.establishment = data;
-        // var subTopics = this.establishment.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
-        // this.subTopics = subTopics;
-        var questions = this.establishment.questions
-        this.questions = questions;
-
-        this.questionsForCalculateProgress = this.questions.filter(function (element) {
-          if (element['resultable']['sub_topics'].length > 0) {
-            return element;
-          }
-        })
-
-        var subToId = this.localStore.getData('sub_topic_id')
-
-        this.questionsSteps = this.questions.filter(function (element) {
-          if (element['resultable']['sub_topics'].length > 0) {
-            return element['resultable']['sub_topics'][0]['id'] == subToId && element['resultable']['question_dependents'].length <= 0
-          }
-        })
-
-        this.updateProgress()
+      let idEstablishment = this.localStore.getData('idEstablishment');
+      let intentId = this.localStore.getData('intent_id');
+      this.establishmentService.showPercentage(idEstablishment, intentId).subscribe((data: Establishment) => {
+        this.percentage = data['percentage'];
       }, err => {
+        this.localStore.removeData('email')
+        this.localStore.removeData('attemp')
         this.message.create('error', `Error: ${err}`);
       });
-
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }
@@ -955,6 +842,15 @@ export class FillFormComponent implements OnInit {
 
   finishForm() {
     this.localStore.saveData('finished', 'si');
-    // this.reloadPage();
+    this.chargeData();
+
+  }
+
+  returnToFill(){
+    this.localStore.saveData('finished', 'no');
+  }
+
+  findNext(){
+    console.log(this.index);
   }
 }
