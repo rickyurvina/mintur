@@ -185,8 +185,8 @@
                     <nz-form-item>
                       <nz-form-label nzRequired>Posee registro Turístico</nz-form-label>
                       <nz-form-control nzHasFeedback [nzErrorTip]="hasRegisterTouristTypeErrorTpl">
-                        <nz-select nzAllowClear formControlName="hasRegisterTourist" name="hasRegisterTourist" id="hasRegisterTourist"
-                          [nzPlaceHolder]="'general.escoge'|translate">
+                        <nz-select nzAllowClear formControlName="hasRegisterTourist" name="hasRegisterTourist"
+                          id="hasRegisterTourist" [nzPlaceHolder]="'general.escoge'|translate">
                           <nz-option nzValue="0" nzLabel="No"></nz-option>
                           <nz-option nzValue="1" nzLabel="Si"></nz-option>
                         </nz-select>
@@ -270,8 +270,6 @@
                     <nz-list [nzDataSource]="questionsSteps" [nzRenderItem]="subTopicTemplate"
                       [nzItemLayout]="'horizontal'" style="text-align:start">
                       <ng-template #subTopicTemplate let-question>
-
-
                         <nz-list-item>
                           <nz-list-item-meta [nzTitle]="networkName" [nzAvatar]="networkIcon">
                             <ng-template #networkName>
@@ -309,7 +307,7 @@
                           <div *ngIf="question.resultable.type=='rango_1_5'">
                             <nz-radio-group ngModel='{{question.score}}'>
                               <label nz-radio *ngFor="let option of five_options" [nzValue]="option"
-                                (click)="saveAnswer(question.id,'option',$event,'rango_1_5')">{{option}}</label>
+                                (click)="saveAnswer(question.id,option,$event,'rango_1_5')">{{option}}</label>
 
                             </nz-radio-group>
                           </div>
@@ -371,6 +369,24 @@
                               </div>
                             </div>
 
+                            <div *ngIf="question.resultable.children_type=='rango_1_5_na'">
+                              <div *ngFor="let child of question.resultable.children">
+                                <div nz-row>
+                                  <div nz-col nzFlex="3">
+                                    <span>
+                                      {{child.name}}
+                                    </span>
+                                  </div>
+                                  <div nz-col nzFlex="auto">
+                                    <nz-radio-group ngModel='{{child.results[0].score}}'>
+                                      <label nz-radio *ngFor="let option of five_options_na" [nzValue]="option"
+                                        (click)="saveAnswer(child.results['0'].id,option,$event,'rango_1_5')">{{option}}</label>
+                                    </nz-radio-group>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
                             <div *ngIf="question.resultable.children_type=='si_no'">
                               <div *ngFor="let child of question.resultable.children">
                                 <div nz-row style="margin-top: 10px;">
@@ -408,11 +424,203 @@
 
                               </div>
                             </div>
+
+                            <div *ngIf="question.resultable.children_type=='frecuencia_actualizacion'">
+                              <div *ngFor="let child of question.resultable.children">
+
+                                <div nz-row>
+                                  <div nz-col nzFlex="3">
+                                    <span>
+                                      {{child.name}}
+                                    </span>
+                                  </div>
+                                  <div nz-col nzFlex="auto">
+                                    <nz-radio-group ngModel='{{child.results[0].score}}'>
+                                      <label nz-radio *ngFor="let option of five_options_frequency" [nzValue]="option"
+                                        (click)="saveAnswer(child.results['0'].id,option,$event,'frecuencia_actualizacion')">{{option}}</label>
+                                    </nz-radio-group>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-
-
                         </div>
+
+                        <!-- preguntas relacionadas -->
+                        <div *ngIf="question.resultable.dependent_questions.length>0 && question.score!=null">
+                          <nz-list [nzDataSource]="question.resultable.dependent_questions" [nzRenderItem]="questionDependent"
+                            [nzItemLayout]="'horizontal'" style="text-align:start">
+                            <ng-template #questionDependent let-questionD>
+                              <div *ngIf="(questionD['answer_required']=='negative' && question.score>0) || (questionD['answer_required']=='positive' && question.score>0)">
+                                <nz-list-item>
+                                  <nz-list-item-meta [nzTitle]="dependentName" [nzAvatar]="networkIcon">
+                                    <ng-template #dependentName>
+                                      <div class="font-size-15 font-weight-semibold">
+                                        <nz-tag [nzColor]="'gold'">
+                                          {{questionD.code}}</nz-tag>{{questionD.name}}
+                                      </div>
+                                    </ng-template>
+                                  </nz-list-item-meta>
+                                </nz-list-item>
+                                <div>
+                                  <div *ngIf="questionD.type=='si_no'">
+                                    <nz-radio-group nzButtonStyle="solid" *ngIf="questionD.results[0].score==1" ngModel="si">
+                                      <label nz-radio-button nzValue="si" (click)="saveAnswer(questionD.results[0].id,'si',$event,'si_no')">Si</label>
+                                      <label nz-radio-button nzValue="no" (click)="saveAnswer(questionD.results[0].id,'no',$event,'si_no')">No</label>
+                                    </nz-radio-group>
+
+                                    <nz-radio-group nzButtonStyle="solid" *ngIf="questionD.results[0].score==0" ngModel="no">
+                                      <label nz-radio-button nzValue="si" (click)="saveAnswer(questionD.results[0].id,'si',$event,'si_no')">Si</label>
+                                      <label nz-radio-button nzValue="no" (click)="saveAnswer(questionD.results[0].id,'no',$event,'si_no')">No</label>
+                                    </nz-radio-group>
+
+                                    <nz-radio-group nzButtonStyle="solid" *ngIf="questionD.results[0].score==null">
+                                      <label nz-radio-button nzValue="si" (click)="saveAnswer(questionD.results[0].id,'si',$event,'si_no')">Si</label>
+                                      <label nz-radio-button nzValue="no" (click)="saveAnswer(questionD.results[0].id,'no',$event,'si_no')">No</label>
+                                    </nz-radio-group>
+                                  </div>
+
+                                  <div *ngIf="questionD.type=='rango_1_5'">
+                                    <nz-radio-group [ngModel]='questionD.results[0].score'>
+                                      <label nz-radio *ngFor="let option of five_options" [nzValue]="option"
+                                        (click)="saveAnswer(questionD.results[0].id,option,$event,'rango_1_5')">{{option}}</label>
+                                    </nz-radio-group>
+                                  </div>
+
+                                  <div *ngIf="questionD.type=='informativa'">
+                                    <input nz-input placeholder="Ingresar Información" [value]="questionD.results[0].answer"
+                                      (input)="inputValue = $event.target.value; saveAnswer(questionD.results[0].id,'',inputValue,'informativa')" />
+                                  </div>
+
+                                  <div *ngIf="questionD.type=='relacionada'">
+                                    <div *ngIf="questionD.results[0].resultable.children_type=='multiple'">
+                                      <nz-checkbox-wrapper style="width: 100%;"
+                                        (nzOnChange)="saveAnswer(questionD.results[0].id ,'',$event,'relacionada')">
+                                        <div nz-row>
+                                          <div nz-col nzSpan="12" *ngFor="let child of questionD.results[0].resultable.children">
+                                            <div *ngIf="child.results[0].score==1">
+                                              <label nz-checkbox nzChecked nzValue="{{child.id}}">
+                                                {{child.name}}
+                                              </label>
+                                            </div>
+                                            <div *ngIf="child.results[0].score!=1">
+                                              <label nz-checkbox nzValue="{{child.id}}">
+                                                {{child.name}}
+                                              </label>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </nz-checkbox-wrapper>
+                                    </div>
+
+                                    <div *ngIf="questionD.results[0].resultable.children_type=='una_opcion'">
+                                      <nz-radio-group ngModel="{{questionD.results[0].score}}">
+                                        <label nz-radio *ngFor="let child of questionD.results[0].resultable.children" nzValue="{{child.value}}"
+                                          (click)="saveAnswer(child.id,child.value,$event,'una_opcion')">{{child.name}}</label>
+                                      </nz-radio-group>
+                                    </div>
+
+                                    <div *ngIf="questionD.results[0].resultable.children_type=='rango_1_5'">
+                                      <div *ngFor="let child of questionD.results[0].resultable.children">
+
+                                        <div nz-row>
+                                          <div nz-col nzFlex="3">
+                                            <span>
+                                              {{child.name}}
+                                            </span>
+                                          </div>
+                                          <div nz-col nzFlex="auto">
+                                            <nz-radio-group ngModel='{{child.results[0].score}}'>
+                                              <label nz-radio *ngFor="let option of five_options" [nzValue]="option"
+                                                (click)="saveAnswer(child.results['0'].id,option,$event,'rango_1_5')">{{option}}</label>
+                                            </nz-radio-group>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div *ngIf="questionD.results[0].resultable.children_type=='rango_1_5_na'">
+                                      <div *ngFor="let child of questionD.results[0].resultable.children">
+
+                                        <div nz-row>
+                                          <div nz-col nzFlex="3">
+                                            <span>
+                                              {{child.name}}
+                                            </span>
+                                          </div>
+                                          <div nz-col nzFlex="auto">
+                                            <nz-radio-group ngModel='{{child.results[0].score}}'>
+                                              <label nz-radio *ngFor="let option of five_options_na" [nzValue]="option"
+                                                (click)="saveAnswer(child.results['0'].id,option,$event,'rango_1_5')">{{option}}</label>
+                                            </nz-radio-group>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div *ngIf="questionD.results[0].resultable.children_type=='si_no'">
+                                      <div *ngFor="let child of questionD.results[0].resultable.children">
+                                        <div nz-row style="margin-top: 10px;">
+                                          <div nz-col nzFlex="3">
+                                            <span>
+                                              {{child.name}}
+                                            </span>
+                                          </div>
+                                          <div nz-col nzFlex="auto">
+                                            <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==1" ngModel="si">
+                                              <label nz-radio-button nzValue="si"
+                                                (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                              <label nz-radio-button nzValue="no"
+                                                (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                            </nz-radio-group>
+
+                                            <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==0" ngModel="no">
+                                              <label nz-radio-button nzValue="si"
+                                                (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                              <label nz-radio-button nzValue="no"
+                                                (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                            </nz-radio-group>
+
+                                            <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==null">
+                                              <label nz-radio-button nzValue="si"
+                                                (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                              <label nz-radio-button nzValue="no"
+                                                (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                            </nz-radio-group>
+                                          </div>
+                                        </div>
+
+
+                                      </div>
+                                    </div>
+
+                                    <div *ngIf="questionD.results[0].resultable.children_type=='frecuencia_actualizacion'">
+                                      <div *ngFor="let child of questionD.results[0].resultable.children">
+
+                                        <div nz-row>
+                                          <div nz-col nzFlex="3">
+                                            <span>
+                                              {{child.name}}
+                                            </span>
+                                          </div>
+                                          <div nz-col nzFlex="auto">
+                                            <nz-radio-group ngModel='{{child.results[0].score}}'>
+                                              <label nz-radio *ngFor="let option of five_options_frequency" [nzValue]="option"
+                                                (click)="saveAnswer(child.results['0'].id,option,$event,'frecuencia_actualizacion')">{{option}}</label>
+                                            </nz-radio-group>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-template>
+                          </nz-list>
+                        </div>
+
                       </ng-template>
+
                     </nz-list>
                     <ng-template #subTopicName>
                       <div class="text-center">
@@ -432,17 +640,17 @@
                   [nzStrokeColor]="{ '0%': '#108ee9', '50%': '#2db7f5', '100%': '#87d068' }"></nz-progress>
               </div>
               <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">CANCELAR</button>
-              <button nz-button nzType="primary" class="mb-2" (click)="reloadPage()" *ngIf="indexTabs+1==this.components.length">FINALIZAR</button>
+              <button nz-button nzType="primary" class="mb-2" (click)="finishForm()"
+                *ngIf="indexTabs+1==this.components.length && percentage==100">FINALIZAR</button>
 
               <nz-divider></nz-divider>
-              <nz-tag [nzColor]="'blue'" class="mt-2"># Intentos: {{establishment.attempts}}</nz-tag>
               <nz-tag [nzColor]="'green'" class="mt-2">
                 {{establishment.establishment_type.name}}</nz-tag>
             </div>
           </div>
         </nz-tab>
       </div>
-      <nz-tab nzTitle="EVALUACIÓN" *ngIf="localStore.getData('attemp')=='0'">
+      <nz-tab nzTitle="EVALUACIÓN" *ngIf="localStore.getData('attemp')=='0' && localStore.getData('finished')=='si'">
         <div class="container" style="width: 100%;">
           <div class="row">
             <div class="col-md-12 mx-auto w-100">
@@ -457,7 +665,7 @@
 
                     <div style="background: #ECECEC">
                       <nz-row nzJustify="center">
-                        <nz-col  nzSpan="8" *ngFor="let option of components">
+                        <nz-col nzSpan="8" *ngFor="let option of components">
                           <nz-card>
                             <div [id]="'chartComponentsForm' + option['resultable_id']" style="height: 280px"></div>
                           </nz-card>
