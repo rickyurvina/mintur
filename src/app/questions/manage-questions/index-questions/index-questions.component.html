@@ -20,20 +20,20 @@
             </nz-tag>
           </div>
 
-          <div nz-row *ngIf="question.dependents.length>0">
-            <nz-divider [nzText]="'general.dependiente'|translate"></nz-divider>
-            <nz-tag [nzColor]="'magenta'" *ngFor="let dependent of question.dependents">
-              <span nzTooltipTitle="{{dependent.name}}" nzTooltipPlacement="top" nz-tooltip>
+          <div nz-row *ngIf="question.dependent_questions.length>0">
+            <nz-divider nzText="Preguntas dependientes:"></nz-divider>
+            <nz-tag [nzColor]="'magenta'" *ngFor="let dependent of question.dependent_questions">
+              <span  nzTooltipTitle="{{dependent.name}}" nzTooltipPlacement="top" nz-tooltip>
                 {{dependent.code}}- {{dependent.name}}
               </span>
             </nz-tag>
           </div>
 
-          <div nz-row *ngIf="question.dependent_parent">
+          <div nz-row *ngIf="question.question_dependents.length>0">
             <nz-divider [nzText]="'general.dependiente_de'|translate"></nz-divider>
-            <nz-tag [nzColor]="'cyan'">
-              <span nzTooltipTitle="{{question.dependent_parent.name}}" nzTooltipPlacement="top" nz-tooltip>
-                {{question.dependent_parent.code}}- {{question.dependent_parent.name}}
+            <nz-tag [nzColor]="'cyan'" *ngFor="let dependent of question.question_dependents">
+              <span  nzTooltipTitle="{{dependent.name}}" nzTooltipPlacement="top" nz-tooltip>
+                {{dependent.code}}- {{dependent.name}}
               </span>
             </nz-tag>
           </div>

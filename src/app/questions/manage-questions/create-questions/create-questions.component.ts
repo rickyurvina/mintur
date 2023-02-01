@@ -31,6 +31,7 @@ export class CreateQuestionsComponent implements OnInit {
   optionList = [
     { label: 'Si/No', value: 'si_no' },
     { label: 'Rango 1-5', value: 'rango_1_5' },
+    { label: 'Rango 1-5 N/A', value: 'rango_1_5_na' },
     { label: 'Relacionada', value: 'relacionada' },
     { label: 'Informativa', value: 'informativa' },
 
@@ -39,6 +40,7 @@ export class CreateQuestionsComponent implements OnInit {
   optionList2 = [
     { label: 'Si/No', value: 'si_no' },
     { label: 'Rango 1-5', value: 'rango_1_5' },
+    { label: 'Rango 1-5 N/A', value: 'rango_1_5_na' },
     { label: 'Multiple', value: 'multiple' },
     { label: 'Una Opción', value: 'una_opcion' },
     { label: 'Frecuencia de Actualización', value: 'frecuencia_actualizacion' },
@@ -63,11 +65,12 @@ export class CreateQuestionsComponent implements OnInit {
       children_type: ['', []],
       establishmentTypes: new FormControl(),
       children: new FormControl(),
-      dependent: new FormControl(),
+      dependents: new FormControl(),
       dependentQ: new FormControl(),
       importance: new FormControl(),
       verificationMeans: new FormControl(),
-      hasScore: new FormControl()
+      hasScore: new FormControl(),
+      answerRequired:new FormControl()
     });
 
     this.validateFormRelated = this.fb.group({
@@ -97,6 +100,7 @@ export class CreateQuestionsComponent implements OnInit {
       this.id = this.InputData;
       this.questionService.find(this.id).subscribe((data: Question) => {
         this.question = data;
+        console.log(this.question)
         this.validateForm.setValue({
           name: this.question.name,
           code: this.question.code,
@@ -104,14 +108,17 @@ export class CreateQuestionsComponent implements OnInit {
           description: this.question.description,
           children_type: this.question.children_type,
           children: this.question.children,
-          dependent: this.question['dependent_id'],
-          dependentQ: this.question['dependent_id'] ? 'si' : 'no',
+          dependentQ: this.question['question_dependents'].length>0 ? 'si' : 'no',
           importance:  this.question.importance,
           verificationMeans:  this.question.verification_means,
           establishmentTypes: this.question['establishment_types'].map(function (value) {
             return value['id'];
           }),
-          hasScore:this.question.has_score
+          dependents: this.question['question_dependents'].map(function (value) {
+            return value['id'];
+          }),
+          hasScore:this.question.has_score,
+          answerRequired:this.question.answer_required
         })
 
         this.questionsRelated = data.children
@@ -138,7 +145,8 @@ export class CreateQuestionsComponent implements OnInit {
     dependent: number,
     establishmentTypes:any[],
     importance:string,
-    verificationMeans:string
+    verificationMeans:string,
+    answerRequired:string
   }): void {
     if (this.InputData) {
       try {

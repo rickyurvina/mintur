@@ -10,9 +10,10 @@ export interface Question {
   value:number,
   children_type:string,
   children:any[],
-  dependent:number,
+  dependents:any[],
   establishmentTypes:any[],
   importance:string,
   verification_means:string,
-  has_score:boolean
+  has_score:boolean,
+  answer_required:string
 }
