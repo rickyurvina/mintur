@@ -253,7 +253,7 @@
           </nz-card>
         </div>
       </nz-tab>
-      <div *ngIf="establishment && localStore.getData('attemp')=='0'">
+      <div *ngIf="establishment && localStore.getData('attemp')=='0' && localStore.getData('finished')!='si'">
         <nz-tab *ngFor=" let component of components" nzTitle="{{component.resultable.name}}">
           <div nz-row>
             <div nz-col nzFlex="160px">
@@ -284,30 +284,30 @@
                           <div *ngIf="question.resultable.type=='si_no'">
                             <nz-radio-group nzButtonStyle="solid" *ngIf="question.score==1" ngModel="si">
                               <label nz-radio-button nzValue="si"
-                                (click)="saveAnswer(question.id,'si',$event,'si_no')">Si</label>
+                                (click)="saveAnswer(question.id,'si',$event,'si_no',question.resultable.dependent_questions.length)">Si</label>
                               <label nz-radio-button nzValue="no"
-                                (click)="saveAnswer(question.id,'no',$event,'si_no')">No</label>
+                                (click)="saveAnswer(question.id,'no',$event,'si_no',question.resultable.dependent_questions.length)">No</label>
                             </nz-radio-group>
 
                             <nz-radio-group nzButtonStyle="solid" *ngIf="question.score==0" ngModel="no">
                               <label nz-radio-button nzValue="si"
-                                (click)="saveAnswer(question.id,'si',$event,'si_no')">Si</label>
+                                (click)="saveAnswer(question.id,'si',$event,'si_no',question.resultable.dependent_questions.length)">Si</label>
                               <label nz-radio-button nzValue="no"
-                                (click)="saveAnswer(question.id,'no',$event,'si_no')">No</label>
+                                (click)="saveAnswer(question.id,'no',$event,'si_no',question.resultable.dependent_questions.length)">No</label>
                             </nz-radio-group>
 
                             <nz-radio-group nzButtonStyle="solid" *ngIf="question.score==null">
                               <label nz-radio-button nzValue="si"
-                                (click)="saveAnswer(question.id,'si',$event,'si_no')">Si</label>
+                                (click)="saveAnswer(question.id,'si',$event,'si_no',question.resultable.dependent_questions.length)">Si</label>
                               <label nz-radio-button nzValue="no"
-                                (click)="saveAnswer(question.id,'no',$event,'si_no')">No</label>
+                                (click)="saveAnswer(question.id,'no',$event,'si_no',question.resultable.dependent_questions.length)">No</label>
                             </nz-radio-group>
                           </div>
 
                           <div *ngIf="question.resultable.type=='rango_1_5'">
                             <nz-radio-group ngModel='{{question.score}}'>
                               <label nz-radio *ngFor="let option of five_options" [nzValue]="option"
-                                (click)="saveAnswer(question.id,option,$event,'rango_1_5')">{{option}}</label>
+                                (click)="saveAnswer(question.id,option,$event,'rango_1_5',question.resultable.dependent_questions.length)">{{option}}</label>
 
                             </nz-radio-group>
                           </div>
@@ -321,7 +321,7 @@
                           <div *ngIf="question.resultable.type=='relacionada'">
                             <div *ngIf="question.resultable.children_type=='multiple'">
                               <nz-checkbox-wrapper style="width: 100%;"
-                                (nzOnChange)="saveAnswer(question.id ,'',$event,'relacionada')">
+                                (nzOnChange)="saveAnswer(question.id ,'',$event,'relacionada',question.resultable.dependent_questions.length)">
                                 <div nz-row>
                                   <div nz-col nzSpan="12" *ngFor="let child of question.resultable.children">
                                     <div *ngIf="child.results[0].score==1">
@@ -343,7 +343,7 @@
                               <nz-radio-group ngModel="{{question.score}}">
                                 <label nz-radio *ngFor="let child of question.resultable.children"
                                   nzValue="{{child.value}}"
-                                  (click)="saveAnswer(child.id,child.value,$event,'una_opcion')">{{child.name}}</label>
+                                  (click)="saveAnswer(child.id,child.value,$event,'una_opcion',question.resultable.dependent_questions.length)">{{child.name}}</label>
                               </nz-radio-group>
                             </div>
 
@@ -399,24 +399,24 @@
                                     <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==1"
                                       ngModel="si">
                                       <label nz-radio-button nzValue="si"
-                                        (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                        (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no',question.resultable.dependent_questions.length)">Si</label>
                                       <label nz-radio-button nzValue="no"
-                                        (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                        (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no',question.resultable.dependent_questions.length)">No</label>
                                     </nz-radio-group>
 
                                     <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==0"
                                       ngModel="no">
                                       <label nz-radio-button nzValue="si"
-                                        (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                        (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no',question.resultable.dependent_questions.length)">Si</label>
                                       <label nz-radio-button nzValue="no"
-                                        (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                        (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no',question.resultable.dependent_questions.length)">No</label>
                                     </nz-radio-group>
 
                                     <nz-radio-group nzButtonStyle="solid" *ngIf="child.results[0].score==null">
                                       <label nz-radio-button nzValue="si"
-                                        (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no')">Si</label>
+                                        (click)="saveAnswer(child.results['0'].id,'si',$event,'si_no',question.resultable.dependent_questions.length)">Si</label>
                                       <label nz-radio-button nzValue="no"
-                                        (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no')">No</label>
+                                        (click)="saveAnswer(child.results['0'].id,'no',$event,'si_no',question.resultable.dependent_questions.length)">No</label>
                                     </nz-radio-group>
                                   </div>
                                 </div>
@@ -631,9 +631,23 @@
                     </ng-template>
                   </nz-card>
                 </div>
+                <!-- <div nz-row nzJustify="end">
+
+                  <div nz-col nzFlex="auto" style="display:contents; align-items:end;">
+                    <nz-button-group style="margin-bottom: 25px;">
+                      <button nz-button nzType="primary" (click)="findNext()">
+                        <span nz-icon nzType="left"></span>
+                        Anterior
+                      </button>
+                      <button nz-button nzType="primary">
+                        Siguiente
+                        <span nz-icon nzType="right"></span>
+                      </button>
+                    </nz-button-group>
+                  </div>
+                </div> -->
               </div>
             </div>
-
             <div nz-col nzFlex="160px">
               <div nz-col nzFlex="1" *ngIf="establishment" class="p-3">
                 <nz-progress nzType="circle" nzPercent="{{percentage}}"
@@ -641,7 +655,7 @@
               </div>
               <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">CANCELAR</button>
               <button nz-button nzType="primary" class="mb-2" (click)="finishForm()"
-                *ngIf="indexTabs+1==this.components.length && percentage==100">FINALIZAR</button>
+                *ngIf="percentage==100">FINALIZAR</button>
 
               <nz-divider></nz-divider>
               <nz-tag [nzColor]="'green'" class="mt-2">
@@ -650,7 +664,7 @@
           </div>
         </nz-tab>
       </div>
-      <nz-tab nzTitle="EVALUACIÓN" *ngIf="localStore.getData('attemp')=='0' && localStore.getData('finished')=='si'">
+      <nz-tab nzTitle="EVALUACIÓN" *ngIf="localStore.getData('attemp')=='0' && localStore.getData('finished')=='si' && percentage==100">
         <div class="container" style="width: 100%;">
           <div class="row">
             <div class="col-md-12 mx-auto w-100">
@@ -676,10 +690,8 @@
                   </div>
                 </div>
                 <div nz-row style="margin-top: 50px; margin-bottom: 50px;">
-
                   <div nz-col nzFlex="2">
                     <nz-tag [nzColor]="'geekblue'">CALIFICACIONES POR SUB TEMAS</nz-tag>
-
                     <nz-tabset nzTabPosition="left" (nzSelectedIndexChange)="handleTabChangeTabCharts($event)">
                       <nz-tab *ngFor="let option of components" [nzTitle]="option.resultable.name">
                         <div id="chartSubTopicsForm" style="height: 300px">
@@ -699,7 +711,6 @@
                   </div>
                 </div>
                 <div nz-row>
-
                   <div nz-col nzFlex="1">
                     <nz-table #basicTable [nzData]="questionsChart">
                       <thead>
@@ -751,10 +762,10 @@
                       </h2>
                     </div>
                     <div nz-col nzFlex="1" style="display:contents; align-items:end">
+                      <button nz-button nzType="primary"  class="mb-2" (click)="returnToFill()">Regresar</button>
                       <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">CANCELAR</button>
                     </div>
                   </div>
-
                 </ng-template>
               </nz-card>
             </div>
@@ -762,7 +773,6 @@
         </div>
       </nz-tab>
     </nz-tabset>
-
   </nz-content>
   <nz-footer>
     <footer class="footer">
@@ -777,22 +787,7 @@
                 <img class="img-fluid" alt="" src="assets/images/logo/logo-min.png">
               </h6>
             </div>
-
-            <!-- <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-
-              <h6 class="text-uppercase fw-bold mb-4">
-                Contacto
-              </h6>
-              <p>
-                <i class="fas fa-envelope me-3"></i>
-                <a href="https://www.cgesplan.com.ec/" class="mr-4 text-reset">
-                  CGESPLAN
-                </a>
-              </p>
-              <p><i class="fas fa-phone me-3"></i> +593 99 821 7498</p>
-            </div> -->
           </div>
-
         </div>
       </section>
       <section class="d-flex justify-content-center justify-content-lg-between p-4">
