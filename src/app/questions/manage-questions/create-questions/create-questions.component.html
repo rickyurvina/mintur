@@ -65,11 +65,11 @@
   </nz-form-item>
 
   <nz-form-item *ngIf="validateForm.value.dependentQ=='si'">
-    <nz-form-label [nzSpan]="4" nzRequired>{{"general.escoge" | translate}}</nz-form-label>
+    <nz-form-label [nzSpan]="4" nzRequired>Escoger preguntas</nz-form-label>
     <nz-form-control nzHasFeedback [nzErrorTip]="typeErrorTpl">
-      <nz-select nzAllowClear formControlName="dependent" name="dependent" id="dependent"
-        [nzPlaceHolder]="'general.escoge'|translate">
-        <nz-option *ngFor="let question of questions" [nzValue]="question.id" [nzLabel]="question.name"></nz-option>
+      <nz-select nzMode="tags" formControlName="dependents" name="dependents" id="dependents"
+        nzPlaceHolder="Escoger preguntas">
+        <nz-option *ngFor="let question of questions" [nzValue]="question.id" [nzLabel]="question.code+' '+question.name"></nz-option>
       </nz-select>
       <ng-template #typeErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">{{"validaciones.tipo_requerido" | translate}}</ng-container>
@@ -77,6 +77,16 @@
     </nz-form-control>
   </nz-form-item>
 
+  <nz-form-item *ngIf="validateForm.value.dependentQ=='si'">
+    <nz-form-label [nzSpan]="4" nzRequired>Respuesta esperada</nz-form-label>
+    <nz-form-control nzHasFeedback>
+      <nz-select nzAllowClear formControlName="answerRequired" name="answerRequired" id="answerRequired"
+        nzPlaceHolder="Respuesta esperada">
+        <nz-option nzValue="positive" nzLabel="Positiva"></nz-option>
+        <nz-option nzValue="negative" nzLabel="Negativa"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
 
   <nz-form-item *ngIf="validateForm.value.type=='relacionada'">
     <nz-form-label [nzSpan]="4" nzRequired>{{"general.tipo_preguntas_hijas" | translate}}</nz-form-label>
