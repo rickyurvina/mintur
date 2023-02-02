@@ -9,11 +9,11 @@ import { CommonLayout_ROUTES } from "./shared/routes/common-layout.routes";
 
 const appRoutes: Routes = [
 
-    // {
-    //     path: '',
-    //     component: CommonLayoutComponent,
-    //     children: CommonLayout_ROUTES
-    // },
+    {
+        path: '',
+        component: CommonLayoutComponent,
+        children: CommonLayout_ROUTES
+    },
     {
         path: '',
         component: FullLayoutComponent,
