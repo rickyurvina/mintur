@@ -258,14 +258,14 @@
       <div *ngIf="establishment && localStore.getData('attemp')=='0' && localStore.getData('finished')!='si'">
         <nz-tab *ngFor=" let component of components" nzTitle="{{component.resultable.name}}">
           <div nz-row nzJustify="center">
-            <div nz-col nzXs="24" nzSm="24" nzMd="6" nzLg="6" nzXl="3">
+            <div nz-col nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="5">
               <nz-steps nzDirection="vertical" [nzCurrent]="index">
-                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index"
-                  (click)="selectStep(subTopic.resultable.id, i)" style="cursor: pointer"
-                  nzTitle="{{subTopic.resultable.name}}" nzDescription="{{subTopic.resultable.description}}"></nz-step>
+                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index" class="long-text"
+                  (click)="selectStep(subTopic.resultable.id, i)" style="cursor: pointer; overflow: hidden;  overflow-wrap: break-word;"
+                  nzTitle="{{subTopic.resultable.name}}"></nz-step>
               </nz-steps>
             </div>
-            <div nz-col nzXs="24" nzSm="24" nzMd="18" nzLg="18" nzXl="18" *ngIf="subTopic">
+            <div nz-col nzXs="24" nzSm="24" nzMd="16" nzLg="16" nzXl="14" *ngIf="subTopic">
               <div class="container">
                 <div class="row">
                   <nz-card [nzTitle]="subTopicName" class="col-md-12 mx-auto">
@@ -674,7 +674,7 @@
                 </div>
               </div>
             </div>
-            <div nz-col zXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="3">
+            <div nz-col zXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="5">
               <div nz-col nzFlex="1" *ngIf="establishment" class="p-3">
                 <nz-progress nzType="circle" nzPercent="{{percentage}}"
                   [nzStrokeColor]="{ '0%': '#108ee9', '50%': '#2db7f5', '100%': '#87d068' }"></nz-progress>
