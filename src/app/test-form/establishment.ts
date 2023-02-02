@@ -17,5 +17,7 @@ export interface Establishment {
   parrish:string,
   direction:string,
   start_year_operations:string,
+  has_register_tourist:string,
+  register_number:string,
   location:string
 }

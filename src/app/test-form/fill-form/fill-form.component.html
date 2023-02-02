@@ -16,7 +16,7 @@
   </nz-header>
 
   <nz-content class="nz-content-p" style=" ">
-    <nz-tabset class="page-header-tab" (nzSelectedIndexChange)="handleChagTabComponent($event)">
+    <nz-tabset class="page-header-tab" (nzSelectedIndexChange)="handleChagTabComponent($event)" [nzSelectedIndex]="selectedIndexComponent">
       <nz-tab nzTitle="Registro" *ngIf="!establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
@@ -101,8 +101,7 @@
                           <input type="text" nz-input formControlName="ruc" placeholder="RUC">
                         </nz-input-group>
                         <ng-template #rucErrorTpl let-control>
-                          <ng-container *ngIf="control.hasError('required')">{{"validaciones.nombre_requerido" |
-                            translate}}</ng-container>
+                          <ng-container *ngIf="control.hasError('required')">RUC Max:13 Min:10 Solo Números</ng-container>
                         </ng-template>
                       </nz-form-control>
                     </nz-form-item>
@@ -151,6 +150,8 @@
                         </ng-template>
                       </nz-form-control>
                     </nz-form-item>
+
+
 
                     <nz-form-item *ngIf="establishmentFormUpdate.value.province">
                       <nz-form-label nzRequired>Cantón</nz-form-label>
@@ -226,7 +227,7 @@
                     <nz-form-item>
                       <nz-form-label nzRequired>Año de inicio de actividades</nz-form-label>
                       <nz-form-control nzHasFeedback [nzErrorTip]="startYearOperationsTypeErrorTpl">
-                        <nz-select nzAllowClear formControlName="startYearOperations" name="startYearOperations"
+                        <nz-select  formControlName="startYearOperations" name="startYearOperations"
                           id="startYearOperations" [nzPlaceHolder]="'general.escoge'|translate">
                           <nz-option *ngFor="let option of years" [nzValue]="option" [nzLabel]="option"></nz-option>
                         </nz-select>
@@ -237,12 +238,13 @@
                       </nz-form-control>
                     </nz-form-item>
 
-
                     <nz-form-item>
                       <nz-form-control>
                         <div class="d-flex align-items-center justify-content-center">
+                          <button nz-button class="login-form-button" [nzType]="'secondary'"
+                         (click)="chargeData()" *ngIf="isNewUser==false">Retomar Intento</button>
                           <button nz-button class="login-form-button" [nzType]="'primary'"
-                            [disabled]="!establishmentFormUpdate.valid">Siguiente</button>
+                            [disabled]="!establishmentFormUpdate.valid">Nuevo Formulario</button>
                         </div>
                       </nz-form-control>
                     </nz-form-item>
@@ -659,11 +661,11 @@
                 <div nz-row nzJustify="center">
                   <div nz-col nzFlex="auto" style="display:contents; align-items:center;">
                     <nz-button-group style="margin-bottom: 25px;">
-                      <button nz-button nzType="primary">
+                      <button nz-button nzType="primary"  (click)="findPrevious()">
                         <span nz-icon nzType="left"></span>
                         Anterior
                       </button>
-                      <button nz-button nzType="primary" (click)="findNext(1)">
+                      <button nz-button nzType="primary" *ngIf="selectedIndexComponent<components.length" (click)="findNext()">
                         Siguiente
                         <span nz-icon nzType="right"></span>
                       </button>
@@ -680,7 +682,6 @@
               <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">CANCELAR</button>
               <button nz-button nzType="primary" class="mb-2" (click)="finishForm()"
                 *ngIf="percentage==100">FINALIZAR</button>
-
               <nz-divider></nz-divider>
               <nz-tag [nzColor]="'green'" class="mt-2">
                 {{establishment.establishment_type.name}}</nz-tag>
