@@ -1,7 +1,8 @@
 import {
   Component, OnInit, ChangeDetectorRef, OnChanges, SimpleChanges
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, ValidationErrors } from '@angular/forms';
+import { Observable, Observer } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormService } from 'src/app/questions/manage-forms/form.service';
 import { Form } from 'src/app/questions/manage-forms/form';
@@ -89,7 +90,7 @@ export class FillFormComponent implements OnInit, OnChanges {
     });
 
     this.establishmentFormUpdate = this.fb.group({
-      ruc: ['', [Validators.required]],
+      ruc: ['', [Validators.required, Validators.maxLength(13), Validators.minLength(10),  Validators.pattern("^[0-9]*$")]],
       establishmentType: ['', [Validators.required]],
       typeOfTaxpayer: ['', [Validators.required]],
       province: ['', [Validators.required]],
@@ -138,13 +139,26 @@ export class FillFormComponent implements OnInit, OnChanges {
         this.emailEstablishment = this.localStore.getData('email');
         this.establishmentService.showActiveEstablishmentForm(this.emailEstablishment).subscribe((data: Establishment) => {
           this.establishment = data;
+          console.log(this.establishment)
+          this.establishmentFormUpdate.setValue({
+            ruc: this.establishment.ruc,
+            establishmentType: this.establishment['establishment_type_id'],
+            province: this.establishment.province,
+            canton: this.establishment.canton,
+            parrish: this.establishment.parrish,
+            direction: this.establishment.direction,
+            startYearOperations: this.establishment.start_year_operations,
+            hasRegisterTourist: this.establishment.has_register_tourist,
+            registerNumber: this.establishment.register_number,
+            typeOfTaxpayer: this.establishment.type_of_taxpayer,
+          })
           if (this.localStore.getData('attemp') == '0') {
             this.chargeData();
+            this.changeDetector.detectChanges();
+            this.showFormChart();
+            this.showComponentsChart();
+            this.showSubTopicsChart();
           }
-          this.changeDetector.detectChanges();
-          this.showFormChart();
-          this.showComponentsChart();
-          this.showSubTopicsChart();
         }, err => {
           this.message.create('error', `Error: ${err}`);
         });
@@ -233,7 +247,7 @@ export class FillFormComponent implements OnInit, OnChanges {
                 }
                 this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
                 this.establishmentFormUpdate.reset();
-                this.localStore.saveData('attemp', '0');
+
                 this.chargeData();
               }, err => {
                 this.showErrors(err)
@@ -771,7 +785,7 @@ export class FillFormComponent implements OnInit, OnChanges {
   chargeData() {
     try {
       this.emailEstablishment = this.localStore.getData('email');
-
+      this.localStore.saveData('attemp', '0');
       this.establishmentService.showActiveEstablishment(this.emailEstablishment).subscribe((data: Establishment) => {
         this.establishment = data;
         this.localStore.saveData('idEstablishment', this.establishment['id'].toString());
@@ -791,17 +805,18 @@ export class FillFormComponent implements OnInit, OnChanges {
         }
         this.subTopicsCharts = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable']['id']);
         this.changeDetector.detectChanges();
+        this.updateProgress();
         this.showFormChart();
         this.showComponentsChart();
         this.showSubTopicsChart();
         this.fillQuestionsChart();
+
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }
-    this.updateProgress();
   }
 
   chargeQuestionsOfSubtopic(subTopicId) {
@@ -910,4 +925,5 @@ export class FillFormComponent implements OnInit, OnChanges {
     console.log(this.index);
     this.index = this.index + 1
   }
+
 }
