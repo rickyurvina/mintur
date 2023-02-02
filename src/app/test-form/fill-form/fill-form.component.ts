@@ -32,6 +32,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 export class FillFormComponent implements OnInit, OnChanges {
 
+  selectedIndexComponent = 0;
   establishmentForm: FormGroup;
   establishmentFormUpdate: FormGroup;
   form: Form;
@@ -71,6 +72,7 @@ export class FillFormComponent implements OnInit, OnChanges {
   five_options_frequency = ['diaria', 'semanal', 'mensual', 'semestral', 'anual', 'otra'];
   chartInstance: any;
   chartHeight = 400;
+  isNewUser: boolean = true;
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private formService: FormService,
@@ -90,7 +92,7 @@ export class FillFormComponent implements OnInit, OnChanges {
     });
 
     this.establishmentFormUpdate = this.fb.group({
-      ruc: ['', [Validators.required, Validators.maxLength(13), Validators.minLength(10),  Validators.pattern("^[0-9]*$")]],
+      ruc: ['', [Validators.required, Validators.maxLength(13), Validators.minLength(10), Validators.pattern("^[0-9]*$")]],
       establishmentType: ['', [Validators.required]],
       typeOfTaxpayer: ['', [Validators.required]],
       province: ['', [Validators.required]],
@@ -139,7 +141,6 @@ export class FillFormComponent implements OnInit, OnChanges {
         this.emailEstablishment = this.localStore.getData('email');
         this.establishmentService.showActiveEstablishmentForm(this.emailEstablishment).subscribe((data: Establishment) => {
           this.establishment = data;
-          console.log(this.establishment)
           this.establishmentFormUpdate.setValue({
             ruc: this.establishment.ruc,
             establishmentType: this.establishment['establishment_type_id'],
@@ -152,6 +153,11 @@ export class FillFormComponent implements OnInit, OnChanges {
             registerNumber: this.establishment.register_number,
             typeOfTaxpayer: this.establishment.type_of_taxpayer,
           })
+          console.log(this.establishment.ruc)
+          if (this.establishment.ruc != null) {
+            this.isNewUser = false;
+          }
+
           if (this.localStore.getData('attemp') == '0') {
             this.chargeData();
             this.changeDetector.detectChanges();
@@ -735,7 +741,7 @@ export class FillFormComponent implements OnInit, OnChanges {
       xAxis: {
         type: 'category',
         axisLabel: { interval: 0, rotate: 30 }
-       },
+      },
       yAxis: { max: 10, name: 'Calificación', },
 
       series: [
@@ -922,8 +928,27 @@ export class FillFormComponent implements OnInit, OnChanges {
   }
 
   findNext(): void {
-    console.log(this.index);
-    this.index = this.index + 1
+    if (this.index == this.subTopicsSteps.length-1 && this.selectedIndexComponent < this.components.length-1) {
+      this.index = 0;
+      this.selectedIndexComponent = this.selectedIndexComponent + 1;
+      this.handleSelectionChange(this.selectedIndexComponent)
+    } else if (this.index != this.subTopicsSteps.length-1) {
+      this.index = this.index + 1
+      var subTopicId = this.subTopicsSteps[this.index]
+      this.chargeQuestionsOfSubtopic(subTopicId['resultable_id']);
+    }
   }
 
+  findPrevious(): void {
+
+    if (this.index == 0 && this.selectedIndexComponent > 0) {
+      this.index = 0;
+      this.selectedIndexComponent = this.selectedIndexComponent - 1;
+      this.handleSelectionChange(this.selectedIndexComponent)
+    } else if (this.index != this.subTopicsSteps.length-1 && this.index > 0) {
+      this.index = this.index - 1;
+      var subTopicId = this.subTopicsSteps[this.index]
+      this.chargeQuestionsOfSubtopic(subTopicId['resultable_id']);
+    }
+  }
 }

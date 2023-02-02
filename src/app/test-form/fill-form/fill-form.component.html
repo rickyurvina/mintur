@@ -16,7 +16,7 @@
   </nz-header>
 
   <nz-content class="nz-content-p" style=" ">
-    <nz-tabset class="page-header-tab" (nzSelectedIndexChange)="handleChagTabComponent($event)">
+    <nz-tabset class="page-header-tab" (nzSelectedIndexChange)="handleChagTabComponent($event)" [nzSelectedIndex]="selectedIndexComponent">
       <nz-tab nzTitle="Registro" *ngIf="!establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
@@ -242,7 +242,7 @@
                       <nz-form-control>
                         <div class="d-flex align-items-center justify-content-center">
                           <button nz-button class="login-form-button" [nzType]="'secondary'"
-                         (click)="chargeData()" >Retomar Intento</button>
+                         (click)="chargeData()" *ngIf="isNewUser==false">Retomar Intento</button>
                           <button nz-button class="login-form-button" [nzType]="'primary'"
                             [disabled]="!establishmentFormUpdate.valid">Nuevo Formulario</button>
                         </div>
@@ -661,11 +661,11 @@
                 <div nz-row nzJustify="center">
                   <div nz-col nzFlex="auto" style="display:contents; align-items:center;">
                     <nz-button-group style="margin-bottom: 25px;">
-                      <button nz-button nzType="primary">
+                      <button nz-button nzType="primary"  (click)="findPrevious()">
                         <span nz-icon nzType="left"></span>
                         Anterior
                       </button>
-                      <button nz-button nzType="primary" (click)="findNext(1)">
+                      <button nz-button nzType="primary" *ngIf="selectedIndexComponent<components.length" (click)="findNext()">
                         Siguiente
                         <span nz-icon nzType="right"></span>
                       </button>
@@ -682,7 +682,6 @@
               <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">CANCELAR</button>
               <button nz-button nzType="primary" class="mb-2" (click)="finishForm()"
                 *ngIf="percentage==100">FINALIZAR</button>
-
               <nz-divider></nz-divider>
               <nz-tag [nzColor]="'green'" class="mt-2">
                 {{establishment.establishment_type.name}}</nz-tag>
