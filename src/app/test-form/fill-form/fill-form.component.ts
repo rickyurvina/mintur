@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, ChangeDetectorRef
+  Component, OnInit, ChangeDetectorRef, OnChanges, SimpleChanges
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -29,7 +29,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
   styleUrls: ['./fill-form.component.css']
 })
 
-export class FillFormComponent implements OnInit {
+export class FillFormComponent implements OnInit, OnChanges {
 
   establishmentForm: FormGroup;
   establishmentFormUpdate: FormGroup;
@@ -66,8 +66,10 @@ export class FillFormComponent implements OnInit {
   five_options = ['0', '1', '2', '3', '4', '5'];
   five_options_na = ['1', '2', '3', '4', '5', 'No Aplica'];
 
+  chartForm: any
   five_options_frequency = ['diaria', 'semanal', 'mensual', 'semestral', 'anual', 'otra'];
-
+  chartInstance: any;
+  chartHeight = 400;
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private formService: FormService,
@@ -101,6 +103,14 @@ export class FillFormComponent implements OnInit {
 
     translate.addLangs(['es', 'en']);
     translate.setDefaultLang('es');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.chartHeight) {
+      if (this.chartInstance) {
+        this.chartInstance.resize();
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -259,7 +269,7 @@ export class FillFormComponent implements OnInit {
     });
   }
 
-  saveAnswer(idQuestion: number, answer: string, value: any, type: string, numberQuestions:number=0): void {
+  saveAnswer(idQuestion: number, answer: string, value: any, type: string, numberQuestions: number = 0): void {
 
     if (type === 'relacionada') {
       try {
@@ -273,7 +283,7 @@ export class FillFormComponent implements OnInit {
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
           this.updateProgress()
-          if(numberQuestions>0){
+          if (numberQuestions > 0) {
             this.chargeQuestionsOfSubtopic(this.localStore.getData('sub_topic_id'))
           }
         }, err => {
@@ -298,7 +308,7 @@ export class FillFormComponent implements OnInit {
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
           // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
           this.updateProgress()
-          if(numberQuestions>0){
+          if (numberQuestions > 0) {
             this.chargeQuestionsOfSubtopic(this.localStore.getData('sub_topic_id'))
           }
         }, err => {
@@ -468,7 +478,7 @@ export class FillFormComponent implements OnInit {
 
   showFormChart() {
     var dom = document.getElementById('chartForm');
-    var myChart = echarts.init(dom, null, {
+    this.chartForm = echarts.init(dom, null, {
       renderer: 'canvas',
       useDirtyRect: false
     });
@@ -482,7 +492,7 @@ export class FillFormComponent implements OnInit {
           type: 'gauge',
           startAngle: 180,
           endAngle: 0,
-          center: ['50%', '75%'],
+          center: ['50%', '55%'],
           radius: '90%',
           min: 0,
           max: 1,
@@ -522,18 +532,13 @@ export class FillFormComponent implements OnInit {
           },
           axisLabel: {
             color: '#464646',
-            fontSize: 20,
             rotate: 'tangential',
             formatter: function (value) {
               return Math.round(value * 10) + '';
             },
           },
-          title: {
-            offsetCenter: [0, '-10%'],
-            fontSize: 20
-          },
+
           detail: {
-            fontSize: 30,
             offsetCenter: [0, '-35%'],
             valueAnimation: true,
             formatter: function (value) {
@@ -551,7 +556,7 @@ export class FillFormComponent implements OnInit {
     };
 
     if (option && typeof option === 'object') {
-      myChart.setOption(option);
+      this.chartForm.setOption(option);
     }
   }
 
@@ -569,7 +574,7 @@ export class FillFormComponent implements OnInit {
         title: {
           text: element['resultable']['name'],
           left: 'center',
-          button: 10,
+          button: 5,
           textStyle: {
             fontSize: 10
           },
@@ -611,7 +616,6 @@ export class FillFormComponent implements OnInit {
             axisLabel: {
               color: 'inherit',
               distance: 20,
-              fontSize: 10,
               formatter: function (value) {
                 return (Math.round(value) / 10).toFixed(2) + '';
               },
@@ -641,10 +645,18 @@ export class FillFormComponent implements OnInit {
 
   showSubTopicsChart() {
     var dom = document.getElementById('chartSubTopicsForm');
+    var domResponsive = document.getElementById('chartSubTopicsFormResponsive');
+
     var myChart = echarts.init(dom, null, {
       renderer: 'canvas',
       useDirtyRect: false
     });
+
+    var myChartResponsive = echarts.init(domResponsive, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+
     var data = [];
     data.push(['score', 'amount', 'product']);
     this.subTopicsCharts.forEach(function (item) {
@@ -655,6 +667,7 @@ export class FillFormComponent implements OnInit {
       ]
       )
     })
+
     var option = {
       tooltip: {
         trigger: 'item'
@@ -698,12 +711,55 @@ export class FillFormComponent implements OnInit {
       ]
     };
 
+    var optionResponsive = {
+      tooltip: {
+        trigger: 'item'
+      },
+      dataset: {
+        source: data
+      },
+      xAxis: {
+        type: 'category',
+        axisLabel: { interval: 0, rotate: 30 }
+       },
+      yAxis: { max: 10, name: 'Calificación', },
+
+      series: [
+        {
+          type: 'bar',
+          itemStyle: {
+            color: function (params) {
+              if (params.value[0] < 5) {
+                return '#FF6E76';
+              } else if (params.value[0] >= 5 && params.value[0] < 7.5) {
+                return '#FDDD60';
+              } else {
+                return '#65B581';
+              }
+            }
+          },
+          encode: {
+            // Map the "amount" column to X axis.
+            y: 'amount',
+            // Map the "product" column to Y axis
+            x: 'product'
+          },
+          label: {
+            show: true,
+            position: 'inside'
+          },
+        }]
+    };
+
 
     if (option && typeof option === 'object') {
       myChart.setOption(option);
     }
-  }
 
+    if (optionResponsive && typeof optionResponsive === 'object') {
+      myChartResponsive.setOption(optionResponsive);
+    }
+  }
   updateCantons(value: any) {
     this.cantonsShow = this.cantons.filter(element => element['parent_id'] == value)
   }
@@ -756,7 +812,7 @@ export class FillFormComponent implements OnInit {
     }, err => {
       this.message.create('error', `Error: ${err}`);
     });
-    this.localStore.saveData('sub_topic_id',subTopicId.toString())
+    this.localStore.saveData('sub_topic_id', subTopicId.toString())
     this.subTopic = this.subTopics.find(element => element['resultable']['id'] == subTopicId)
   }
 
@@ -801,11 +857,11 @@ export class FillFormComponent implements OnInit {
       this.questionsChart = data['questions'].filter(function (element) {
         if (element['resultable']['type'] == 'relacionada') {
           if (element['score'] / 10 < 5) {
-            return  element['resultable']['sub_topics'][0]['id'] == value;
+            return element['resultable']['sub_topics'][0]['id'] == value;
           }
         } else if (element['resultable']['type'] == 'si_no') {
           if (element['score'] * 10 < 5) {
-            return  element['resultable']['sub_topics'][0]['id'] == value;
+            return element['resultable']['sub_topics'][0]['id'] == value;
           }
         } else if (element['resultable']['type'] == 'rango_1_5') {
           if (element['score'] * 5 < 5) {
@@ -846,11 +902,12 @@ export class FillFormComponent implements OnInit {
 
   }
 
-  returnToFill(){
+  returnToFill() {
     this.localStore.saveData('finished', 'no');
   }
 
-  findNext(){
+  findNext(): void {
     console.log(this.index);
+    this.index = this.index + 1
   }
 }
