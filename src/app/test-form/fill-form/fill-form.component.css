@@ -1,6 +1,7 @@
 .large ::ng-deep .ant-rate-star {
   font-size: 36px;
 }
+
 .ant-progress {
   margin-right: 8px;
   margin-bottom: 8px;
@@ -15,6 +16,7 @@
 nz-footer {
   background: #ffffff;
 }
+
 nz-header {
   background: #ffffff;
   height: auto;
@@ -50,3 +52,118 @@ nz-layout:last-child {
   height: 100vh;
   overflow: hidden;
 }
+
+.nz-content-p {
+  padding-left: 6rem;
+  padding-right: 6rem;
+  height: auto;
+  overflow-x: auto;
+}
+
+.chart-form {
+  width: 100%;
+  padding: 0px;
+  height: 350px;
+}
+
+.components-responsive {
+
+  display: flex;
+  width: 100%;
+}
+.components-responsive2 {
+
+  display: none;
+}
+.select-subtopics{
+  width: 100%;
+}
+
+.long-text {
+  word-wrap: break-word;
+}
+.table-questions{
+  border-collapse: collapse;
+}
+.subtopic-chart-1{
+  display: block;
+}
+.subtopic-chart-2{
+  display: none;
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .nz-content-p {
+    padding-left: 0;
+    padding-right: 0;
+    height: auto;
+    overflow-x: auto;
+  }
+  .long-text {
+    word-wrap: break-word;
+  }
+  .chartForm {
+    margin-top: -50px;
+  }
+  .subtopic-chart-1{
+    display: none;
+  }
+
+  .chart-form {
+    width: 100%;
+    padding: 0px;
+    margin-bottom: -75px;
+    /* margin-top: -7rem; */
+  }
+
+  .components-responsive {
+    display: none;
+  }
+  .components-responsive2 {
+    display: flex;
+  }
+  .select-subtopics{
+    width: 100%;
+  }
+  .subtopic-chart-2{
+    display: block;
+  }
+}
+
+
+/* Smartphones (landscape) ----------- */
+
+@media only screen and (min-width: 321px) and (orientation: landscape) and (max-width: 760px) {
+  .nz-content-p {
+    padding-left: 0;
+    padding-right: 0;
+    height: auto;
+    overflow-x: auto;
+  }
+
+}
+
+
+/* Smartphones (portrait) ----------- */
+
+@media only screen and (max-width: 320px) {}
+
+
+/* iPads (portrait and landscape) ----------- */
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {}
+
+
+/* iPads (landscape) ----------- */
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {}
+
+
+/* iPads (portrait) ----------- */
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {}
+
+
+/* Desktops and laptops ----------- */
+
+@media only screen and (min-width: 1224px) {}
