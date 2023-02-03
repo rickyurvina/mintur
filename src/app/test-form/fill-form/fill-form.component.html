@@ -659,11 +659,12 @@
                 <div nz-row nzJustify="center">
                   <div nz-col nzFlex="auto" style="display:contents; align-items:center;">
                     <nz-button-group style="margin-bottom: 25px;">
-                      <button nz-button nzType="primary"  (click)="findPrevious()">
+                      <button nz-button nzType="primary"  *ngIf="selectedIndexComponent !=0  || index!=0"  (click)="findPrevious()">
                         <span nz-icon nzType="left"></span>
                         Anterior
                       </button>
-                      <button nz-button nzType="primary" *ngIf="selectedIndexComponent<components.length" (click)="findNext()">
+                      <button nz-button nzType="primary"
+                      *ngIf="components.length-1>selectedIndexComponent  || subTopicsSteps.length-1>index" (click)="findNext()">
                         Siguiente
                         <span nz-icon nzType="right"></span>
                       </button>

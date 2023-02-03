@@ -445,6 +445,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       this.subTopic = this.subTopics.find(element => element['resultable']['component_id'] == this.components[event]['resultable']['id'])
       this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[event]['resultable']['id']);
       var id = this.subTopic['resultable_id'];
+      this.selectedIndexComponent = event;
+
       this.chargeQuestionsOfSubtopic(id)
     }
     this.indexTabs = event;
@@ -491,7 +493,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
                 icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
                 length: '12%',
                 width: 20,
-                offsetCenter: [0, '-60%'],
+                offsetCenter: [0, '-40%'],
                 itemStyle: {
                   color: 'inherit'
                 }
@@ -519,7 +521,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               },
 
               detail: {
-                offsetCenter: [0, '-35%'],
+                fontSize: 30,
+                offsetCenter: [0, '-10%'],
                 valueAnimation: true,
                 formatter: function (value) {
                   return (value * 10).toFixed(2);
@@ -599,12 +602,13 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
                 },
                 axisLabel: {
                   color: 'inherit',
-                  distance: 20,
+                  distance: 15,
                   formatter: function (value) {
-                    return (Math.round(value) / 10).toFixed(2) + '';
+                    return (Math.round(value) / 10).toFixed(0) + '';
                   },
                 },
                 detail: {
+                  fontSize: 20,
                   valueAnimation: true,
                   color: 'inherit',
                   formatter: function (value) {
@@ -921,6 +925,10 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       var subTopicId = this.subTopicsSteps[this.index]
       this.chargeQuestionsOfSubtopic(subTopicId['resultable_id']);
     }
+    // console.log('index',this.index)
+    // console.log('subtopics',this.subTopicsSteps.length )
+    // console.log('selectedIndexComponent',this.selectedIndexComponent )
+    // console.log('compoentns',this.components.length )
   }
 
   findPrevious(): void {
@@ -929,10 +937,11 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       this.index = 0;
       this.selectedIndexComponent = this.selectedIndexComponent - 1;
       this.handleSelectionChange(this.selectedIndexComponent)
-    } else if (this.index != this.subTopicsSteps.length - 1 && this.index > 0) {
+    } else if (this.index != 0) {
       this.index = this.index - 1;
       var subTopicId = this.subTopicsSteps[this.index]
       this.chargeQuestionsOfSubtopic(subTopicId['resultable_id']);
     }
+
   }
 }
