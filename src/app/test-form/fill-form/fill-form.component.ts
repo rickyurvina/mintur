@@ -219,7 +219,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
     has_register_tourist: boolean, register_number: string
   }): void {
     try {
-      var message = "<p>Bienvenidas/os al aplicativo para evaluar el nivel de competitividad de su producto / destino turístico. Este aplicativo le permitirá conocer cuán preparado se encuentra su establecimiento para competir en el sector turístico ante las exigencias actuales del mercado con un enfoque de gestión de calidad. Para la evaluación deberá responder a 63 preguntas sobre 3 temáticas específicas:</p><p></p><ol><li>Sostenibilidad empresarial</li><li>Desarrollo turístico sostenible</li><li>Transformación digital</li></ol><p></p><p>Cada temática consta de subtemáticas que permiten abarcar todos los aspectos inherentes a la competitividad, por lo que se necesita que todas las preguntas sean respondidas en base a la realidad de su negocio. La calificación final se mostrará en una escala del 1 al 10 debidamente semaforizado, es decir que, según el resultado usted podrá conocer si su establecimiento es poco competitivo (rojo) medianamente competitivo (amarillo) o altamente competitivo (verde). De la misma forma, al final del proceso, podrá observar la importancia de mejorar en los aspectos en los que su negocio no se encuentra preparado, así como también los medios para verificar que así sea.</p><p></p><p>El formulario consta de preguntas de opción múltiple y tiene una duración estimada de 30 minutos.</p>"
+      var message = "<p>Bienvenidas/os al aplicativo para evaluar el nivel de competitividad de su producto / destino turístico. Este aplicativo le permitirá conocer cuán preparado se encuentra su establecimiento para competir en el sector turístico ante las exigencias actuales del mercado con un enfoque de gestión de calidad. Para la evaluación deberá responder a 63 preguntas sobre 3 temáticas específicas:</p><p></p><ol><li>Sostenibilidad empresarial</li><li>Desarrollo turístico sostenible</li><li>Transformación digital</li></ol><p></p><p>Cada temática consta de subtemáticas que permiten abarcar todos los aspectos inherentes a la competitividad, por lo que se necesita que todas las preguntas sean respondidas con base en la realidad de su negocio. La calificación final se mostrará en una escala del 1 al 10 debidamente semaforizado, es decir que, según el resultado usted podrá conocer si su establecimiento es poco competitivo (rojo) medianamente competitivo (amarillo) o altamente competitivo (verde). De la misma forma, al final del proceso, podrá observar la importancia de mejorar en los aspectos en los que su negocio no se encuentra preparado, así como también los medios para verificar que así sea.</p><p></p><p>El formulario consta de preguntas de opción múltiple y tiene una duración estimada de 30 minutos.</p>"
       this.modalService.confirm({
         nzTitle: 'Introducción al formulario',
         nzContent: message,
@@ -355,7 +355,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         })
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
-          this.updateProgress()
+          // this.updateProgress()
 
         }, err => {
           this.showErrors(err)

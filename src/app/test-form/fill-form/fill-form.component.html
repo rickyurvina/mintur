@@ -2,7 +2,7 @@
   <nz-header>
     <div nz-row>
       <div nz-col nzXs="24" nzSm="24" nzMd="4" nzLg="4" nzXl="4">
-        <img class="img-fluid" alt="logo_min_tur" src="assets/images/logo/logo-min.png">
+        <img class="img-fluid" alt="logo_min_tur" src="assets/images/logo/logo_gob1.png">
       </div>
       <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="20" nzXl="20">
         <h1 class="w-100 m-h-auto" *ngIf="formDisplay" style="font-size: 20px">
@@ -19,13 +19,13 @@
     <nz-tabset class="page-header-tab" (nzSelectedIndexChange)="handleChagTabComponent($event)" [nzSelectedIndex]="selectedIndexComponent">
       <nz-tab nzTitle="Registro" *ngIf="!establishmentInitial && !establishment">
         <div class="container">
-          <nz-card nzTitle="{{'general.completa_info'|translate}}">
+          <nz-card nzTitle="Por favor, complete la siguiente información">
             <div class="d-flex flex-column justify-content-between h-100">
               <div class="d-none d-md-block"></div>
               <div class="row align-items-center">
                 <div class="col-md-7 col-lg-5 m-h-auto">
                   <div class="d-flex align-items-center justify-content-between m-b-30">
-                    <img class="img-fluid" alt="" src="assets/images/logo/logo-min.png">
+                    <img class="img-fluid" alt="" src="assets/images/logo/logo_gob1.png">
                   </div>
                   <form nz-form [formGroup]="establishmentForm" nzLayout="vertical" class="login-form"
                     (ngSubmit)="submitForm(establishmentForm.value)">
@@ -86,7 +86,7 @@
       </nz-tab>
       <nz-tab nzTitle="Información del establecimiento" *ngIf="establishmentInitial && !establishment">
         <div class="container">
-          <nz-card nzTitle="{{'general.completa_info'|translate}}">
+          <nz-card nzTitle="Por favor, complete la siguiente información">
             <div class="d-flex flex-column justify-content-between h-100">
               <div class="d-none d-md-block"></div>
               <div class="row align-items-center">
@@ -244,7 +244,7 @@
                           <a class="login-form-forgot" nz-button (click)="chargeData()" *ngIf="isNewUser==false">Retomar Intento</a>
 
                           <button nz-button class="login-form-button" [nzType]="'primary'"
-                            [disabled]="!establishmentFormUpdate.valid">Nuevo Formulario</button>
+                            [disabled]="!establishmentFormUpdate.valid" *ngIf="isNewUser==true">Nuevo Formulario</button>
                         </div>
                       </nz-form-control>
                     </nz-form-item>
@@ -800,7 +800,7 @@
             <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
               <!-- Content -->
               <h6 class="text-uppercase fw-bold mb-4">
-                <img class="img-fluid" alt="" src="assets/images/logo/logo-min.png">
+                <img class="img-fluid" alt="" src="assets/images/logo/logo_gob1.png">
               </h6>
             </div>
           </div>

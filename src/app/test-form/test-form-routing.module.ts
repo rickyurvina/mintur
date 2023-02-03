@@ -4,10 +4,10 @@ import { FillFormComponent } from './fill-form/fill-form.component';
 
 const routes: Routes = [
   {
-    path:'test-form',
+    path:'formulario',
     component: FillFormComponent,
     data:{
-      title:'Test Form'
+      title:'Formulario MinTur'
     }
   }
 ];
