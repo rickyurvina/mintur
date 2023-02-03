@@ -17,7 +17,7 @@
 
   <nz-content class="nz-content-p" style=" ">
     <nz-tabset class="page-header-tab" (nzSelectedIndexChange)="handleChagTabComponent($event)" [nzSelectedIndex]="selectedIndexComponent">
-      <nz-tab nzTitle="Registro" *ngIf="!establishment">
+      <nz-tab nzTitle="Registro" *ngIf="!establishmentInitial && !establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
             <div class="d-flex flex-column justify-content-between h-100">
@@ -84,7 +84,7 @@
           </nz-card>
         </div>
       </nz-tab>
-      <nz-tab nzTitle="Información del establecimiento" *ngIf="localStore.getData('attemp')=='1'">
+      <nz-tab nzTitle="Información del establecimiento" *ngIf="establishmentInitial && !establishment">
         <div class="container">
           <nz-card nzTitle="{{'general.completa_info'|translate}}">
             <div class="d-flex flex-column justify-content-between h-100">
@@ -241,8 +241,8 @@
                     <nz-form-item>
                       <nz-form-control>
                         <div class="d-flex align-items-center justify-content-center">
-                          <button nz-button class="login-form-button" [nzType]="'secondary'"
-                         (click)="chargeData()" *ngIf="isNewUser==false">Retomar Intento</button>
+                          <a class="login-form-forgot" nz-button (click)="chargeData()" *ngIf="isNewUser==false">Retomar Intento</a>
+
                           <button nz-button class="login-form-button" [nzType]="'primary'"
                             [disabled]="!establishmentFormUpdate.valid">Nuevo Formulario</button>
                         </div>
@@ -255,12 +255,12 @@
           </nz-card>
         </div>
       </nz-tab>
-      <div *ngIf="establishment && localStore.getData('attemp')=='0' && localStore.getData('finished')!='si'">
+      <div *ngIf="establishment && establishment['is_finished']==0">
         <nz-tab *ngFor=" let component of components" nzTitle="{{component.resultable.name}}">
           <div nz-row nzJustify="center">
             <div nz-col nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="5">
               <nz-steps nzDirection="vertical" [nzCurrent]="index">
-                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index" class="long-text"
+                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index"
                   (click)="selectStep(subTopic.resultable.id, i)" style="cursor: pointer; overflow: hidden;  overflow-wrap: break-word;"
                   nzTitle="{{subTopic.resultable.name}}"></nz-step>
               </nz-steps>
@@ -276,8 +276,7 @@
                           <nz-list-item-meta [nzTitle]="networkName" [nzAvatar]="networkIcon">
                             <ng-template #networkName>
                               <div class="font-size-15 font-weight-semibold">
-                                <nz-tag [nzColor]="'gold'">
-                                  {{question.resultable.code}}</nz-tag>{{question.resultable.name}}
+                                  {{question.resultable.name}}
                               </div>
                             </ng-template>
                           </nz-list-item-meta>
@@ -468,8 +467,7 @@
                                   <nz-list-item-meta [nzTitle]="dependentName" [nzAvatar]="networkIcon">
                                     <ng-template #dependentName>
                                       <div class="font-size-15 font-weight-semibold">
-                                        <nz-tag [nzColor]="'gold'">
-                                          {{questionD.code}}</nz-tag>{{questionD.name}}
+                                        {{questionD.name}}
                                       </div>
                                     </ng-template>
                                   </nz-list-item-meta>
@@ -689,13 +687,12 @@
           </div>
         </nz-tab>
       </div>
-      <nz-tab nzTitle="EVALUACIÓN"
-        *ngIf="localStore.getData('attemp')=='0' && localStore.getData('finished')=='si' && percentage==100">
+      <nz-tab nzTitle="EVALUACIÓN" *ngIf="establishment && establishment['is_finished']==1">
         <nz-card [nzTitle]="titleCardEvaluation" style="width: 100%; padding: 5px !important;">
           <div nz-row>
             <div nz-col zXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="9" class="chart-form">
               <nz-tag [nzColor]="'geekblue'">CALIFICACIÓN DEL FORMULARIO</nz-tag>
-              <div id="chartForm" class="chartForm" style="width: 100%; height: 350px;"></div>
+              <div  id="chartForm"  class="chartForm" style="width: 100%; height: 350px;"></div>
             </div>
             <div nz-col zXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="5" class="chart-form"
               *ngFor="let option of components;let indexOfelement=indexC">
@@ -712,7 +709,7 @@
               <nz-tabset nzTabPosition="top" (nzSelectedIndexChange)="handleTabChangeTabCharts($event)">
                 <nz-tab *ngFor="let option of components" [nzTitle]="option.resultable.name" class="chart-form">
                   <div class="subtopic-chart-1">
-                    <div id="chartSubTopicsForm" style="height: 300px; width: 100%;" >
+                    <div id="chartSubTopicsForm"  style="height: 300px; width: 100%;" >
                     </div>
                   </div>
                   <div class="subtopic-chart-2">
@@ -735,9 +732,8 @@
               </nz-select>
             </div>
           </div>
-          <div nz-row>
-            <div nz-col nzFlex="1">
-              <nz-table #basicTable [nzData]="questionsChart" class="table-questions">
+          <section class="markdown api-container">
+              <table>
                 <thead>
                   <tr>
                     <th colspan="5">
@@ -754,12 +750,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let data of basicTable.data">
-                    <td class="long-text">{{ data.resultable.name }}</td>
-                    <td class="long-text">{{ data.resultable['sub_topics'][0].name }}</td>
+                  <tr *ngFor="let data of questionsChartDisplay">
+                    <td  >{{ data.resultable.name }}</td>
+                    <td >{{ data.resultable['sub_topics'][0].name }}</td>
 
-                    <td class="long-text">{{ data.resultable.importance }}</td>
-                    <td class="long-text">{{ data.resultable.verification_means }}</td>
+                    <td  >{{ data.resultable.importance }}</td>
+                    <td  >{{ data.resultable.verification_means }}</td>
 
                     <td *ngIf="data.resultable.type=='relacionada'">
                       <nz-tag [nzColor]="'gold'"> {{data.score/10 | number: '1.2-2'}}</nz-tag>
@@ -773,9 +769,8 @@
                     </td>
                   </tr>
                 </tbody>
-              </nz-table>
-            </div>
-          </div>
+              </table>
+          </section>
           <ng-template #titleCardEvaluation let-control>
             <div nz-row nzJustify="space-between">
               <div nz-col zXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8">
@@ -785,8 +780,8 @@
                 <h2>{{establishment.name+' '+establishment.company}} </h2>
               </div>
               <div nz-col zXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="8" style="align-items:end">
-                <button nz-button nzType="primary" (click)="returnToFill()">REGRESAR</button>
-                <button nz-button nzType="default" nzDanger  (click)="resetForm()">CANCELAR</button>
+                <!-- <button nz-button nzType="primary" (click)="returnToFill()">REGRESAR</button> -->
+                <button nz-button nzType="default" nzDanger (click)="resetForm()">CANCELAR</button>
               </div>
             </div>
           </ng-template>
