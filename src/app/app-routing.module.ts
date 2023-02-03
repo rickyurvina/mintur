@@ -9,13 +9,9 @@ import { CommonLayout_ROUTES } from "./shared/routes/common-layout.routes";
 
 const appRoutes: Routes = [
 
+     { path: '', redirectTo: '/mintur/formulario', pathMatch: 'full' },
     {
-        path: '',
-        component: FullLayoutComponent,
-        children: FullLayout_ROUTES
-    },
-    {
-        path: '',
+        path: 'mintur',
         component: FullLayoutComponent,
         children: FullLayout_ROUTES
     }

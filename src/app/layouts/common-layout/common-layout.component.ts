@@ -61,11 +61,11 @@ export class CommonLayoutComponent  {
                 path += route.routeConfig.path;
             }
         } else {
-            label = 'Dashboard';
-            path += 'dashboard';
+            label = 'MinTur';
+            path += 'mintur';
         }
 
-        const nextUrl = path && path !== '/dashboard' ? `${url}${path}` : url;
+        const nextUrl = path && path !== '/formulario' ? `${url}${path}` : url;
         const breadcrumb = <IBreadcrumb>{
             label: label, url: nextUrl
         };
