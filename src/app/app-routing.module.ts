@@ -6,6 +6,7 @@ import { CommonLayoutComponent } from "./layouts/common-layout/common-layout.com
 
 import { FullLayout_ROUTES } from "./shared/routes/full-layout.routes";
 import { CommonLayout_ROUTES } from "./shared/routes/common-layout.routes";
+import { use } from 'echarts';
 
 const appRoutes: Routes = [
 
@@ -22,7 +23,8 @@ const appRoutes: Routes = [
         RouterModule.forRoot(appRoutes, {
             preloadingStrategy: PreloadAllModules,
             anchorScrolling: 'enabled',
-            scrollPositionRestoration: 'enabled'
+            scrollPositionRestoration: 'enabled',
+            useHash : true
         })
     ],
     exports: [
