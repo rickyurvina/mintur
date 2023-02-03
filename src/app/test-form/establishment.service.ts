@@ -49,6 +49,13 @@ export class EstablishmentService {
     )
   }
 
+  updateIntent(id): Observable<Establishment> {
+    return this.httpClient.post<Establishment>(environment.url+"/establishment/update-intent/" + id, this.httpOptions)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   destroy(id){
     return this.httpClient.delete<Establishment>(environment.url+"/establishment/" + id, this.httpOptions)
     .pipe(
