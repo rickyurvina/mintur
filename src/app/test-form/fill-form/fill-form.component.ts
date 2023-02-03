@@ -51,6 +51,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   questions: Question[] = [];
   questionsSteps: Question[] = [];
   questionsChart: Question[] = [];
+  questionsChartDisplay: Question[] = [];
 
   establishmentTypes: EstablishmentType[] = [];
   provinces: GeographichClassifier[] = [];
@@ -112,7 +113,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
     const currentYear = new Date().getFullYear();
     const startYear = 1940;
     this.years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i);
-    if(!this.formDisplay){
+    if (!this.formDisplay) {
 
     }
     this.chargeDataInitial();
@@ -131,14 +132,14 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
     this.index = 0;
     console.log(this.localStore.getData('email'))
 
-    if(this.localStore.getData('email')!=null){
+    if (this.localStore.getData('email') != null) {
       this.chargeData();
-    }else{
+    } else {
       this.localStore.removeData('email');
     }
   }
 
-  chargeDataInitial(){
+  chargeDataInitial() {
     try {
       this.establishmentTypeService.getAll().subscribe((data: EstablishmentType[]) => {
         this.establishmentTypes = data;
@@ -176,8 +177,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               this.establishmentForm.controls[key].updateValueAndValidity();
             }
           }
-          this.localStore.saveData('email',value.email);
-           this.establishmentService.showActiveEstablishmentForm(this.localStore.getData('email')).subscribe((data: Establishment) => {
+          this.localStore.saveData('email', value.email);
+          this.establishmentService.showActiveEstablishmentForm(this.localStore.getData('email')).subscribe((data: Establishment) => {
             this.establishmentInitial = data;
             this.establishmentFormUpdate.setValue({
               ruc: this.establishmentInitial.ruc,
@@ -191,7 +192,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               registerNumber: this.establishmentInitial.register_number,
               typeOfTaxpayer: this.establishmentInitial.type_of_taxpayer,
             })
-            if ( this.establishmentInitial.ruc != null) {
+            if (this.establishmentInitial.ruc != null) {
               this.isNewUser = false;
             }
           }, err => {
@@ -225,23 +226,23 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         nzWidth: '850px',
         nzOnOk: () => {
 
-            try {
-              this.establishmentService.update(this.establishmentInitial.id, value).subscribe(res => {
-                for (const key in this.establishmentFormUpdate.controls) {
-                  if (this.establishmentForm.controls.hasOwnProperty(key)) {
-                    this.establishmentForm.controls[key].markAsDirty();
-                    this.establishmentForm.controls[key].updateValueAndValidity();
-                  }
+          try {
+            this.establishmentService.update(this.establishmentInitial.id, value).subscribe(res => {
+              for (const key in this.establishmentFormUpdate.controls) {
+                if (this.establishmentForm.controls.hasOwnProperty(key)) {
+                  this.establishmentForm.controls[key].markAsDirty();
+                  this.establishmentForm.controls[key].updateValueAndValidity();
                 }
-                this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
-                this.establishmentFormUpdate.reset();
-                this.chargeData();
-              }, err => {
-                this.showErrors(err)
-              });
-            } catch (e) {
-              this.message.create('error', `Error ${e}`);
-            }
+              }
+              this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
+              this.establishmentFormUpdate.reset();
+              this.chargeData();
+            }, err => {
+              this.showErrors(err)
+            });
+          } catch (e) {
+            this.message.create('error', `Error ${e}`);
+          }
 
         }
       });
@@ -419,7 +420,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         this.localStore.removeData('idEstablishment');
         this.localStore.removeData('intent_id');
         this.localStore.removeData('sub_topic_id');
-         this.localStore.removeData('email');
+        this.localStore.removeData('email');
         this.reloadPage();
       }
     });
@@ -763,9 +764,9 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
 
   chargeData() {
     try {
-      if(this.localStore.getData('email')){
+      if (this.localStore.getData('email')) {
         console.log(this.establishmentInitial)
-        var email=this.localStore.getData('email')?this.localStore.getData('email'):this.establishmentInitial.email;
+        var email = this.localStore.getData('email') ? this.localStore.getData('email') : this.establishmentInitial.email;
         this.establishmentService.showActiveEstablishment(email).subscribe((data: Establishment) => {
           this.establishment = data;
           this.localStore.saveData('idEstablishment', this.establishment['id'].toString());
@@ -784,9 +785,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           }
           this.subTopicsCharts = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[0]['resultable']['id']);
           this.updateProgress();
-          // this.showFormChart();
-          // this.showComponentsChart();
-          // this.showSubTopicsChart();
           this.fillQuestionsChart();
         }, err => {
           this.message.create('error', `Error: ${err}`);
@@ -828,6 +826,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           }
         }
       })
+      this.questionsChartDisplay = this.questionsChart;
     }, err => {
       this.message.create('error', `Error: ${err}`);
     });
@@ -844,8 +843,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
 
   handleSelectionChange(value: any) {
 
-    this.establishmentService.showQuestionsResults(this.localStore.getData('sub_topic_id'), this.establishment['id'], this.establishment['intent_id']).subscribe((data: Establishment) => {
-      this.questionsChart = data['questions'].filter(function (element) {
+    if (value) {
+      this.questionsChartDisplay = this.questionsChart.filter(function (element) {
         if (element['resultable']['type'] == 'relacionada') {
           if (element['score'] / 10 < 5) {
             return element['resultable']['sub_topics'][0]['id'] == value;
@@ -859,10 +858,11 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
             return element['resultable']['sub_topics'][0]['id'] == value;
           }
         }
+
       })
-    }, err => {
-      this.message.create('error', `Error: ${err}`);
-    });
+    } else {
+      this.questionsChartDisplay = this.questionsChart;
+    }
 
   }
 

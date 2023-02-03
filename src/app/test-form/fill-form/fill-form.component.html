@@ -260,7 +260,7 @@
           <div nz-row nzJustify="center">
             <div nz-col nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="5">
               <nz-steps nzDirection="vertical" [nzCurrent]="index">
-                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index" class="long-text"
+                <nz-step *ngFor="let subTopic of subTopicsSteps; let i=index"
                   (click)="selectStep(subTopic.resultable.id, i)" style="cursor: pointer; overflow: hidden;  overflow-wrap: break-word;"
                   nzTitle="{{subTopic.resultable.name}}"></nz-step>
               </nz-steps>
@@ -732,9 +732,8 @@
               </nz-select>
             </div>
           </div>
-          <div nz-row>
-            <div nz-col nzFlex="1">
-              <nz-table #basicTable [nzData]="questionsChart" class="table-questions">
+          <section class="markdown api-container">
+              <table>
                 <thead>
                   <tr>
                     <th colspan="5">
@@ -751,12 +750,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let data of basicTable.data">
-                    <td class="long-text">{{ data.resultable.name }}</td>
-                    <td class="long-text">{{ data.resultable['sub_topics'][0].name }}</td>
+                  <tr *ngFor="let data of questionsChartDisplay">
+                    <td  >{{ data.resultable.name }}</td>
+                    <td >{{ data.resultable['sub_topics'][0].name }}</td>
 
-                    <td class="long-text">{{ data.resultable.importance }}</td>
-                    <td class="long-text">{{ data.resultable.verification_means }}</td>
+                    <td  >{{ data.resultable.importance }}</td>
+                    <td  >{{ data.resultable.verification_means }}</td>
 
                     <td *ngIf="data.resultable.type=='relacionada'">
                       <nz-tag [nzColor]="'gold'"> {{data.score/10 | number: '1.2-2'}}</nz-tag>
@@ -770,9 +769,8 @@
                     </td>
                   </tr>
                 </tbody>
-              </nz-table>
-            </div>
-          </div>
+              </table>
+          </section>
           <ng-template #titleCardEvaluation let-control>
             <div nz-row nzJustify="space-between">
               <div nz-col zXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="8">

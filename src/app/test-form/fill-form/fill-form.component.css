@@ -92,6 +92,24 @@ nz-layout:last-child {
   display: none;
 }
 
+.markdown.api-container table td:nth-child(3) {
+  width: 40%;
+  color: #191919;
+  font-size: 0.875rem;
+  word-break: break-all;
+}
+.markdown.api-container table td:nth-child(4) {
+  width: 35%;
+  color: #191919;
+  font-size: 0.875rem;
+  word-break: break-all;
+}
+.markdown.api-container table td:nth-child(2) {
+  width: 7%;
+}
+.markdown.api-container table td:nth-child(1) {
+  width: 15%;
+}
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
   .nz-content-p {
@@ -100,9 +118,11 @@ nz-layout:last-child {
     height: auto;
     overflow-x: auto;
   }
-  .long-text {
-    word-wrap: break-word;
+  .table-questions td,
+  .table-questions th {
+    display: block;
   }
+
   .chartForm {
     margin-top: -50px;
   }
