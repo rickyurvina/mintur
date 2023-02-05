@@ -71,24 +71,29 @@ nz-layout:last-child {
   display: flex;
   width: 100%;
 }
+
 .components-responsive2 {
 
   display: none;
 }
-.select-subtopics{
+
+.select-subtopics {
   width: 100%;
 }
 
 .long-text {
   word-wrap: break-word;
 }
-.table-questions{
+
+.table-questions {
   border-collapse: collapse;
 }
-.subtopic-chart-1{
+
+.subtopic-chart-1 {
   display: block;
 }
-.subtopic-chart-2{
+
+.subtopic-chart-2 {
   display: none;
 }
 
@@ -98,15 +103,18 @@ nz-layout:last-child {
   font-size: 0.875rem;
   word-break: break-all;
 }
+
 .markdown.api-container table td:nth-child(4) {
   width: 35%;
   color: #191919;
   font-size: 0.875rem;
   word-break: break-all;
 }
+
 .markdown.api-container table td:nth-child(2) {
   width: 7%;
 }
+
 .markdown.api-container table td:nth-child(1) {
   width: 15%;
 }
@@ -118,6 +126,7 @@ nz-layout:last-child {
     height: auto;
     overflow-x: auto;
   }
+
   .table-questions td,
   .table-questions th {
     display: block;
@@ -126,7 +135,8 @@ nz-layout:last-child {
   .chartForm {
     margin-top: -50px;
   }
-  .subtopic-chart-1{
+
+  .subtopic-chart-1 {
     display: none;
   }
 
@@ -140,15 +150,25 @@ nz-layout:last-child {
   .components-responsive {
     display: none;
   }
+
   .components-responsive2 {
     display: flex;
   }
-  .select-subtopics{
+
+  .select-subtopics {
     width: 100%;
   }
-  .subtopic-chart-2{
+
+  .subtopic-chart-2 {
     display: block;
   }
+
+  .ant-layout-header {
+    padding: 0;
+
+  }
+
+
 }
 
 

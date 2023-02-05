@@ -84,6 +84,13 @@ export class EstablishmentService {
     )
   }
 
+  showQuestionsOfSubtopicValidate(subTopicResultId,idEstablishment,idIntent): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-questions-subtopic-validate/"+subTopicResultId+"/"+idEstablishment+"/"+idIntent)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   showQuestionsResults(subTopicResultId,idEstablishment,idIntent): Observable<Establishment> {
     return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-questions-results/"+subTopicResultId+"/"+idEstablishment+"/"+idIntent)
     .pipe(

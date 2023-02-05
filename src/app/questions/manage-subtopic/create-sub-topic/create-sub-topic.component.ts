@@ -141,7 +141,6 @@ export class CreateSubTopicComponent implements OnInit {
         this.message.create('error', `Error ${e}`);
       }
     }
-    // this.router.navigateByUrl('forms/manage-forms')
   }
 
   resetForm(e: MouseEvent): void {
