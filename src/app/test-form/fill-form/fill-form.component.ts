@@ -274,7 +274,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   saveAnswer(idQuestion: number, answer: string, value: any, type: string, numberQuestions: number = 0): void {
 
     if (type === 'relacionada') {
-      console.log(value)
       let parentQuestion = this.questionsSteps.find(resultable => {
         return resultable.id == idQuestion;
       });
@@ -286,7 +285,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         value = [existOptionWithZero]
       }
 
-      console.log(value)
       try {
         this.validateForm.setValue({
           score: 1,
