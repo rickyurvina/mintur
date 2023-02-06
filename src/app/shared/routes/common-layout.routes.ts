@@ -5,33 +5,28 @@ export const CommonLayout_ROUTES: Routes = [
 
   //Dashboard
   // {
-  //   path: 'dashboard',
+  //   path: '',
   //   loadChildren: () => import('../../dashboard/dashboard.module').then(m => m.DashboardModule),
   // },
 
-  {
-    path: 'mintur',
-    loadChildren: () => import('../../test-form/test-form.module').then(m => m.TestFormModule),
-  },
-
   //Apps
-  {
-    path: 'apps',
-    data: {
-      title: 'Apps'
-    },
-    children: [
-      {
-        path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: '',
-        loadChildren: () => import('../../apps/apps.module').then(m => m.AppsModule)
-      },
-    ]
-  },
+  // {
+  //   path: 'apps',
+  //   data: {
+  //     title: 'Apps'
+  //   },
+  //   children: [
+  //     {
+  //       path: '',
+  //       redirectTo: '/dashboard',
+  //       pathMatch: 'full'
+  //     },
+  //     {
+  //       path: '',
+  //       loadChildren: () => import('../../apps/apps.module').then(m => m.AppsModule)
+  //     },
+  //   ]
+  // },
 
   //Component
   {
@@ -54,46 +49,46 @@ export const CommonLayout_ROUTES: Routes = [
   },
 
   // Charts
-  {
-    path: 'charts',
-    data: {
-      title: 'Charts'
-    },
-    children: [
-      {
-        path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: '',
-        loadChildren: () => import('../../charts/charts.module').then(m => m.ChartsModule)
-      },
-    ]
-  },
+  // {
+  //   path: 'charts',
+  //   data: {
+  //     title: 'Charts'
+  //   },
+  //   children: [
+  //     {
+  //       path: '',
+  //       redirectTo: '/dashboard',
+  //       pathMatch: 'full'
+  //     },
+  //     {
+  //       path: '',
+  //       loadChildren: () => import('../../charts/charts.module').then(m => m.ChartsModule)
+  //     },
+  //   ]
+  // },
 
   //Pages
-  {
-    path: 'pages',
-    data: {
-      title: 'Pages '
-    },
-    children: [
-      {
-        path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: '',
-        loadChildren: () => import('../../pages/pages.module').then(m => m.PagesModule)
-      },
-    ]
-  },
+  // {
+  //   path: 'pages',
+  //   data: {
+  //     title: 'Pages '
+  //   },
+  //   children: [
+  //     {
+  //       path: '',
+  //       redirectTo: '/dashboard',
+  //       pathMatch: 'full'
+  //     },
+  //     {
+  //       path: '',
+  //       loadChildren: () => import('../../pages/pages.module').then(m => m.PagesModule)
+  //     },
+  //   ]
+  // },
 
   //Questions
   {
-    path: 'admin',
+    path: '',
     data: {
       title: 'Administración'
     },

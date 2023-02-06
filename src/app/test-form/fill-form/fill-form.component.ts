@@ -143,10 +143,10 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       this.establishmentTypeService.getAll().subscribe((data: EstablishmentType[]) => {
         this.establishmentTypes = data;
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: al obtener los tipos de establecimiento`);
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error: al obtener los tipos de establecimiento`);
     }
     try {
       this.geographicClassifierService.getAll().subscribe((data: GeographichClassifier[]) => {
@@ -154,15 +154,15 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         this.cantons = data.filter(element => element['type'] == 'CANTON');
         this.parrishes = data.filter(element => element['type'] == 'PARISH');
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: al obtener el clasificador geográfico`);
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error: al obtener el clasificador geográfico`);
     }
     this.formService.showActiveForm().subscribe((data: Form) => {
       this.formDisplay = data;
     }, err => {
-      this.message.create('error', `Error: ${err}`);
+      this.message.create('error', `Error: al obtener el formulario activo`);
     });
   }
 
@@ -197,7 +197,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               this.updateParrishes(this.establishmentFormUpdate.value.canton)
             }
           }, err => {
-            this.message.create('error', `Error: ${err}`);
+            this.message.create('error', `Error: al obtener el formulario inicial`);
           });
           this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
           this.establishmentForm.reset();
@@ -205,7 +205,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           this.showErrors(err)
         });
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al guardar el formulario`);
       }
     } else {
       this.message.create('error', "No se puede iniciar, No existe un formulario acitvo")
@@ -243,13 +243,13 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               this.showErrors(err)
             });
           } catch (e) {
-            this.message.create('error', `Error ${e}`);
+            this.message.create('error', `Error al actualizar el formulario`);
           }
 
         }
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error al actualizar el formulario`);
     }
   }
 
@@ -303,7 +303,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -327,7 +327,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -340,8 +340,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           establishment: this.establishment.id,
           ids: value
         })
-
-
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
           this.updateProgress()
 
@@ -350,7 +348,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
+
       }
     }
 
@@ -371,7 +370,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -393,7 +392,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -413,7 +412,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -444,7 +443,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   }
 
   selectStep(id: number, index: number): void {
-    window.scrollTo(-10, -10);
 
     let idEstablishment = this.localStore.getData('idEstablishment');
     let intentId = this.localStore.getData('intent_id');
@@ -456,6 +454,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         if (!questionWithOutScore) {
           this.index = index;
           this.chargeQuestionsOfSubtopic(id)
+          window.scrollTo(-10, -10);
+
         } else {
           try {
             var message = "<p>Le restan preguntas por responder</p>"
@@ -469,7 +469,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           }
         }
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: al obtener las preguntas para validación de continuar`);
       });
   }
 
@@ -827,12 +827,12 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           this.updateProgress();
           this.fillQuestionsChart();
         }, err => {
-          this.message.create('error', `Error: ${err}`);
+          // this.message.create('error', `Error: al cargar la data inicial`);
         });
       }
     } catch (e) {
 
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error: al cargar la data inicial`);
     }
   }
 
@@ -842,7 +842,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
     this.establishmentService.showQuestionsOfSubtopic(subTopicId, idEstablishment, intentId).subscribe((data: Establishment) => {
       this.questionsSteps = data['questions'];
     }, err => {
-      this.message.create('error', `Error: ${err}`);
+      this.message.create('error', `Error: al obtener las preguntas para el ambito`);
     });
     this.localStore.saveData('sub_topic_id', subTopicId.toString())
     this.subTopic = this.subTopics.find(element => element['resultable']['id'] == subTopicId)
@@ -868,7 +868,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       })
       this.questionsChartDisplay = this.questionsChart;
     }, err => {
-      this.message.create('error', `Error: ${err}`);
+      this.message.create('error', `Error: al cargar las preguntas de los resultados`);
     });
 
   }
@@ -918,10 +918,10 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       this.establishmentService.showPercentage(idEstablishment, intentId).subscribe((data: Establishment) => {
         this.percentage = data['percentage'];
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: al cargar el porcentaje de avance`);
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error: al cargar el porcentaje de avance`);
     }
   }
 
@@ -941,13 +941,13 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               this.showErrors(err)
             });
           } catch (e) {
-            this.message.create('error', `Error ${e}`);
+            this.message.create('error', `Error al finalizar el formulario`);
           }
 
         }
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error al finalizar el formulario`);
     }
   }
 
@@ -975,9 +975,10 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         const questionWithOutScore = data['questions'].find(
           element => element['score'] == null
         )
-        window.scrollTo(-10, -10);
 
         if (!questionWithOutScore) {
+          window.scrollTo(-10, -10);
+
           if (this.index == this.subTopicsSteps.length - 1 && this.selectedIndexComponent < this.components.length - 1) {
             this.index = 0;
             this.selectedIndexComponent = this.selectedIndexComponent + 1;
@@ -1000,7 +1001,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           }
         }
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: al cargar las preguntas de validación`);
       });
   }
 
@@ -1284,7 +1285,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
                   color: 'white',
                 },
                 {
-                  text: 'Medios de verificacion',
+                  text: 'Medios de verificación',
                   alignment: 'center',
                   fillColor: '#26506d',
                   color: 'white',
@@ -1346,7 +1347,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       },
     };
     if (action === 'download') {
-      pdfMake.createPdf(docDefinition).download();
+      pdfMake.createPdf(docDefinition).download('Evaluacion.pdf');
     }
   }
 }

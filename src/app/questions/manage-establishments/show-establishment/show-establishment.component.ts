@@ -16,6 +16,7 @@ export class ShowEstablishmentComponent implements OnInit {
 
   establishment:Establishment;
   forms:any[]=[];
+  results:any[]=[];
 
   constructor(private modalService:NzModalService,
     private message: NzMessageService,
@@ -28,12 +29,7 @@ export class ShowEstablishmentComponent implements OnInit {
       try{
         this.establishmentService.find(this.InputData).subscribe((data: Establishment) => {
           this.establishment=data;
-          var results=this.establishment['results'].filter(element=>element);
-
-          this.forms=results.filter(element =>
-            element['resultable_type'] == "App\\Models\\Forms\\Form"
-            )
-
+          this.results=this.establishment['results'].filter(element=>element);
         }, err => {
           this.message.create('error', `Error: ${err}`);
         });

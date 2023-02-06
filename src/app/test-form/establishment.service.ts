@@ -70,6 +70,13 @@ export class EstablishmentService {
     )
   }
 
+  chargeResultsEstablishment(id): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-results/"+id)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   showPercentage(idEstablishment,idIntent): Observable<Establishment> {
     return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-percentage/"+idEstablishment+"/"+idIntent)
     .pipe(

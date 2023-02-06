@@ -10,23 +10,28 @@ import { use } from 'echarts';
 
 const appRoutes: Routes = [
 
-     { path: '', redirectTo: '/mintur/formulario', pathMatch: 'full' },
-    {
-        path: 'mintur',
-        component: FullLayoutComponent,
-        children: FullLayout_ROUTES
-    }
+  { path: '', redirectTo: '/mintur/formulario', pathMatch: 'full' },
+  {
+    path: 'admin',
+    component: CommonLayoutComponent,
+    children: CommonLayout_ROUTES
+  },
+  {
+    path: 'mintur',
+    component: FullLayoutComponent,
+    children: FullLayout_ROUTES
+  }
 ];
 
 @NgModule({
-    imports: [
-        RouterModule.forRoot(appRoutes, {
-            useHash : true
-        })
-    ],
-    exports: [
-        RouterModule
-    ]
+  imports: [
+    RouterModule.forRoot(appRoutes, {
+      useHash: true
+    })
+  ],
+  exports: [
+    RouterModule
+  ]
 })
 
 export class AppRoutingModule {
