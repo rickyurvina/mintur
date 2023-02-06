@@ -674,6 +674,8 @@
                         Siguiente
                         <span nz-icon nzType="right"></span>
                       </button>
+                      <button nz-button nzType="primary" class="mb-2" (click)="finishForm()"
+                      *ngIf="percentage==100">Finalizar</button>
                     </nz-button-group>
                   </div>
                 </div>
@@ -685,8 +687,6 @@
                   [nzStrokeColor]="{ '0%': '#108ee9', '50%': '#2db7f5', '100%': '#87d068' }"></nz-progress>
               </div>
               <button nz-button nzType="default" nzDanger class="mb-2" (click)="resetForm()">Cerrar</button>
-              <button nz-button nzType="primary" class="mb-2" (click)="finishForm()"
-                *ngIf="percentage==100">Finalizar</button>
               <nz-divider></nz-divider>
               <nz-tag [nzColor]="'green'" class="mt-2">
                 {{establishment.establishment_type.name}}</nz-tag>
@@ -786,7 +786,7 @@
                 </div>
                 <div nz-col zXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="8" *ngIf="establishment">
                   <h2 class="w-100 m-h-auto" *ngIf="formDisplay" style="font-size: 20px; white-space: break-spaces;">
-                    {{establishment.name+" "+establishment.company}}
+                    {{establishment.company}}
                   </h2>
                   <!-- <h2 class="w-100 m-h-auto" >{{establishment.name+' '+establishment.company}} </h2> -->
                 </div>
