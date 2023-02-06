@@ -12,7 +12,8 @@
     "build-prod": "node --max_old_space_size=8000 ./node_modules/@angular/cli/bin/ng build --configuration production",
     "build-prod-state": "node --max_old_space_size=8000 ./node_modules/@angular/cli/bin/ng build --configuration production --stats-json",
     "bundle-report": "webpack-bundle-analyzer dist/enlink/stats.json",
-    "extract-translations": "ngx-translate-extract -i ./src -o ./src/assets/i18n/{en,es}.json --clean --format namespaced-json"
+    "extract-translations": "ngx-translate-extract -i ./src -o ./src/assets/i18n/{en,es}.json --clean --format namespaced-json",
+    "build:prod": "ng build --prod --aot --build-optimizer && gzipper --verbose ./dist"
   },
   "private": true,
   "dependencies": {
@@ -59,6 +60,7 @@
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
     "codelyzer": "^0.0.28",
+    "gzipper": "^7.2.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.3.4",

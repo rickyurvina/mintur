@@ -1,11 +1,12 @@
 #stage 1
+#stage 1
 FROM node:16.14.2 as node
 
 WORKDIR /usr/src/app
 
 COPY . .
 
-RUN npm install --dev && npm run build  --prod --aot --vendor-chunk --common-chunk --delete-output-path --buildOptimizer
+RUN npm install  && npm run build:prod
 
 #stage 2
 FROM nginx:alpine
