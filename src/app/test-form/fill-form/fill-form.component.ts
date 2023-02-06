@@ -927,7 +927,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
 
   finishForm() {
     try {
-      var message = "Si da click en Aceptar. Su formulario será guardado y no podrá modificar sus respuestas."
+      var message = "Si da click en Aceptar su formulario será guardado y no podrá modificar sus respuestas."
       this.modalService.confirm({
         nzTitle: 'Finalizar el formulario',
         nzContent: message,
