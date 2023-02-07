@@ -7,7 +7,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { ShowEstablishmentComponent } from './show-establishment/show-establishment.component';
 import pdfMake from 'pdfmake/build/pdfmake';
 import * as XLSX from 'xlsx';
-
+import { ResultsService } from 'src/app/test-form/results.service';
+import { Result } from 'src/app/test-form/result';
 @Component({
   selector: 'app-manage-establishments',
   templateUrl: './manage-establishments.component.html',
@@ -16,15 +17,17 @@ import * as XLSX from 'xlsx';
 export class ManageEstablishmentsComponent implements OnInit {
   establishments: Establishment[] = [];
 
-  results: any[];
   components: any[];
   subTopics: any[];
   questionsChart:any[]=[]
   forms: any[];
+  result: Result;
+  results:Result[]=[];
 
   constructor(private establishmentService: EstablishmentService,
     private modalService: NzModalService,
-    private message: NzMessageService) { }
+    private message: NzMessageService,
+    private resultsService:ResultsService) { }
 
   ngOnInit(): void {
     try {
@@ -57,7 +60,6 @@ export class ManageEstablishmentsComponent implements OnInit {
   async downloadPdf(id,action = 'download') {
     try {
         this.establishmentService.chargeResultsEstablishment(id).subscribe((data: Establishment) => {
-          console.log(data)
           var establishment = data['establishment'];
           var form = data['forms'];
           var components = data['components'];
@@ -433,6 +435,77 @@ export class ManageEstablishmentsComponent implements OnInit {
       worksheet['F1'] = { v: 'Calificación', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
 
       XLSX.writeFile(workbook, 'resultados_establecimientos.xlsx');
+    }catch(e){
+      this.message.create('error', `Error: al descargar el archivo excel`);
+    }
+  }
+
+  downloadExcelResults() {
+    try{
+      // data.push(['Nombre', 'Correo', 'Empresa','Tipo','Año de Inicio de Operaciones','Calificación']);
+      try {
+        this.resultsService.getAll().subscribe((data: Result[]) => {
+          var dataArr = [];
+
+          this.results = data;
+          this.results.forEach(function(item){
+            dataArr.push([
+              item.establishment.ruc,
+              item.establishment.name,
+              item.establishment.company,
+              item.establishment.type_of_taxpayer,
+              item.establishment.start_year_operations,
+              item.establishment.register_number,
+              item.establishment['establishment_type']['name'],
+              item.establishment['province_location']['description'],
+              item.establishment['canton_location']['description'],
+              item.establishment['location_parrish']['description'],
+              item['resultable_type']=="App\\Models\\Forms\\Question"?"Pregunta":item['resultable_type']=="App\\Models\\Forms\\Form"?"Formulario":item['resultable_type']=="App\\Models\\Forms\\Component"?"Componente":"SubTema",
+              item['resultable']?  item['resultable']['code']:'',
+              item['resultable']?  item['resultable']['name']:'',
+              item['resultable_type']=="App\\Models\\Forms\\Question"?  item['resultable']['type'] == 'relacionada' ? (item['score'] / 10).toFixed(2) : item['resultable']['type'] == 'si_no' ? (item['score'] * 10).toFixed(2) : (item['score'] * 5).toFixed(2):item.score,
+              item.answer,
+
+            ])
+          })
+
+          const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataArr);
+
+          const workbook: XLSX.WorkBook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+          worksheet['!cols'] = [{ wch: 20 }, { wch: 30 }, { wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 5 }, { wch: 30 }, { wch: 5 }, { wch: 5 }];
+          const firstRow = worksheet['A1:O1'];
+          for (const cell in firstRow) {
+            firstRow[cell].s = {
+              font: { sz: 14, bold: true },
+              fill: { fgColor: { rgb: '0070C0' } }
+            };
+          }
+          worksheet['!autofilter'] = { ref: `A1:O1` };
+          worksheet['!rows'] = [{ hpt: 30 }];
+          worksheet['A1'] = { v: 'RUC', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['B1'] = { v: 'Nombre', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['C1'] = { v: 'Empresa', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['D1'] = { v: 'Tipo de contribuyente', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['E1'] = { v: 'Año inicio de operaciones', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['F1'] = { v: '# de registro', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['G1'] = { v: 'Tipo de establecimiento', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['H1'] = { v: 'Provincia', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['I1'] = { v: 'Cantón', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['J1'] = { v: 'Parroquia', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['K1'] = { v: 'Tipo de resultado', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['L1'] = { v: 'Código', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['M1'] = { v: 'Nombre resultado', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['N1'] = { v: 'score', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+          worksheet['O1'] = { v: 'respuesta', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+
+          XLSX.writeFile(workbook, 'resultados_establecimientos.xlsx');
+        }, err => {
+          this.message.create('error', `Error: ${err}`);
+        });
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+
     }catch(e){
       this.message.create('error', `Error: al descargar el archivo excel`);
     }
