@@ -449,6 +449,21 @@ export class ManageEstablishmentsComponent implements OnInit {
 
           this.results = data;
           this.results.forEach(function(item){
+            var score;
+            if( item['resultable_type']=="App\\Models\\Forms\\Question"){
+              if(item['resultable']['type'] == 'relacionada' || item['resultable']['type'] == 'una_opcion'){
+                score= (item['score'] / 10).toFixed(2)
+               }else if( item['resultable']['type'] == 'si_no'){
+                 score= (item['score'] * 10).toFixed(2)
+               }else if(item['resultable']['type'] == 'informativa'){
+                 score= (item['score'] / 10).toFixed(2)
+               }else{
+                 score=item['score']
+               }
+            }else{
+              score=item['score']
+            }
+
             dataArr.push([
               item.establishment.ruc,
               item.establishment.name,
@@ -463,7 +478,7 @@ export class ManageEstablishmentsComponent implements OnInit {
               item['resultable_type']=="App\\Models\\Forms\\Question"?"Pregunta":item['resultable_type']=="App\\Models\\Forms\\Form"?"Formulario":item['resultable_type']=="App\\Models\\Forms\\Component"?"Componente":"SubTema",
               item['resultable']?  item['resultable']['code']:'',
               item['resultable']?  item['resultable']['name']:'',
-              item['resultable_type']=="App\\Models\\Forms\\Question"?  item['resultable']['type'] == 'relacionada' ? (item['score'] / 10).toFixed(2) : item['resultable']['type'] == 'si_no' ? (item['score'] * 10).toFixed(2) : (item['score'] * 5).toFixed(2):item.score,
+              score,
               item.answer,
 
             ])
