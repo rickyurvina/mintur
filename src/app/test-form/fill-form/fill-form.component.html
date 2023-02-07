@@ -739,39 +739,39 @@
               </nz-select>
             </div>
           </div>
-          <section class="markdown api-container">
+          <section class="markdown">
             <table>
               <thead>
                 <tr>
-                  <th colspan="5">
+                  <th colspan="5" style="text-align:center; color:black">
                     A CONTINUACIÓN SE MUESTRA LA IMPORTANCIA Y MEDIOS DE VERIFICACIÓN DE LAS PREGUNTAS CON BAJA
                     CALIFICACIÓN
                   </th>
                 </tr>
                 <tr>
-                  <th>PREGUNTA</th>
-                  <th>SUB TEMA</th>
-                  <th>IMPORTANCIA</th>
-                  <th>MEDIOS DE VERIFICACIÓN</th>
-                  <th>CALIFICACIÓN</th>
+                  <th  style="text-align:center; color:black">PREGUNTA</th>
+                  <th  style="text-align:center; color:black">SUB TEMA</th>
+                  <th  style="text-align:center; color:black">IMPORTANCIA</th>
+                  <th  style="text-align:center; color:black">MEDIOS DE VERIFICACIÓN</th>
+                  <th  style="text-align:center; color:black">CALIFICACIÓN</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let data of questionsChartDisplay">
-                  <td>{{ data.resultable.name }}</td>
-                  <td>{{ data.resultable['sub_topics'][0].name }}</td>
+                  <td style="color:black">{{ data.resultable.name }}</td>
+                  <td style="color:black">{{ data.resultable['sub_topics'][0].name }}</td>
 
-                  <td>{{ data.resultable.importance }}</td>
-                  <td>{{ data.resultable.verification_means }}</td>
+                  <td style="color:black">{{ data.resultable.importance }}</td>
+                  <td style="color:black">{{ data.resultable.verification_means }}</td>
 
-                  <td *ngIf="data.resultable.type=='relacionada'">
+                  <td style="color:black" *ngIf="data.resultable.type=='relacionada'">
                     <nz-tag [nzColor]="'gold'"> {{data.score/10 | number: '1.2-2'}}</nz-tag>
                   </td>
-                  <td *ngIf="data.resultable.type=='si_no'">
+                  <td style="color:black" *ngIf="data.resultable.type=='si_no'">
                     <nz-tag [nzColor]="'gold'"> {{data.score*10| number: '1.2-2'}}</nz-tag>
 
                   </td>
-                  <td *ngIf="data.resultable.type=='rango_1_5'">
+                  <td style="color:black" *ngIf="data.resultable.type=='rango_1_5'">
                     <nz-tag [nzColor]="'gold'"> {{data.score*5 | number: '1.2-2'}}</nz-tag>
                   </td>
                 </tr>
