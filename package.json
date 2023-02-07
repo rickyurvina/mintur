@@ -33,6 +33,7 @@
     "date-fns": "^2.16.1",
     "echarts": "^5.4.1",
     "file-saver": "^2.0.5",
+    "gzipper": "^7.2.0",
     "jquery": "^3.5.1",
     "jspdf": "^2.5.1",
     "ng-chartjs": "^0.2.1",
