@@ -475,43 +475,95 @@ export class ManageEstablishmentsComponent implements OnInit {
               item.establishment['province_location']['description'],
               item.establishment['canton_location']['description'],
               item.establishment['location_parrish']['description'],
-              item['resultable_type']=="App\\Models\\Forms\\Question"?"Pregunta":item['resultable_type']=="App\\Models\\Forms\\Form"?"Formulario":item['resultable_type']=="App\\Models\\Forms\\Component"?"Componente":"SubTema",
+              item['resultable_type']=="App\\Models\\Forms\\Question"?"Pregunta":
+              item['resultable_type']=="App\\Models\\Forms\\Form"?"Formulario":
+              item['resultable_type']=="App\\Models\\Forms\\Component"?"Componente":"SubTema",
               item['resultable']?  item['resultable']['code']:'',
               item['resultable']?  item['resultable']['name']:'',
               score,
               item.answer,
-
             ])
           })
 
           const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataArr);
 
           const workbook: XLSX.WorkBook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-          worksheet['!cols'] = [{ wch: 20 }, { wch: 30 }, { wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 5 }, { wch: 30 }, { wch: 5 }, { wch: 5 }];
-          const firstRow = worksheet['A1:O1'];
-          for (const cell in firstRow) {
-            firstRow[cell].s = {
-              font: { sz: 14, bold: true },
-              fill: { fgColor: { rgb: '0070C0' } }
-            };
-          }
-          worksheet['!autofilter'] = { ref: `A1:O1` };
-          worksheet['!rows'] = [{ hpt: 30 }];
-          worksheet['A1'] = { v: 'RUC', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['B1'] = { v: 'Nombre', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['C1'] = { v: 'Empresa', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['D1'] = { v: 'Tipo de contribuyente', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['E1'] = { v: 'Año inicio de operaciones', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['F1'] = { v: '# de registro', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['G1'] = { v: 'Tipo de establecimiento', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['H1'] = { v: 'Provincia', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['I1'] = { v: 'Cantón', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['J1'] = { v: 'Parroquia', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['K1'] = { v: 'Tipo de resultado', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['L1'] = { v: 'Código', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['M1'] = { v: 'Nombre resultado', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['N1'] = { v: 'score', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-          worksheet['O1'] = { v: 'respuesta', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
+
+          XLSX.writeFile(workbook, 'resultados_establecimientos.xlsx');
+        }, err => {
+          this.message.create('error', `Error: ${err}`);
+        });
+      } catch (e) {
+        this.message.create('error', `Error ${e}`);
+      }
+
+    }catch(e){
+      this.message.create('error', `Error: al descargar el archivo excel`);
+    }
+  }
+
+  downloadExcelResults2() {
+    try{
+      try {
+        this.establishmentService.getAllForExcel().subscribe((data: Establishment[]) => {
+          var dataArr = [];
+
+          this.establishments = data;
+          console.log(data)
+          this.establishments.forEach(function(item, index){
+            var typeE;
+            if( item['resultable_type']=="App\\Models\\Forms\\Question"){
+              typeE="Pregunta"
+            }else if(item['resultable_type']=="App\\Models\\Forms\\Form"){
+              typeE="Formulario"
+            }else if(item['resultable_type']=="App\\Models\\Forms\\SubTopic"){
+              typeE="Ambito"
+            }else{
+              typeE="Componente"
+            }
+            dataArr.push([
+              item.ruc,
+              item.name,
+              item.company,
+              item.type_of_taxpayer,
+              item.start_year_operations,
+              item.register_number? item.register_number:'No posee registro',
+              item['province_location']['description'],
+              item['canton_location']['description'],
+              item['location_parrish']['description'],
+            ])
+
+            item.results.forEach(function(result){
+              var score;
+              if( result.resultable_type=="App\\Models\\Forms\\Question"){
+                if(result['resultable']['type'] == 'relacionada' || result['resultable']['type'] == 'una_opcion'){
+                  score= (result['score'] / 10).toFixed(2)
+                 }else if( result['resultable']['type'] == 'si_no'){
+                   score= (result['score'] * 10).toFixed(2)
+                 }else if(result['resultable']['type'] == 'informativa'){
+                   score= (result['score'] / 10).toFixed(2)
+                 }else{
+                   score=result['score']
+                 }
+              }else{
+                score=result['score']
+              }
+
+              if( result.resultable_type=="App\\Models\\Forms\\Question"){
+                dataArr[index].push(result.resultable.code)
+              }else{
+                dataArr[index].push(result.resultable.name)
+              }
+              if(result.answer){
+                dataArr[index].push(result.answer)
+              }else{
+                dataArr[index].push(score)
+              }
+            })
+
+          })
+          const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataArr);
+          const workbook: XLSX.WorkBook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
 
           XLSX.writeFile(workbook, 'resultados_establecimientos.xlsx');
         }, err => {

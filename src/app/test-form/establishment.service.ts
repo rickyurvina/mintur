@@ -27,6 +27,13 @@ export class EstablishmentService {
     )
   }
 
+  getAllForExcel(): Observable<Establishment[]> {
+    return this.httpClient.get<Establishment[]>(environment.url+"/establishment/data-excel")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   create(establishment): Observable<Establishment> {
     return this.httpClient.post<Establishment>(environment.url+"/establishment", JSON.stringify(establishment), this.httpOptions)
     .pipe(
