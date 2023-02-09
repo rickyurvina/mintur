@@ -21,6 +21,9 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { ManageEstablishmentsComponent } from './manage-establishments/manage-establishments.component';
 import { ShowEstablishmentComponent } from './manage-establishments/show-establishment/show-establishment.component';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
+import { ManageResultsComponent } from './manage-results/manage-results.component';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
 const antdModule= [
     NzFormModule,
@@ -33,7 +36,9 @@ const antdModule= [
     NzDividerModule,
     NzToolTipModule,
     NzTableModule,
-    NzProgressModule
+    NzProgressModule,
+    NzTabsModule,
+    NzBadgeModule,
 ]
 
 @NgModule({
@@ -51,7 +56,8 @@ const antdModule= [
         CreateComponentsComponent,
         IndexSubTopicComponent,
         ManageEstablishmentsComponent,
-        ShowEstablishmentComponent
+        ShowEstablishmentComponent,
+        ManageResultsComponent
     ]
 })
 

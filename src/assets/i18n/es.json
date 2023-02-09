@@ -62,7 +62,8 @@
     "dependiente_de":"Dependiente de",
     "siguiente":"Siguiente",
     "anterior":"Anterior",
-    "Establecimientos":"Establecimientos"
+    "Establecimientos":"Establecimientos",
+    "Resultados":"Resultados"
   },
   "validaciones":{
     "validando":"Validando...",

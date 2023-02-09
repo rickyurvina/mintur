@@ -25,6 +25,13 @@ export class GeographichClassifierService {
     )
   }
 
+  getAllProvinces(): Observable<GeographichClassifier[]> {
+    return this.httpClient.get<GeographichClassifier[]>(environment.url+"/geographic-classifier/provinces")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   errorHandler(error) {
     let errorMessage = '';
     if(error.error instanceof ErrorEvent) {
