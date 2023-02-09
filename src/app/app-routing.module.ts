@@ -12,12 +12,12 @@ const appRoutes: Routes = [
 
   { path: '', redirectTo: '/mintur/formulario', pathMatch: 'full' },
   {
-    path: 'admin',
+    path: '',
     component: CommonLayoutComponent,
     children: CommonLayout_ROUTES
   },
   {
-    path: 'mintur',
+    path: '',
     component: FullLayoutComponent,
     children: FullLayout_ROUTES
   }
