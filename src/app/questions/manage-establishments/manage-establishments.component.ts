@@ -27,7 +27,8 @@ export class ManageEstablishmentsComponent implements OnInit {
   constructor(private establishmentService: EstablishmentService,
     private modalService: NzModalService,
     private message: NzMessageService,
-    private resultsService:ResultsService) { }
+    private resultsService:ResultsService,
+    private translate: TranslateService) { }
 
   ngOnInit(): void {
     try {
@@ -407,39 +408,6 @@ export class ManageEstablishmentsComponent implements OnInit {
     }
   }
 
-  downloadExcel() {
-    try{
-      var data = [];
-      // data.push(['Nombre', 'Correo', 'Empresa','Tipo','Año de Inicio de Operaciones','Calificación']);
-      this.establishments.forEach(function(item){
-        data.push([
-          item.name,
-          item.email,
-          item.company,
-          item['establishment_type']?item['establishment_type']['name']:'',
-          item['start_year_operations'],
-          item['results'].length>0?item['results'][0]['score']:'N/A'
-        ])
-      })
-
-      const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-
-      const workbook: XLSX.WorkBook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-      worksheet['!cols'] = [{ wch: 20 }, { wch: 30 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }];
-      worksheet['!rows'] = [{ hpt: 30 }];
-      worksheet['A1'] = { v: 'Nombre', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-      worksheet['B1'] = { v: 'Correo', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-      worksheet['C1'] = { v: 'Empresa', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-      worksheet['D1'] = { v: 'Tipo', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-      worksheet['E1'] = { v: 'Año de Inicio de Operaciones', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-      worksheet['F1'] = { v: 'Calificación', s: { font: { bold: true }, fill: { fgColor: { rgb: '#26506d' } }, alignment: { horizontal: 'center' } } };
-
-      XLSX.writeFile(workbook, 'resultados_establecimientos.xlsx');
-    }catch(e){
-      this.message.create('error', `Error: al descargar el archivo excel`);
-    }
-  }
-
   downloadExcelResults() {
     try{
       // data.push(['Nombre', 'Correo', 'Empresa','Tipo','Año de Inicio de Operaciones','Calificación']);
@@ -509,7 +477,6 @@ export class ManageEstablishmentsComponent implements OnInit {
           var dataArr = [];
 
           this.establishments = data;
-          console.log(data)
           this.establishments.forEach(function(item, index){
             var typeE;
             if( item['resultable_type']=="App\\Models\\Forms\\Question"){
@@ -577,4 +544,28 @@ export class ManageEstablishmentsComponent implements OnInit {
       this.message.create('error', `Error: al descargar el archivo excel`);
     }
   }
+
+  deleteEstablishment(id): void {
+    try {
+      this.modalService.confirm({
+        nzTitle: this.translate.instant('general.seguro_desea_eliminar'),
+        nzContent: this.translate.instant('general.modal_se_cierra'),
+        nzOnOk: () => {
+          try {
+            this.establishmentService.destroy(id).subscribe(res => {
+              this.establishments = this.establishments.filter(item => item.id !== id);
+              this.message.create('success', `Se ha eliminado correctamente`);
+            }, err => {
+              this.message.create('error', `Error: ${err}`);
+            })
+          } catch (e) {
+            this.message.create('error', `Error: ${e}`);
+          }
+        }
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+  }
+
 }
