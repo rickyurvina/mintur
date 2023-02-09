@@ -1,11 +1,11 @@
 <div>
-  <div nz-row nzJustify="end">
+  <!-- <div nz-row nzJustify="end">
     <div nz-col>
       <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="showModalCreate()">
         <i nz-icon nzType="plus"></i> {{ "general.agregar" | translate }}
       </button>
     </div>
-  </div>
+  </div> -->
   <div style="background: #ECECEC;padding:30px;">
     <div nz-row [nzGutter]="8">
       <div nz-col [nzSpan]="8" *ngFor="let question of questions">
@@ -58,13 +58,13 @@
         </nz-card>
         <ng-template #extraTemplate>
 
-          <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(question.id)">
+          <!-- <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(question.id)">
             <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
             </i>
           </a>
           <a nz-button [nzSize]="size" nzType="link" (click)="showConfirm(question.id)">
             <i nz-icon nzType="delete" nzTheme="outline"></i>
-          </a>
+          </a> -->
         </ng-template>
       </div>
     </div>
