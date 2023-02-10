@@ -8,9 +8,11 @@
     </div>
   </div>
   <div style="background: #ECECEC;padding:30px;">
-    <nz-table #basicTable [nzData]="establishments">
+    <nz-table #basicTable [nzData]="establishments"
+        [nzPageSize]="50">
       <thead>
         <tr>
+          <th>Código</th>
           <th>Nombre</th>
           <th>Correo</th>
           <th>Empresa</th>
@@ -22,6 +24,8 @@
       </thead>
       <tbody>
         <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.code }}</td>
+
           <td>{{ data.name }}</td>
           <td>{{ data.email }}</td>
           <td>{{ data.company ?? '' }}</td>

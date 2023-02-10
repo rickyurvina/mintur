@@ -24,6 +24,14 @@ export class QuestionService {
     )
   }
 
+  getAllActive(): Observable<Question[]> {
+    return this.httpClient.get<Question[]>(environment.url+"/question/questions")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+
   create(question): Observable<Question> {
     return this.httpClient.post<Question>(environment.url+"/question", JSON.stringify(question), this.httpOptions)
     .pipe(
