@@ -32,7 +32,8 @@ export class ManageEstablishmentsComponent implements OnInit {
   constructor(private establishmentService: EstablishmentService,
     private modalService: NzModalService,
     private message: NzMessageService,
-    private questionsService: QuestionService) {
+    private questionsService: QuestionService,
+    private translate: TranslateService) {
     try {
       this.establishmentService.getAll().subscribe((data: Establishment[]) => {
         this.establishments = data;
@@ -453,10 +454,14 @@ export class ManageEstablishmentsComponent implements OnInit {
 
         this.establishmentService.getAllForExcel().subscribe((data: Establishment[]) => {
 
-          this.establishments = data;
-          this.establishments.forEach(function (item, index) {
-            let form = item.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
 
+          this.establishments = data;
+          // console.log(this.questions)
+          var _questions = this.questions
+
+          this.establishments.forEach(function (item, index) {
+            // console.log(_questions)
+            let form = item.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
             dataArr.push([
               item.code,
               item.name,
@@ -473,33 +478,40 @@ export class ManageEstablishmentsComponent implements OnInit {
             let components = item.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
             let subTopics = item.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
 
-            console.log(dataArr);
+            // console.log(dataArr)
+            _questions.forEach(function (ques) {
+              dataArr[index + 1].push(ques.code)
+              if (ques['children'].length > 0) {
+                ques['children'].forEach(function (child) {
+                  dataArr[index + 1].push(child.code)
+                })
+              }
+            })
             item.results.forEach(function (result) {
               var score;
               if (result.resultable_type == "App\\Models\\Forms\\Question") {
+                let quest = dataArr[index + 1].find(item => item == result.resultable.code)
                 if (result['resultable']['type'] == 'relacionada' || result['resultable']['type'] == 'una_opcion') {
                   score = (result['score'] / 10).toFixed(2)
                 } else if (result['resultable']['type'] == 'si_no') {
                   score = (result['score'] * 10).toFixed(2)
                 } else if (result['resultable']['type'] == 'informativa') {
-                  score = (result['score'] / 10).toFixed(2)
+                  score = result['answer']
                 } else {
                   score = result['score']
                 }
-              }
-
-              if (result.resultable_type == "App\\Models\\Forms\\Question") {
-                let exist = dataArr[0].find(element => element == result.resultable.code)
-                if (exist) {
-                  console.log('Existe')
-                  dataArr[index + 1].push(score)
-                } else {
-                  console.log('No Existe')
-                  dataArr[index + 1].push('NaN')
+                if (quest != undefined) {
+                  var _index = dataArr[index + 1].indexOf(quest);
+                  dataArr[index + 1][_index] = score;
                 }
               }
             })
 
+            dataArr[index + 1].forEach(function (element) {
+              let rest = dataArr[0].find(item => item == element)
+              var index_=dataArr[index+1].indexOf(rest);
+              dataArr[index + 1][index_] = 'NaN';
+            })
           })
           const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataArr);
           const workbook: XLSX.WorkBook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
@@ -516,4 +528,28 @@ export class ManageEstablishmentsComponent implements OnInit {
       this.message.create('error', `Error: al descargar el archivo excel`);
     }
   }
+
+  deleteEstablishment(id): void {
+    try {
+      this.modalService.confirm({
+        nzTitle: this.translate.instant('general.seguro_desea_eliminar'),
+        nzContent: this.translate.instant('general.modal_se_cierra'),
+        nzOnOk: () => {
+          try {
+            this.establishmentService.destroy(id).subscribe(res => {
+              this.establishments = this.establishments.filter(item => item.id !== id);
+              this.message.create('success', `Se ha eliminado correctamente`);
+            }, err => {
+              this.message.create('error', `Error: ${err}`);
+            })
+          } catch (e) {
+            this.message.create('error', `Error: ${e}`);
+          }
+        }
+      });
+    } catch (e) {
+      this.message.create('error', `Error ${e}`);
+    }
+  }
+
 }
