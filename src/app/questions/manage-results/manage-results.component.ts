@@ -3,6 +3,10 @@ import { ThemeConstantService } from 'src/app/shared/services/theme-constant.ser
 import * as echarts from 'echarts';
 import { GeographichClassifierService } from 'src/app/services/geographich-classifier.service';
 import { GeographichClassifier } from 'src/app/services/geographich-classifier';
+import { EstablishmentService } from 'src/app/test-form/establishment.service';
+import { Establishment } from 'src/app/test-form/establishment';
+import { EstablishmentTypeService } from 'src/app/test-form/establishment-type.service';
+import { EstablishmentType } from 'src/app/test-form/establishment-type';
 
 @Component({
   selector: 'app-manage-results',
@@ -11,13 +15,46 @@ import { GeographichClassifier } from 'src/app/services/geographich-classifier';
 })
 export class ManageResultsComponent implements OnInit, AfterViewChecked {
   @HostListener('window:resize', ['$event'])
-  geographics:GeographichClassifier[];
 
+  geographics: GeographichClassifier[];
+  establishments: Establishment[] = [];
+  establishmentTypes: EstablishmentType[] = [];
+  numberEstablishmentDay: number = 0;
+  percentageToday: any;
+  numberNoComplete: number = 0;
+  numberOneComplete: number = 0;
+  numberAllComplete: number = 0;
+  percentageComplete: number = 0;
+  establishmentsGrouped: any[];
   constructor(private colorConfig: ThemeConstantService,
-    private geographicService: GeographichClassifierService) {
-      geographicService.getAllProvinces().subscribe((data: GeographichClassifier[])=>{
-        this.geographics=data;
-      })
+    geographicService: GeographichClassifierService,
+    private establishmentService: EstablishmentService,
+    private establishmentTypesService: EstablishmentTypeService) {
+
+
+    geographicService.getAllProvinces().subscribe((data: GeographichClassifier[]) => {
+      this.geographics = data;
+    })
+
+    establishmentService.getAll().subscribe((data: Establishment[]) => {
+      this.establishments = data;
+    })
+
+    establishmentService.getAllLastDay().subscribe((data: number) => {
+      this.numberEstablishmentDay = data;
+    })
+
+    establishmentService.getEstablishmentsNoCompletedForm().subscribe((data: number[]) => {
+      this.numberNoComplete = data['zero'];
+      this.numberOneComplete = data['one'];
+      this.numberAllComplete = data['all'];
+      this.percentageComplete = data['promPercentage'];
+    })
+
+    establishmentService.getAll().subscribe((data: EstablishmentType[]) => {
+      this.establishmentTypes = data;
+    })
+
   }
 
   themeColors = this.colorConfig.get().colors;
@@ -33,141 +70,102 @@ export class ManageResultsComponent implements OnInit, AfterViewChecked {
   chartProvinces: any
 
   ngOnInit(): void {
-
+    this.establishmentTypesService.getAll().subscribe((data: EstablishmentType[]) => {
+      this.establishmentTypes = data;
+    })
   }
 
   ngAfterViewChecked() {
-    this.showGeneralResults();
-    this.showGeneralLocation();
+    this.percentageToday = (this.numberEstablishmentDay / this.establishments.length * 100).toFixed(0);
+    if (!this.chartGeneral) {
+      this.showGeneralResults();
+    }
+    if (!this.chartProvinces) {
+      this.showGeneralLocation();
+
+    }
   }
 
   showGeneralResults() {
     var dom = document.getElementById('generalResults');
-    if(dom){
-       this.chartGeneral = echarts.getInstanceByDom(dom);
-      if (!this.chartGeneral ) {
-        this.chartGeneral  = echarts.init(dom, null, {
+    if (dom) {
+      this.chartGeneral = echarts.getInstanceByDom(dom);
+      if (!this.chartGeneral && this.establishmentTypes.length > 0) {
+        this.chartGeneral = echarts.init(dom, null, {
           renderer: 'canvas',
           useDirtyRect: false
         });
 
+
+        let dataAxis = [];
+        let data = [];
+
+        this.establishmentTypes.forEach(function (item) {
+          dataAxis.push(item.name)
+          data.push(item['establishments'].length)
+        })
+
         var option = {
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow'
+
+          xAxis: {
+            data: dataAxis,
+
+            axisLabel: {
+              inside: true,
+              color: '#fff',
+              rotate: 90
+            },
+            axisTick: {
+              show: false
+            },
+            axisLine: {
+              show: false
+            },
+            z: 10,
+          },
+          yAxis: {
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            },
+            axisLabel: {
+              color: '#999'
             }
           },
-          legend: {},
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis: [
+          dataZoom: [
             {
-              type: 'category',
-              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-            }
-          ],
-          yAxis: [
-            {
-              type: 'value'
+              type: 'inside'
             }
           ],
           series: [
             {
-              name: 'Direct',
               type: 'bar',
-              emphasis: {
-                focus: 'series'
+              showBackground: true,
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: '#83bff6' },
+                  { offset: 0.5, color: '#188df0' },
+                  { offset: 1, color: '#188df0' }
+                ])
               },
-              data: [320, 332, 301, 334, 390, 330, 320]
-            },
-            {
-              name: 'Email',
-              type: 'bar',
-              stack: 'Ad',
               emphasis: {
-                focus: 'series'
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 0, color: '#2378f7' },
+                    { offset: 0.7, color: '#2378f7' },
+                    { offset: 1, color: '#83bff6' }
+                  ])
+                }
               },
-              data: [120, 132, 101, 134, 90, 230, 210]
-            },
-            {
-              name: 'Union Ads',
-              type: 'bar',
-              stack: 'Ad',
-              emphasis: {
-                focus: 'series'
-              },
-              data: [220, 182, 191, 234, 290, 330, 310]
-            },
-            {
-              name: 'Video Ads',
-              type: 'bar',
-              stack: 'Ad',
-              emphasis: {
-                focus: 'series'
-              },
-              data: [150, 232, 201, 154, 190, 330, 410]
-            },
-            {
-              name: 'Search Engine',
-              type: 'bar',
-              data: [862, 1018, 964, 1026, 1679, 1600, 1570],
-              emphasis: {
-                focus: 'series'
-              },
-              markLine: {
-                lineStyle: {
-                  type: 'dashed'
-                },
-                data: [[{ type: 'min' }, { type: 'max' }]]
-              }
-            },
-            {
-              name: 'Baidu',
-              type: 'bar',
-              barWidth: 5,
-              stack: 'Search Engine',
-              emphasis: {
-                focus: 'series'
-              },
-              data: [620, 732, 701, 734, 1090, 1130, 1120]
-            },
-            {
-              name: 'Google',
-              type: 'bar',
-              stack: 'Search Engine',
-              emphasis: {
-                focus: 'series'
-              },
-              data: [120, 132, 101, 134, 290, 230, 220]
-            },
-            {
-              name: 'Bing',
-              type: 'bar',
-              stack: 'Search Engine',
-              emphasis: {
-                focus: 'series'
-              },
-              data: [60, 72, 71, 74, 190, 130, 110]
-            },
-            {
-              name: 'Others',
-              type: 'bar',
-              stack: 'Search Engine',
-              emphasis: {
-                focus: 'series'
-              },
-              data: [62, 82, 91, 84, 109, 110, 120]
+              data: data
             }
           ]
         };
 
         if (option && typeof option === 'object') {
-          this.chartGeneral .setOption(option);
+          this.chartGeneral.setOption(option);
         }
       }
     }
@@ -176,9 +174,9 @@ export class ManageResultsComponent implements OnInit, AfterViewChecked {
 
   showGeneralLocation() {
     var dom = document.getElementById('generalResultsLocation');
-    if(dom){
-       this.chartProvinces = echarts.getInstanceByDom(dom);
-      if (!   this.chartProvinces) {
+    if (dom) {
+      this.chartProvinces = echarts.getInstanceByDom(dom);
+      if (!this.chartProvinces) {
         this.chartProvinces = echarts.init(dom, null, {
           renderer: 'canvas',
           useDirtyRect: false
@@ -231,16 +229,16 @@ export class ManageResultsComponent implements OnInit, AfterViewChecked {
   genData(count: number) {
     // prettier-ignore
     const nameList = [];
-    this.geographics.forEach(function(province){
-      nameList.push(province.description)
+    this.geographics.forEach(function (province) {
+      nameList.push(province)
     })
     const legendData = [];
     const seriesData = [];
-    nameList.forEach(function(name){
-      legendData.push(name);
+    nameList.forEach(function (province) {
+      legendData.push(province.description);
       seriesData.push({
-        name: name,
-        value: Math.round(Math.random() * 100)
+        name: province.description,
+        value: province.establishments.length
       });
     })
     return {
@@ -253,5 +251,4 @@ export class ManageResultsComponent implements OnInit, AfterViewChecked {
     this.chartGeneral.resize();
     this.chartProvinces.resize();
   }
-
 }

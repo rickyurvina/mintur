@@ -27,6 +27,27 @@ export class EstablishmentService {
     )
   }
 
+  getAllLastDay(): Observable<number> {
+    return this.httpClient.get<number>(environment.url+"/establishment/last-day")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  getAllGroupedByType(): Observable<Establishment[]> {
+    return this.httpClient.get<Establishment[]>(environment.url+"/establishment/grouped-by-type")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  getEstablishmentsNoCompletedForm(): Observable<number[]> {
+    return this.httpClient.get<number[]>(environment.url+"/establishment/count-no-complete")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   getAllForExcel(): Observable<Establishment[]> {
     return this.httpClient.get<Establishment[]>(environment.url+"/establishment/data-excel")
     .pipe(
