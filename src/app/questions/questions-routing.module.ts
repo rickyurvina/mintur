@@ -4,6 +4,7 @@ import { IndexComponentsComponent } from './manage-components/index-components/i
 import { ManageEstablishmentsComponent } from './manage-establishments/manage-establishments.component';
 import { ManageFormsComponent } from './manage-forms/index/manage-forms.component';
 import { IndexQuestionsComponent } from './manage-questions/index-questions/index-questions.component';
+import { ManageResultsComponent } from './manage-results/manage-results.component';
 import { IndexSubTopicComponent } from './manage-subtopic/index-sub-topic/index-sub-topic.component';
 
 const routes: Routes = [
@@ -40,6 +41,13 @@ const routes: Routes = [
     component: ManageEstablishmentsComponent,
     data: {
       title: 'Establecimientos'
+    }
+  },
+  {
+    path: 'manage-results',
+    component: ManageResultsComponent,
+    data: {
+      title: 'Resultados'
     }
   },
 

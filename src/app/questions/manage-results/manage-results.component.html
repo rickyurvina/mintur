@@ -1,0 +1,160 @@
+<nz-tabset class="page-header-tab">
+
+  <nz-tab nzTitle="Resumen general">
+    <div class="row">
+      <div class="col-lg-5">
+        <div class="row">
+          <div class="col-md-6">
+            <nz-card>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <p class="m-b-0 text-muted">Sales</p>
+                  <h2 class="m-b-0">$23,523</h2>
+                </div>
+                <nz-tag class="m-r-0 m-b-0" [nzColor]="'cyan'">
+                  <i nz-icon nzType="arrow-up" theme="outline"></i>
+                  <span class="font-weight-semibold m-l-5">6.71%</span>
+                </nz-tag>
+              </div>
+              <div class="m-t-40">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <nz-badge nzStatus="default" [nzColor]="blue"></nz-badge>
+                    <span class="text-gray font-weight-semibold font-size-13">Monthly Goal</span>
+                  </div>
+                  <span class="text-dark font-weight-semibold font-size-13">70% </span>
+                </div>
+                <nz-progress [nzStrokeColor]="blue" nzPercent="70" nzSize="small" [nzShowInfo]="false"></nz-progress>
+              </div>
+            </nz-card>
+          </div>
+          <div class="col-md-6">
+            <nz-card>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <p class="m-b-0 text-muted">Margin</p>
+                  <h2 class="m-b-0">$8,753</h2>
+                </div>
+                <nz-tag class="m-r-0 m-b-0" [nzColor]="'red'">
+                  <i nz-icon nzType="arrow-down" theme="outline"></i>
+                  <span class="font-weight-semibold m-l-5">3.26%</span>
+                </nz-tag>
+              </div>
+              <div class="m-t-40">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <nz-badge nzStatus="default" [nzColor]="cyan"></nz-badge>
+                    <span class="text-gray font-weight-semibold font-size-13">Monthly Goal</span>
+                  </div>
+                  <span class="text-dark font-weight-semibold font-size-13">60%</span>
+                </div>
+                <nz-progress [nzStrokeColor]="cyan" nzPercent="60" nzSize="small" [nzShowInfo]="false"></nz-progress>
+              </div>
+            </nz-card>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <nz-card>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <p class="m-b-0 text-muted">Orders</p>
+                  <h2 class="m-b-0">1,753</h2>
+                </div>
+                <nz-tag class="m-r-0 m-b-0" [nzColor]="'red'">
+                  <i nz-icon nzType="arrow-down" theme="outline"></i>
+                  <span class="font-weight-semibold m-l-5">2.71%</span>
+                </nz-tag>
+              </div>
+              <div class="m-t-40">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <nz-badge nzStatus="default" [nzColor]="gold"></nz-badge>
+                    <span class="text-gray font-weight-semibold font-size-13">Monthly Goal</span>
+                  </div>
+                  <span class="text-dark font-weight-semibold font-size-13">45% </span>
+                </div>
+                <nz-progress [nzStrokeColor]="gold" nzPercent="45" nzSize="small" [nzShowInfo]="false"></nz-progress>
+              </div>
+            </nz-card>
+          </div>
+          <div class="col-md-6">
+            <nz-card>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <p class="m-b-0 text-muted">Affiliate</p>
+                  <h2 class="m-b-0">236</h2>
+                </div>
+                <nz-tag class="m-r-0 m-b-0" [nzColor]="'gold'">
+                  <span class="font-weight-semibold m-l-5">N/A</span>
+                </nz-tag>
+              </div>
+              <div class="m-t-40">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <nz-badge nzStatus="default" [nzColor]="purple"></nz-badge>
+                    <span class="text-gray font-weight-semibold font-size-13">Monthly Goal</span>
+                  </div>
+                  <span class="text-dark font-weight-semibold font-size-13">50%</span>
+                </div>
+                <nz-progress [nzStrokeColor]="purple" nzPercent="80" nzSize="small" [nzShowInfo]="false"></nz-progress>
+              </div>
+            </nz-card>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5>Sales Statistics</h5>
+          </div>
+          <div class="m-t-30">
+            <div class="d-inline-block m-r-30">
+              <p class="m-b-0">
+                <nz-badge nzStatus="default" [nzColor]="blue"></nz-badge>
+                <span>Online</span>
+              </p>
+            </div>
+            <div class="d-inline-block">
+              <p class="m-b-0">
+                <nz-badge nzStatus="default" [nzColor]="blueLight"></nz-badge>
+                <span>Offline</span>
+              </p>
+            </div>
+          </div>
+          <div class="m-t-50">
+            <div id="generalResults" style="width: 100%; height: 350px;"></div>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+  </nz-tab>
+
+  <nz-tab nzTitle="Resumen por ubicación">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Sales Statistics</h5>
+        </div>
+        <div class="m-t-30">
+          <div class="d-inline-block m-r-30">
+            <p class="m-b-0">
+              <nz-badge nzStatus="default" [nzColor]="blue"></nz-badge>
+              <span>Online</span>
+            </p>
+          </div>
+          <div class="d-inline-block">
+            <p class="m-b-0">
+              <nz-badge nzStatus="default" [nzColor]="blueLight"></nz-badge>
+              <span>Offline</span>
+            </p>
+          </div>
+        </div>
+        <div class="m-t-50">
+          <div id="generalResultsLocation" style="width: 100%; height: 550px;"></div>
+        </div>
+      </div>
+    </div>
+  </nz-tab>
+
+</nz-tabset>

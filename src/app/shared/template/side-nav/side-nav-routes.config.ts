@@ -50,6 +50,14 @@ export const ROUTES: SideNavInterface[] = [
         iconTheme: '',
         submenu: []
       },
+      {
+        path: '/admin/manage-results',
+        title: 'Resultados',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
 
     ]
   }
