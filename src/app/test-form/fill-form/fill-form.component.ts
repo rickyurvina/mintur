@@ -19,7 +19,10 @@ import { ResultsService } from '../results.service';
 import { GeographichClassifierService } from 'src/app/services/geographich-classifier.service';
 import { GeographichClassifier } from 'src/app/services/geographich-classifier';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 @Component({
   selector: 'app-fill-form',
   templateUrl: './fill-form.component.html',
@@ -50,6 +53,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   componentsCharts: Comp[] = [];
   questions: Question[] = [];
   questionsSteps: Question[] = [];
+  questionsStepsValidate: Question[] = [];
+
   questionsChart: Question[] = [];
   questionsChartDisplay: Question[] = [];
 
@@ -73,7 +78,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   isNewUser: boolean = true;
   chartFormV: any
   chartComponents: any
-
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private formService: FormService,
@@ -112,12 +116,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
     });
     const currentYear = new Date().getFullYear();
     const startYear = 1940;
-    this.years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i);
-    if (!this.formDisplay) {
-
-    }
+    this.years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => currentYear - i);
     this.chargeDataInitial();
-
     translate.addLangs(['es', 'en']);
     translate.setDefaultLang('es');
   }
@@ -130,7 +130,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
     this.index = 0;
-    console.log(this.localStore.getData('email'))
 
     if (this.localStore.getData('email') != null) {
       this.chargeData();
@@ -144,10 +143,10 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       this.establishmentTypeService.getAll().subscribe((data: EstablishmentType[]) => {
         this.establishmentTypes = data;
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: al obtener los tipos de establecimiento`);
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error: al obtener los tipos de establecimiento`);
     }
     try {
       this.geographicClassifierService.getAll().subscribe((data: GeographichClassifier[]) => {
@@ -155,15 +154,15 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         this.cantons = data.filter(element => element['type'] == 'CANTON');
         this.parrishes = data.filter(element => element['type'] == 'PARISH');
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: al obtener el clasificador geográfico`);
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error: al obtener el clasificador geográfico`);
     }
     this.formService.showActiveForm().subscribe((data: Form) => {
       this.formDisplay = data;
     }, err => {
-      this.message.create('error', `Error: ${err}`);
+      this.message.create('error', `Error: al obtener el formulario activo`);
     });
   }
 
@@ -194,9 +193,11 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
             })
             if (this.establishmentInitial.ruc != null) {
               this.isNewUser = false;
+              this.updateCantons(this.establishmentFormUpdate.value.province)
+              this.updateParrishes(this.establishmentFormUpdate.value.canton)
             }
           }, err => {
-            this.message.create('error', `Error: ${err}`);
+            this.message.create('error', `Error: al obtener el formulario inicial`);
           });
           this.message.create('success', this.translate.instant('mensajes.creado_exitosamente'));
           this.establishmentForm.reset();
@@ -204,12 +205,13 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           this.showErrors(err)
         });
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al guardar el formulario`);
       }
     } else {
       this.message.create('error', "No se puede iniciar, No existe un formulario acitvo")
     }
   }
+  compareFn = (o1: any, o2: any): boolean => (o1 && o2 ? o1.id == o2.id : o1 === o2);
 
   updateForm(value: {
     ruc: string; establishmentType: string;
@@ -219,7 +221,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
     has_register_tourist: boolean, register_number: string
   }): void {
     try {
-      var message = "<p>Bienvenidas/os al aplicativo para evaluar el nivel de competitividad de su producto / destino turístico. Este aplicativo le permitirá conocer cuán preparado se encuentra su establecimiento para competir en el sector turístico ante las exigencias actuales del mercado con un enfoque de gestión de calidad. Para la evaluación deberá responder a 63 preguntas sobre 3 temáticas específicas:</p><p></p><ol><li>Sostenibilidad empresarial</li><li>Desarrollo turístico sostenible</li><li>Transformación digital</li></ol><p></p><p>Cada temática consta de subtemáticas que permiten abarcar todos los aspectos inherentes a la competitividad, por lo que se necesita que todas las preguntas sean respondidas en base a la realidad de su negocio. La calificación final se mostrará en una escala del 1 al 10 debidamente semaforizado, es decir que, según el resultado usted podrá conocer si su establecimiento es poco competitivo (rojo) medianamente competitivo (amarillo) o altamente competitivo (verde). De la misma forma, al final del proceso, podrá observar la importancia de mejorar en los aspectos en los que su negocio no se encuentra preparado, así como también los medios para verificar que así sea.</p><p></p><p>El formulario consta de preguntas de opción múltiple y tiene una duración estimada de 30 minutos.</p>"
+      var message = "<p>Bienvenidas/os al aplicativo para evaluar el nivel de competitividad de su producto / destino turístico. Este aplicativo le permitirá conocer cuán preparado se encuentra su establecimiento para competir en el sector turístico ante las exigencias actuales del mercado con un enfoque de gestión de calidad. Para la evaluación deberá responder a 63 preguntas sobre 3 temáticas específicas:</p><p></p><ol><li>Sostenibilidad empresarial</li><li>Desarrollo turístico sostenible</li><li>Transformación digital</li></ol><p></p><p>Cada temática consta de subtemáticas que permiten abarcar todos los aspectos inherentes a la competitividad, por lo que se necesita que todas las preguntas sean respondidas con base en la realidad de su negocio. La calificación final se mostrará en una escala del 1 al 10 debidamente semaforizado, es decir que, según el resultado usted podrá conocer si su establecimiento es poco competitivo (rojo) medianamente competitivo (amarillo) o altamente competitivo (verde). De la misma forma, al final del proceso, podrá observar la importancia de mejorar en los aspectos en los que su negocio no se encuentra preparado, así como también los medios para verificar que así sea.</p><p></p><p>El formulario consta de preguntas de opción múltiple y tiene una duración estimada de 30 minutos.</p>"
       this.modalService.confirm({
         nzTitle: 'Introducción al formulario',
         nzContent: message,
@@ -241,13 +243,13 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               this.showErrors(err)
             });
           } catch (e) {
-            this.message.create('error', `Error ${e}`);
+            this.message.create('error', `Error al actualizar el formulario`);
           }
 
         }
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error al actualizar el formulario`);
     }
   }
 
@@ -272,6 +274,17 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   saveAnswer(idQuestion: number, answer: string, value: any, type: string, numberQuestions: number = 0): void {
 
     if (type === 'relacionada') {
+      let parentQuestion = this.questionsSteps.find(resultable => {
+        return resultable.id == idQuestion;
+      });
+      let children = parentQuestion['resultable']['children'];
+      let optionWithZero = children.find(child => child['value'] == 0);
+
+      let existOptionWithZero = value.find(child => child == optionWithZero['id'])
+      if (existOptionWithZero != undefined) {
+        value = [existOptionWithZero]
+      }
+
       try {
         this.validateForm.setValue({
           score: 1,
@@ -280,10 +293,9 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           establishment: this.establishment.id,
           ids: value
         })
-
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
           this.updateProgress()
-          if (numberQuestions > 0) {
+          if (numberQuestions > 0 || existOptionWithZero != undefined) {
             this.chargeQuestionsOfSubtopic(this.localStore.getData('sub_topic_id'))
           }
         }, err => {
@@ -291,7 +303,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -306,7 +318,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         })
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
-          // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
           this.updateProgress()
           if (numberQuestions > 0) {
             this.chargeQuestionsOfSubtopic(this.localStore.getData('sub_topic_id'))
@@ -316,7 +327,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -329,10 +340,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           establishment: this.establishment.id,
           ids: value
         })
-
-
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
-          // this.message.create('success', this.translate.instant('mensajes.actualizado_exitosamente'));
           this.updateProgress()
 
         }, err => {
@@ -340,7 +348,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
+
       }
     }
 
@@ -355,14 +364,13 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         })
 
         this.resultsService.update(idQuestion, this.validateForm.value).subscribe(res => {
-          this.updateProgress()
 
         }, err => {
           this.showErrors(err)
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -384,7 +392,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -404,7 +412,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         });
 
       } catch (e) {
-        this.message.create('error', `Error ${e}`);
+        this.message.create('error', `Error al actualizar resultado`);
       }
     }
 
@@ -413,8 +421,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   resetForm(): void {
 
     this.modalService.confirm({
-      nzTitle: 'Introducción al formulario',
-      nzContent: 'Si da click en Aceptar, se cancelará el intento y regresará al formulario de inicio.',
+      nzTitle: 'Cerrar formularios',
+      nzContent: 'Si da click en Aceptar regresará al formulario de inicio.',
       nzWidth: '850px',
       nzOnOk: () => {
         this.localStore.removeData('idEstablishment');
@@ -435,8 +443,34 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   }
 
   selectStep(id: number, index: number): void {
-    this.index = index;
-    this.chargeQuestionsOfSubtopic(id)
+
+    let idEstablishment = this.localStore.getData('idEstablishment');
+    let intentId = this.localStore.getData('intent_id');
+    this.establishmentService.showQuestionsOfSubtopicValidate(this.localStore.getData('sub_topic_id'), idEstablishment, intentId)
+      .subscribe((data: Establishment) => {
+        const questionWithOutScore = data['questions'].find(
+          element => element['score'] == null
+        )
+        if (!questionWithOutScore) {
+          this.index = index;
+          this.chargeQuestionsOfSubtopic(id)
+          window.scrollTo(-10, -10);
+
+        } else {
+          try {
+            var message = "<p>Le restan preguntas por responder</p>"
+            this.modalService.confirm({
+              nzTitle: 'No puede continuar',
+              nzContent: message,
+              nzWidth: '450px',
+            });
+          } catch (e) {
+            this.message.create('error', `Error ${e}`);
+          }
+        }
+      }, err => {
+        this.message.create('error', `Error: al obtener las preguntas para validación de continuar`);
+      });
   }
 
   handleChagTabComponent(event) {
@@ -445,22 +479,25 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       this.subTopic = this.subTopics.find(element => element['resultable']['component_id'] == this.components[event]['resultable']['id'])
       this.subTopicsSteps = this.subTopics.filter(element => element['resultable']['component_id'] == this.components[event]['resultable']['id']);
       var id = this.subTopic['resultable_id'];
+      this.selectedIndexComponent = event;
+
       this.chargeQuestionsOfSubtopic(id)
     }
     this.indexTabs = event;
     this.index = 0;
   }
 
+  chartForm: any
   showFormChart() {
 
     var dom = document.getElementById('chartForm');
 
     if (dom) {
-      var myChart = echarts.getInstanceByDom(dom);
+      this.chartForm = echarts.getInstanceByDom(dom);
 
-      if (!myChart) {
+      if (!this.chartForm) {
 
-        myChart = echarts.init(dom, null, {
+        this.chartForm = echarts.init(dom, null, {
           renderer: 'canvas',
           useDirtyRect: false
         });
@@ -491,7 +528,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
                 icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
                 length: '12%',
                 width: 20,
-                offsetCenter: [0, '-60%'],
+                offsetCenter: [0, '-40%'],
                 itemStyle: {
                   color: 'inherit'
                 }
@@ -519,7 +556,8 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               },
 
               detail: {
-                offsetCenter: [0, '-35%'],
+                fontSize: 30,
+                offsetCenter: [0, '-10%'],
                 valueAnimation: true,
                 formatter: function (value) {
                   return (value * 10).toFixed(2);
@@ -536,7 +574,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
         };
 
         if (option && typeof option === 'object') {
-          myChart.setOption(option);
+          this.chartForm.setOption(option);
         }
       }
     }
@@ -560,7 +598,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               left: 'center',
               button: 5,
               textStyle: {
-                fontSize: 10
+                fontSize: 15
               },
             },
             series: [
@@ -599,12 +637,13 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
                 },
                 axisLabel: {
                   color: 'inherit',
-                  distance: 20,
+                  distance: 15,
                   formatter: function (value) {
-                    return (Math.round(value) / 10).toFixed(2) + '';
+                    return (Math.round(value) / 10).toFixed(0) + '';
                   },
                 },
                 detail: {
+                  fontSize: 20,
                   valueAnimation: true,
                   color: 'inherit',
                   formatter: function (value) {
@@ -688,9 +727,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
                 }
               },
               encode: {
-                // Map the "amount" column to X axis.
                 x: 'amount',
-                // Map the "product" column to Y axis
                 y: 'product'
               },
               label: {
@@ -710,7 +747,13 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           },
           xAxis: {
             type: 'category',
-            axisLabel: { interval: 0, rotate: 30 }
+            axisLabel: {
+              interval: 0,
+
+              formatter: function (value) {
+                return value.split(" ").join("\n");
+              }
+            }
           },
           yAxis: { max: 10, name: 'Calificación', },
 
@@ -729,9 +772,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
                 }
               },
               encode: {
-                // Map the "amount" column to X axis.
                 y: 'amount',
-                // Map the "product" column to Y axis
                 x: 'product'
               },
               label: {
@@ -765,7 +806,6 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
   chargeData() {
     try {
       if (this.localStore.getData('email')) {
-        console.log(this.establishmentInitial)
         var email = this.localStore.getData('email') ? this.localStore.getData('email') : this.establishmentInitial.email;
         this.establishmentService.showActiveEstablishment(email).subscribe((data: Establishment) => {
           this.establishment = data;
@@ -787,12 +827,12 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
           this.updateProgress();
           this.fillQuestionsChart();
         }, err => {
-          this.message.create('error', `Error: ${err}`);
+          // this.message.create('error', `Error: al cargar la data inicial`);
         });
       }
     } catch (e) {
 
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error: al cargar la data inicial`);
     }
   }
 
@@ -802,7 +842,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
     this.establishmentService.showQuestionsOfSubtopic(subTopicId, idEstablishment, intentId).subscribe((data: Establishment) => {
       this.questionsSteps = data['questions'];
     }, err => {
-      this.message.create('error', `Error: ${err}`);
+      this.message.create('error', `Error: al obtener las preguntas para el ambito`);
     });
     this.localStore.saveData('sub_topic_id', subTopicId.toString())
     this.subTopic = this.subTopics.find(element => element['resultable']['id'] == subTopicId)
@@ -828,7 +868,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       })
       this.questionsChartDisplay = this.questionsChart;
     }, err => {
-      this.message.create('error', `Error: ${err}`);
+      this.message.create('error', `Error: al cargar las preguntas de los resultados`);
     });
 
   }
@@ -878,16 +918,16 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
       this.establishmentService.showPercentage(idEstablishment, intentId).subscribe((data: Establishment) => {
         this.percentage = data['percentage'];
       }, err => {
-        this.message.create('error', `Error: ${err}`);
+        this.message.create('error', `Error: al cargar el porcentaje de avance`);
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
+      this.message.create('error', `Error: al cargar el porcentaje de avance`);
     }
   }
 
   finishForm() {
     try {
-      var message = "Si da click en Aceptar. Su formulario será guardado y no podrá modificar sus respuestas."
+      var message = "Si da click en Aceptar su formulario será guardado y no podrá modificar sus respuestas."
       this.modalService.confirm({
         nzTitle: 'Finalizar el formulario',
         nzContent: message,
@@ -901,38 +941,413 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
               this.showErrors(err)
             });
           } catch (e) {
-            this.message.create('error', `Error ${e}`);
+            this.message.create('error', `Error al finalizar el formulario`);
           }
 
         }
       });
     } catch (e) {
-      this.message.create('error', `Error ${e}`);
-    }
-  }
-
-  findNext(): void {
-    if (this.index == this.subTopicsSteps.length - 1 && this.selectedIndexComponent < this.components.length - 1) {
-      this.index = 0;
-      this.selectedIndexComponent = this.selectedIndexComponent + 1;
-      this.handleSelectionChange(this.selectedIndexComponent)
-    } else if (this.index != this.subTopicsSteps.length - 1) {
-      this.index = this.index + 1
-      var subTopicId = this.subTopicsSteps[this.index]
-      this.chargeQuestionsOfSubtopic(subTopicId['resultable_id']);
+      this.message.create('error', `Error al finalizar el formulario`);
     }
   }
 
   findPrevious(): void {
+    window.scrollTo(-10, -10);
 
     if (this.index == 0 && this.selectedIndexComponent > 0) {
       this.index = 0;
       this.selectedIndexComponent = this.selectedIndexComponent - 1;
       this.handleSelectionChange(this.selectedIndexComponent)
-    } else if (this.index != this.subTopicsSteps.length - 1 && this.index > 0) {
+    } else if (this.index != 0) {
       this.index = this.index - 1;
       var subTopicId = this.subTopicsSteps[this.index]
       this.chargeQuestionsOfSubtopic(subTopicId['resultable_id']);
+    }
+
+  }
+
+  validateNext() {
+
+    let idEstablishment = this.localStore.getData('idEstablishment');
+    let intentId = this.localStore.getData('intent_id');
+    this.establishmentService.showQuestionsOfSubtopicValidate(this.localStore.getData('sub_topic_id'), idEstablishment, intentId)
+      .subscribe((data: Establishment) => {
+        const questionWithOutScore = data['questions'].find(
+          element => element['score'] == null
+        )
+
+        if (!questionWithOutScore) {
+          window.scrollTo(-10, -10);
+
+          if (this.index == this.subTopicsSteps.length - 1 && this.selectedIndexComponent < this.components.length - 1) {
+            this.index = 0;
+            this.selectedIndexComponent = this.selectedIndexComponent + 1;
+            this.handleSelectionChange(this.selectedIndexComponent)
+          } else if (this.index != this.subTopicsSteps.length - 1) {
+            this.index = this.index + 1
+            var subTopicId = this.subTopicsSteps[this.index]
+            this.chargeQuestionsOfSubtopic(subTopicId['resultable_id']);
+          }
+        } else {
+          try {
+            var message = "<p>Le restan preguntas por responder</p>"
+            this.modalService.confirm({
+              nzTitle: 'No puede continuar',
+              nzContent: message,
+              nzWidth: '450px',
+            });
+          } catch (e) {
+            this.message.create('error', `Error ${e}`);
+          }
+        }
+      }, err => {
+        this.message.create('error', `Error: al cargar las preguntas de validación`);
+      });
+  }
+
+  getBase64ImageFromURL(url) {
+    return new Promise((resolve, reject) => {
+      var img = new Image();
+      img.setAttribute('crossOrigin', 'anonymous');
+      img.onload = () => {
+        var canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        var dataURL = canvas.toDataURL('image/png');
+        resolve(dataURL);
+      };
+      img.onerror = (error) => {
+        reject(error);
+      };
+      img.src = url;
+    });
+  }
+  img_footer = this.getBase64ImageFromURL('../../assets/images/logo/logo_gob1.png');
+
+
+  async downloadPdf(action = 'download') {
+
+    let docDefinition = {
+      pageSize: 'A4',
+      pageOrientation: 'landscape',
+      pageMargins: [40, 60, 40, 60],
+      header: {
+        columns: [
+          {
+            width: '*',
+            table: {
+              headerRows: 1,
+              body: [
+                [
+                  {
+                    text: this.formDisplay.name,
+                    alignment: 'center',
+                  },
+                ],
+                [
+                  { text: this.formDisplay.description, bold: true },
+                ],
+              ],
+            }
+          },
+        ],
+      },
+      content: [
+        {
+          columns: [
+            {
+              text: `Fecha: ${new Date().toLocaleString()}\n`,
+              alignment: 'right',
+            },
+
+          ],
+        },
+        {
+          aligment: 'center',
+          text: '  ',
+        },
+        {
+          aligment: 'center',
+          text: '  ',
+        },
+        {
+          columns: [
+            {
+
+              table: {
+                headerRows: 1,
+                body: [
+                  [
+                    {
+                      text: 'Detalles Establecimiento',
+                      alignment: 'center',
+                      fillColor: '#26506d',
+                      color: 'white',
+                      colSpan: 2,
+                    },
+                    {},
+                  ],
+                  [
+                    { text: 'Nombre', bold: true },
+                    {
+                      text: this.establishment.name
+                    },
+                  ],
+                  [
+                    { text: 'Correo', bold: true },
+                    {
+                      text: this.establishment.email
+                    },
+                  ],
+                  [
+                    { text: 'Nombre establecimiento', bold: true },
+                    {
+                      text: this.establishment.company
+                    },
+                  ],
+                  [
+                    { text: 'RUC', bold: true },
+                    {
+                      text: this.establishment.ruc
+                    },
+                  ],
+                  [
+                    { text: 'Tipo', bold: true },
+                    {
+                      text: this.establishment.type_of_taxpayer
+                    },
+                  ],
+                  [
+                    { text: 'Dirección', bold: true },
+                    {
+                      text: this.establishment.direction
+                    },
+                  ],
+
+                ],
+              },
+            },
+
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto'],
+                body: [
+                  [{ text: 'Visita tus resultados en linea', alignment: 'right' }],
+                  [{ qr: `http://172.177.124.172/user/test-form`, fit: '100' }],
+                ],
+              },
+              alignment: 'right',
+              layout: 'noBorders',
+            },
+          ],
+        },
+        {
+          aligment: 'center',
+          text: '  ',
+        },
+
+        {
+          style: 'tableExample',
+          table: {
+            layout: 'lightHorizontalLines',
+            headerRows: 1,
+            widths: ['auto', 'auto'],
+            body: [
+              [
+                {
+                  text: 'Formulario',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+                {
+                  text: 'Calificación',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+              ],
+              [
+                {
+                  text: this.formDisplay['name'],
+                  alignment: 'center',
+                },
+                {
+                  text: (this.formDisplayChart['score'] * 1).toFixed(2),
+                  alignment: 'center',
+                },
+              ],
+
+            ],
+          },
+        },
+        {
+          aligment: 'center',
+          text: '  ',
+        },
+
+        {
+          style: 'tableExample',
+          table: {
+            layout: 'lightHorizontalLines',
+            headerRows: 1,
+            widths: ['auto', 'auto'],
+            body: [
+              [
+                {
+                  text: 'Componente',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+                {
+                  text: 'Calificación',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+              ],
+              ...this.componentsCharts.map((p) => [
+                p['resultable']['name'],
+                p['score'],
+              ]),
+
+            ],
+          },
+        },
+        {
+          aligment: 'center',
+          text: '  ',
+        },
+        {
+          style: 'tableExample',
+          table: {
+            layout: 'lightHorizontalLines',
+            headerRows: 1,
+            widths: ['auto', 'auto'],
+            body: [
+              [
+                {
+                  text: 'Sub Tema',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+                {
+                  text: 'Calificación',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+              ],
+              ...this.subTopics.map((p) => [
+                p['resultable']['name'],
+                p['score'],
+              ]),
+
+            ],
+          },
+        },
+        {
+          aligment: 'center',
+          text: '  ',
+        },
+        {
+          style: 'tableExample',
+          table: {
+            layout: 'lightHorizontalLines',
+            headerRows: 2,
+            widths: ['auto', 'auto', 'auto', 'auto'],
+            body: [
+              [
+                {
+                  text: 'A CONTINUACIÓN SE MUESTRA LA IMPORTANCIA Y MEDIOS DE VERIFICACIÓN DE LAS PREGUNTAS CON BAJA CALIFICACIÓN',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                  colSpan: 4,
+                }, {}, {}, {}
+              ],
+              [
+                {
+                  text: 'Pregunta',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+                {
+                  text: 'Importancia',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+                {
+                  text: 'Medios de verificación',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+                {
+                  text: 'Calificación',
+                  alignment: 'center',
+                  fillColor: '#26506d',
+                  color: 'white',
+                },
+              ],
+              ...this.questionsChartDisplay.map((p) => [
+                p['resultable']['name'],
+                p['resultable']['importance'],
+                p['resultable']['verification_means'],
+                p['resultable']['type'] == 'relacionada' ? (p['score'] / 10).toFixed(2) : p['resultable']['type'] == 'si_no' ? (p['score'] * 10).toFixed(2) : (p['score'] * 5).toFixed(2)
+              ]),
+            ],
+          },
+        },
+      ],
+      styles: {
+        table: {
+          bold: true,
+          fontSize: 10,
+          alignment: 'center',
+          decorationColor: 'red',
+        },
+        sectionHeader: {
+          bold: true,
+          decoration: 'underline',
+          fontSize: 14,
+          margin: [0, 15, 0, 15],
+        },
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10],
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          margin: [0, 10, 0, 5],
+        },
+        tableExample: {
+          margin: [0, 5, 0, 15],
+        },
+        tableOpacityExample: {
+          margin: [0, 5, 0, 15],
+          fillColor: 'blue',
+          fillOpacity: 0.3,
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'red',
+          background: 'black',
+        },
+      },
+    };
+    if (action === 'download') {
+      pdfMake.createPdf(docDefinition).download('Evaluacion.pdf');
     }
   }
 }

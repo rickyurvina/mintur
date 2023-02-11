@@ -1,12 +1,17 @@
 <div>
   <div nz-row nzJustify="end">
     <div nz-col>
-      <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="showModalCreate()">
-        <i nz-icon nzType="plus"></i> {{ "general.agregar" | translate }}
+
+  <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="showTable()">
+    <span nz-icon nzType="table" nzTheme="outline"></span>
       </button>
+      <!-- <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="showModalCreate()">
+        <i nz-icon nzType="plus"></i> {{ "general.agregar" | translate }}
+      </button> -->
     </div>
   </div>
-  <div style="background: #ECECEC;padding:30px;">
+
+  <div style="background: #ECECEC;padding:30px;" *ngIf="isTable==false">
     <div nz-row [nzGutter]="8">
       <div nz-col [nzSpan]="8" *ngFor="let question of questions">
         <nz-card nzTitle="{{question.code}}-{{question.name}}" [nzExtra]="extraTemplate">
@@ -58,15 +63,42 @@
         </nz-card>
         <ng-template #extraTemplate>
 
-          <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(question.id)">
+          <!-- <a nz-button [nzSize]="size" nzType="link" (click)="showModalCreate(question.id)">
             <i style="margin-right:8px;" nz-icon nzType="edit" nzTheme="outline">
             </i>
           </a>
           <a nz-button [nzSize]="size" nzType="link" (click)="showConfirm(question.id)">
             <i nz-icon nzType="delete" nzTheme="outline"></i>
-          </a>
+          </a> -->
         </ng-template>
       </div>
     </div>
+  </div>
+
+  <div style="background: #ECECEC;padding:30px;" *ngIf="isTable==true">
+    <nz-table #basicTable [nzData]="questions"
+    [nzPageSize]="50"
+    >
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.code }}</td>
+          <td>{{ data.name }}</td>
+          <!-- <td>{{ data.company ?? '' }}</td>
+          <td>{{ data.establishment_type ? data.establishment_type.name: '' }}</td>
+          <td>{{ data.results.length>0?data.results[0]['score']:'N/A' }}</td> -->
+          <!-- <td *ngIf="data.results.length>0">
+            <a (click)="showEstablishment(data.id)" style="margin-right: 10px;"><span nz-icon nzType="eye" nzTheme="outline"></span></a>
+            <a (click)="downloadPdf(data.id)"><span nz-icon nzType="cloud-download" nzTheme="outline"></span></a>
+          </td> -->
+        </tr>
+      </tbody>
+    </nz-table>
+
   </div>
 </div>

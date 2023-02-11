@@ -28,7 +28,7 @@
               }
             ],
             "styles": [
-              "src/styles.scss" 
+              "src/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -59,8 +59,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "7mb",
+                  "maximumError": "7mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -80,6 +80,9 @@
           "configurations": {
             "production": {
               "browserTarget": "enlink:build:production"
+            },
+            "development": {
+              "browserTarget": "studio:build:development"
             }
           }
         },

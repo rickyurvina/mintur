@@ -15,6 +15,7 @@ export class IndexQuestionsComponent implements OnInit {
   questions: Question[] = [];
   size = 'large';
   isTranslated = false;
+  isTable=false;
   constructor(public questionService: QuestionService,
     private modalService: NzModalService,
     private message: NzMessageService,
@@ -25,7 +26,6 @@ export class IndexQuestionsComponent implements OnInit {
     try {
       this.questionService.getAll().subscribe((data: Question[]) => {
         this.questions = data;
-        console.log(this.questions)
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
@@ -74,5 +74,8 @@ export class IndexQuestionsComponent implements OnInit {
     } catch (e) {
       this.message.create('error', `Error ${e}`);
     }
+  }
+  showTable(){
+    this.isTable=!this.isTable;
   }
 }

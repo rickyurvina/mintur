@@ -21,38 +21,47 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { ManageEstablishmentsComponent } from './manage-establishments/manage-establishments.component';
 import { ShowEstablishmentComponent } from './manage-establishments/show-establishment/show-establishment.component';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
-
-const antdModule= [
-    NzFormModule,
-    NzInputModule,
-    NzButtonModule,
-    NzCardModule,
-    NzCheckboxModule,
-    NzSkeletonModule,
-    NzTagModule,
-    NzDividerModule,
-    NzToolTipModule,
-    NzTableModule,
-    NzProgressModule
+import { ManageResultsComponent } from './manage-results/manage-results.component';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { LoginFormComponent } from './login-form/login-form.component';
+import { TemplateModule } from '../shared/template/template.module';
+const antdModule = [
+  NzFormModule,
+  NzInputModule,
+  NzButtonModule,
+  NzCardModule,
+  NzCheckboxModule,
+  NzSkeletonModule,
+  NzTagModule,
+  NzDividerModule,
+  NzToolTipModule,
+  NzTableModule,
+  NzProgressModule,
+  NzTabsModule,
+  NzBadgeModule,
 ]
 
 @NgModule({
-    imports: [
-        CommonModule,
-        SharedModule,
-        ReactiveFormsModule,
-        QuestionsRoutingModule,
-        ...antdModule
-    ],
-    declarations: [
-        ManageFormsComponent,
-        IndexQuestionsComponent,
-        IndexComponentsComponent,
-        CreateComponentsComponent,
-        IndexSubTopicComponent,
-        ManageEstablishmentsComponent,
-        ShowEstablishmentComponent
-    ]
+  imports: [
+    CommonModule,
+    SharedModule,
+    ReactiveFormsModule,
+    QuestionsRoutingModule,
+    TemplateModule,
+    ...antdModule
+  ],
+  declarations: [
+    ManageFormsComponent,
+    IndexQuestionsComponent,
+    IndexComponentsComponent,
+    CreateComponentsComponent,
+    IndexSubTopicComponent,
+    ManageEstablishmentsComponent,
+    ShowEstablishmentComponent,
+    ManageResultsComponent,
+    LoginFormComponent,
+  ]
 })
 
-export class QuestionsModule {}
+export class QuestionsModule { }

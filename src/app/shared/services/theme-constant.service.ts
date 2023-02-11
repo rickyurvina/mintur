@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class ThemeConstantService {
-    
+
     // Theme Config
     isMenuFolded: boolean = false
     isSideNavDark: boolean = false;

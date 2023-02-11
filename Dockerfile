@@ -1,26 +1,17 @@
 #stage 1
+#stage 1
 FROM node:16.14.2 as node
-WORKDIR /app
+
+WORKDIR /usr/src/app
+
 COPY . .
-RUN npm install @angular/cli && npm install && npm run build
+
+RUN npm install  && npm run build:prod
 
 #stage 2
 FROM nginx:alpine
-COPY --from=node /app/dist/enlink /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=node /usr/src/app/dist/enlink /usr/share/nginx/html
 EXPOSE 80
 
-# FROM node:16.14.2 AS ui-build
-# WORKDIR /app
-# COPY . .
-# RUN npm install @angular/cli && npm install && npm run build
-
-# FROM node:16.14.2 AS server-build
-# WORKDIR /root/
-# COPY --from=ui-build /app/dist/enlink /usr/share/nginx/html
-# COPY package*.json ./
-# RUN npm install
-# COPY server.js .
-
-# EXPOSE 3080 80
-
-# CMD ["node", "server.js"]

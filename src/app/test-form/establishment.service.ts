@@ -27,6 +27,34 @@ export class EstablishmentService {
     )
   }
 
+  getAllLastDay(): Observable<number> {
+    return this.httpClient.get<number>(environment.url+"/establishment/last-day")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  getAllGroupedByType(): Observable<Establishment[]> {
+    return this.httpClient.get<Establishment[]>(environment.url+"/establishment/grouped-by-type")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  getEstablishmentsNoCompletedForm(): Observable<number[]> {
+    return this.httpClient.get<number[]>(environment.url+"/establishment/count-no-complete")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  getAllForExcel(): Observable<Establishment[]> {
+    return this.httpClient.get<Establishment[]>(environment.url+"/establishment/data-excel")
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   create(establishment): Observable<Establishment> {
     return this.httpClient.post<Establishment>(environment.url+"/establishment", JSON.stringify(establishment), this.httpOptions)
     .pipe(
@@ -70,6 +98,13 @@ export class EstablishmentService {
     )
   }
 
+  chargeResultsEstablishment(id): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-results/"+id)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
   showPercentage(idEstablishment,idIntent): Observable<Establishment> {
     return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-percentage/"+idEstablishment+"/"+idIntent)
     .pipe(
@@ -79,6 +114,13 @@ export class EstablishmentService {
 
   showQuestionsOfSubtopic(subTopicResultId,idEstablishment,idIntent): Observable<Establishment> {
     return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-questions-subtopic/"+subTopicResultId+"/"+idEstablishment+"/"+idIntent)
+    .pipe(
+      catchError(this.errorHandler)
+    )
+  }
+
+  showQuestionsOfSubtopicValidate(subTopicResultId,idEstablishment,idIntent): Observable<Establishment> {
+    return this.httpClient.get<Establishment>(environment.url+"/establishment/establishment-questions-subtopic-validate/"+subTopicResultId+"/"+idEstablishment+"/"+idIntent)
     .pipe(
       catchError(this.errorHandler)
     )
