@@ -7,11 +7,12 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { ShowEstablishmentComponent } from './show-establishment/show-establishment.component';
 import pdfMake from 'pdfmake/build/pdfmake';
 import * as XLSX from 'xlsx';
-import { ResultsService } from 'src/app/test-form/results.service';
 import { Result } from 'src/app/test-form/result';
 import { QuestionService } from '../manage-questions/question.service';
 import { Question } from '../manage-questions/question';
-import { exit } from 'process';
+import { Router } from '@angular/router';
+import { TokenService } from 'src/app/shared/token.service';
+import { AuthStateService } from 'src/app/shared/auth-state.service';
 
 @Component({
   selector: 'app-manage-establishments',
@@ -28,12 +29,14 @@ export class ManageEstablishmentsComponent implements OnInit {
   result: Result;
   results: Result[] = [];
   questions: Question[] = [];
-
   constructor(private establishmentService: EstablishmentService,
     private modalService: NzModalService,
     private message: NzMessageService,
     private questionsService: QuestionService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private auth: AuthStateService,
+    public router: Router,
+    public token: TokenService) {
     try {
       this.establishmentService.getAll().subscribe((data: Establishment[]) => {
         this.establishments = data;

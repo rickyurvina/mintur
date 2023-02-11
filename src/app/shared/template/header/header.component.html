@@ -33,11 +33,30 @@
 
       <li>
         <span class="p-h-10 pointer" nz-dropdown [nzTrigger]="'click'" [nzPlacement]="'bottomRight'">
-          <a  [routerLink]="['mintur','formulario']">
+          <a  routerLink="/mintur/formulario">
             <span nz-icon nzType="database" nzTheme="outline"></span>
           </a>
         </span>
 
+      </li>
+      <li>
+        <span class="p-h-10 pointer" nz-dropdown [nzDropdownMenu]="profile" [nzTrigger]="'click'"
+          [nzPlacement]="'bottomRight'">
+          <nz-avatar [nzIcon]="'user'"></nz-avatar>
+        </span>
+        <nz-dropdown-menu #profile="nzDropdownMenu">
+          <ul nz-menu class="p-b-15 p-t-20">
+            <li nz-menu-item>
+              <a class="p-v-5 d-flex align-items-center justify-content-between">
+                <div (click)="signOut()">
+                  <i class="opacity-04 font-size-16" nz-icon nzType="logout" theme="outline"></i>
+                  <span class="m-l-10">Logout</span>
+                </div>
+                <i class="font-size-10" nz-icon nzType="right" theme="outline"></i>
+              </a>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
       </li>
 
     </ul>
