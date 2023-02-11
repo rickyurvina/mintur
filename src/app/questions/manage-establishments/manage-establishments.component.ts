@@ -7,11 +7,11 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { ShowEstablishmentComponent } from './show-establishment/show-establishment.component';
 import pdfMake from 'pdfmake/build/pdfmake';
 import * as XLSX from 'xlsx';
-import { ResultsService } from 'src/app/test-form/results.service';
 import { Result } from 'src/app/test-form/result';
 import { QuestionService } from '../manage-questions/question.service';
 import { Question } from '../manage-questions/question';
-import { exit } from 'process';
+import { Component as Comp } from '../manage-components/component';
+import { SubTopic } from '../manage-subtopic/sub-topic';
 
 @Component({
   selector: 'app-manage-establishments',
@@ -20,14 +20,15 @@ import { exit } from 'process';
 })
 export class ManageEstablishmentsComponent implements OnInit {
   establishments: Establishment[] = [];
+  establishmentsExcel: Establishment[] = [];
 
-  components: any[];
-  subTopics: any[];
+  componentsExcel: Comp[];
+  subTopicsExcel: SubTopic[];
   questionsChart: any[] = []
   forms: any[];
   result: Result;
   results: Result[] = [];
-  questions: Question[] = [];
+  questionsExcel: Question[] = [];
 
   constructor(private establishmentService: EstablishmentService,
     private modalService: NzModalService,
@@ -45,8 +46,11 @@ export class ManageEstablishmentsComponent implements OnInit {
     }
 
     try {
-      this.questionsService.getAllActive().subscribe((data: Question[]) => {
-        this.questions = data;
+      this.questionsService.getAllActive().subscribe((data: any[]) => {
+        console.log(data)
+        this.questionsExcel = data['questions'];
+        this.componentsExcel = data['components'];
+        this.subTopicsExcel = data['subTopics'];
       }, err => {
         this.message.create('error', `Error: ${err}`);
       });
@@ -426,7 +430,7 @@ export class ManageEstablishmentsComponent implements OnInit {
   }
 
 
-  downloadExcelResults2() {
+  downloadExcel() {
     try {
       try {
         var dataArr = [];
@@ -443,7 +447,14 @@ export class ManageEstablishmentsComponent implements OnInit {
           'Parroquia',
           'Formulario',
         ])
-        this.questions.forEach(function (item) {
+
+        this.componentsExcel.forEach(function (item) {
+          dataArr[0].push(item.name)
+        })
+        this.subTopicsExcel.forEach(function (item) {
+          dataArr[0].push(item.name)
+        })
+        this.questionsExcel.forEach(function (item) {
           dataArr[0].push(item.code)
           if (item['children'].length > 0) {
             item['children'].forEach(function (child) {
@@ -452,15 +463,14 @@ export class ManageEstablishmentsComponent implements OnInit {
           }
         })
 
+
+
+
         this.establishmentService.getAllForExcel().subscribe((data: Establishment[]) => {
+          this.establishmentsExcel = data;
+          var _questions = this.questionsExcel
 
-
-          this.establishments = data;
-          // console.log(this.questions)
-          var _questions = this.questions
-
-          this.establishments.forEach(function (item, index) {
-            // console.log(_questions)
+          this.establishmentsExcel.forEach(function (item, index) {
             let form = item.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
             dataArr.push([
               item.code,
@@ -477,8 +487,14 @@ export class ManageEstablishmentsComponent implements OnInit {
             ])
             let components = item.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
             let subTopics = item.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
+            components.forEach(function(component){
+              dataArr[index+1].push(component.score)
+            })
 
-            // console.log(dataArr)
+            subTopics.forEach(function(subTopic){
+              dataArr[index+1].push(subTopic.score)
+            })
+
             _questions.forEach(function (ques) {
               dataArr[index + 1].push(ques.code)
               if (ques['children'].length > 0) {
