@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class TokenService {
     login: environment.url+'/auth/login',
     register: environment.url+'/auth/register',
   };
-  constructor() {}
+  constructor(private messages: NzMessageService) {}
   handleData(token: any) {
     localStorage.setItem('auth_token', token);
   }
@@ -31,8 +32,15 @@ export class TokenService {
     }
   }
   payload(token: any) {
-    const jwtPayload = token.split('.')[1];
-    return JSON.parse(atob(jwtPayload));
+    try{
+      const jwtPayload = token.split('.')[1];
+      const returnValue= JSON.parse(atob(jwtPayload))
+      return returnValue;
+    }catch(e){
+      localStorage.removeItem('auth_token')
+      this.messages.create('error','Vuelva a iniciar sesión..');
+    }
+
   }
   // User state based on valid token
   isLoggedIn() {

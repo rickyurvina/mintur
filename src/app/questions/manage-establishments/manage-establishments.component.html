@@ -2,7 +2,7 @@
 <div>
   <div nz-row nzJustify="end">
     <div nz-col>
-      <button nz-button nzType="primary"  nzShape="round" (click)="downloadExcelResults2()">
+      <button nz-button nzType="primary"  nzShape="round" (click)="downloadExcel()">
         <span nz-icon nzType="file-excel" nzTheme="outline"></span> Descargar
       </button>
     </div>
@@ -34,7 +34,7 @@
           <td *ngIf="data.results.length>0">
             <a (click)="showEstablishment(data.id)" style="margin-right: 10px;"><span nz-icon nzType="eye" nzTheme="outline"></span></a>
             <a (click)="downloadPdf(data.id)" style="margin-right: 10px;"><span nz-icon nzType="cloud-download" nzTheme="outline"></span></a>
-            <!-- <a (click)="deleteEstablishment(data.id)" ><span nz-icon nzType="delete" nzTheme="outline"></span></a> -->
+            <a (click)="deleteEstablishment(data.id)" ><span nz-icon nzType="delete" nzTheme="outline"></span></a>
           </td>
         </tr>
       </tbody>

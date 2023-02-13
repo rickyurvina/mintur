@@ -92,7 +92,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
     this.establishmentForm = this.fb.group({
       name: ['', [Validators.required]],
       company: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$")]],
     });
 
     this.establishmentFormUpdate = this.fb.group({
