@@ -12,7 +12,7 @@
                       <form nz-form [formGroup]="loginForm" nzLayout="vertical" class="login-form" (ngSubmit)="submitForm()">
                           <nz-form-item>
                               <nz-form-label nzRequired nzFor="userName">Correo</nz-form-label>
-                              <nz-form-control nzErrorTip="Please input your username!">
+                              <nz-form-control nzErrorTip="Porfavor ingresa tu correo!">
                                   <nz-input-group [nzPrefix]="prefixUser">
                                       <input type="text" nz-input formControlName="email" placeholder="Correo">
                                   </nz-input-group>
@@ -20,7 +20,7 @@
                           </nz-form-item>
                           <nz-form-item class="relative">
                               <nz-form-label nzRequired nzFor="password">Contraseña</nz-form-label>
-                              <nz-form-control nzErrorTip="Please input your Password!">
+                              <nz-form-control nzErrorTip="Porfavor ingresa tu contraseña!">
                                   <nz-input-group [nzPrefix]="prefixLock">
                                       <input type="password" nz-input formControlName="password" placeholder="Contraseña">
                                   </nz-input-group>
@@ -29,7 +29,7 @@
                           <nz-form-item>
                               <nz-form-control>
                                   <div class="d-flex align-items-center justify-content-between">
-                                      <button nz-button class="login-form-button" [nzType]="'primary'">Entrar</button>
+                                      <button nz-button class="login-form-button" [nzType]="'primary'" [disabled]="!loginForm.valid">Entrar</button>
                                   </div>
                               </nz-form-control>
                           </nz-form-item>

@@ -13,7 +13,8 @@ import { Question } from '../manage-questions/question';
 import { Router } from '@angular/router';
 import { TokenService } from 'src/app/shared/token.service';
 import { AuthStateService } from 'src/app/shared/auth-state.service';
-
+import { Component as Comp } from '../manage-components/component';
+import { SubTopic } from '../manage-subtopic/sub-topic';
 @Component({
   selector: 'app-manage-establishments',
   templateUrl: './manage-establishments.component.html',
@@ -29,7 +30,7 @@ export class ManageEstablishmentsComponent implements OnInit {
   forms: any[];
   result: Result;
   results: Result[] = [];
-  questions: Question[] = [];
+  questionsExcel: Question[] = [];
   constructor(private establishmentService: EstablishmentService,
     private modalService: NzModalService,
     private message: NzMessageService,
