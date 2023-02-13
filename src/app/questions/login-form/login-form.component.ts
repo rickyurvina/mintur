@@ -20,11 +20,16 @@ export class LoginFormComponent implements OnInit {
     private authService: AuthService,
     private token: TokenService,
     private authState: AuthStateService,
-    private message: NzMessageService) {
+    private message: NzMessageService,
+    private tokenService:TokenService) {
     this.loginForm = this.fb.group({
-      email: [null, [Validators.required]],
+      email: [null, [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$")]],
       password: [null, [Validators.required]]
     });
+    if(this.tokenService.isLoggedIn()){
+      this.router.navigate(['/admin/manage-questions']);
+    }
+
   }
 
   ngOnInit(): void {
@@ -32,25 +37,28 @@ export class LoginFormComponent implements OnInit {
   }
   submitForm(): void {
 
-    this.authService.signin(this.loginForm.value).subscribe(
-      (result) => {
-        this.responseHandler(result);
-        for (const i in this.loginForm.controls) {
-          this.loginForm.controls[i].markAsDirty();
-          this.loginForm.controls[i].updateValueAndValidity();
+    try{
+      this.authService.signin(this.loginForm.value).subscribe(
+        (result) => {
+          this.responseHandler(result);
+          for (const i in this.loginForm.controls) {
+            this.loginForm.controls[i].markAsDirty();
+            this.loginForm.controls[i].updateValueAndValidity();
+          }
+        },
+        (error) => {
+          console.log(error.error.error)
+          this.message.create('error', `Lo siento, pero no se han encontrado tus credenciales en nuestra base de datos. Por favor, verifica si has ingresado la información correctamente`);
+        },
+        () => {
+          this.authState.setAuthState(true);
+          this.loginForm.reset();
+          this.router.navigate(['/admin/manage-questions']);
         }
-      },
-      (error) => {
-        this.message.create('error', `Error ${error}`);
-
-      },
-      () => {
-        this.authState.setAuthState(true);
-        this.loginForm.reset();
-        this.router.navigate(['/admin/manage-questions']);
-      }
-    );
-
+      );
+    }catch(e){
+      this.message.create('error', `Error al autenticar`);
+    }
   }
   // Handle response
   responseHandler(data: any) {

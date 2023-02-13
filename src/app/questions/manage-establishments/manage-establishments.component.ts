@@ -10,9 +10,17 @@ import * as XLSX from 'xlsx';
 import { Result } from 'src/app/test-form/result';
 import { QuestionService } from '../manage-questions/question.service';
 import { Question } from '../manage-questions/question';
+<<<<<<< HEAD
 import { Component as Comp } from '../manage-components/component';
 import { SubTopic } from '../manage-subtopic/sub-topic';
 
+=======
+import { Router } from '@angular/router';
+import { TokenService } from 'src/app/shared/token.service';
+import { AuthStateService } from 'src/app/shared/auth-state.service';
+import { Component as Comp } from '../manage-components/component';
+import { SubTopic } from '../manage-subtopic/sub-topic';
+>>>>>>> bd411ec5ca97fe4de84223d5e480fc14b403c832
 @Component({
   selector: 'app-manage-establishments',
   templateUrl: './manage-establishments.component.html',
@@ -29,7 +37,10 @@ export class ManageEstablishmentsComponent implements OnInit {
   result: Result;
   results: Result[] = [];
   questionsExcel: Question[] = [];
+<<<<<<< HEAD
 
+=======
+>>>>>>> bd411ec5ca97fe4de84223d5e480fc14b403c832
   constructor(private establishmentService: EstablishmentService,
     private modalService: NzModalService,
     private message: NzMessageService,
