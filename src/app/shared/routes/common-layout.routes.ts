@@ -4,7 +4,7 @@ export const CommonLayout_ROUTES: Routes = [
 
   //Questions
   {
-    path: 'admin',
+    path: '',
 
     data: {
       title: 'Administración'

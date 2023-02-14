@@ -14,7 +14,7 @@ import { CommonLayoutComponent } from './layouts/common-layout/common-layout.com
 import { FullLayoutComponent } from './layouts/full-layout/full-layout.component';
 import { NgChartjsModule } from 'ng-chartjs';
 import { ThemeConstantService } from './shared/services/theme-constant.service';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CreateFormComponent } from './questions/manage-forms/create-form/create-form.component';
 import { ManageFormsComponent } from './questions/manage-forms/index/manage-forms.component';
@@ -32,7 +32,8 @@ import { IndexComponentsComponent } from './questions/manage-components/index-co
 import { IndexSubTopicComponent } from './questions/manage-subtopic/index-sub-topic/index-sub-topic.component';
 import { CreateSubTopicComponent } from './questions/manage-subtopic/create-sub-topic/create-sub-topic.component';
 import { FillFormComponent } from './test-form/fill-form/fill-form.component';
-
+import { UserProfileComponent } from './login/user-profile/user-profile.component';
+import { AuthInterceptor } from './shared/auth.interceptor';
 registerLocaleData(localeEs, 'es');
 registerLocaleData(en);
 
@@ -48,6 +49,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     CreateQuestionsComponent,
     CreateSubTopicComponent,
     AppComponent,
+    UserProfileComponent,
   ],
 
   imports: [
@@ -99,7 +101,12 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     IndexComponentsComponent,
     IndexSubTopicComponent,
     FillFormComponent,
-    { provide: NZ_ICONS, useValue: icons }
+    { provide: NZ_ICONS, useValue: icons },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
 
   bootstrap: [AppComponent]

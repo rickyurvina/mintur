@@ -13,6 +13,9 @@ import { Question } from '../manage-questions/question';
 import { Component as Comp } from '../manage-components/component';
 import { SubTopic } from '../manage-subtopic/sub-topic';
 
+import { Router } from '@angular/router';
+import { TokenService } from 'src/app/shared/token.service';
+import { AuthStateService } from 'src/app/shared/auth-state.service';
 @Component({
   selector: 'app-manage-establishments',
   templateUrl: './manage-establishments.component.html',
@@ -34,7 +37,10 @@ export class ManageEstablishmentsComponent implements OnInit {
     private modalService: NzModalService,
     private message: NzMessageService,
     private questionsService: QuestionService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private auth: AuthStateService,
+    public router: Router,
+    public token: TokenService) {
     try {
       this.establishmentService.getAll().subscribe((data: Establishment[]) => {
         this.establishments = data;

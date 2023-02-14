@@ -24,41 +24,44 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { ManageResultsComponent } from './manage-results/manage-results.component';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
-
-const antdModule= [
-    NzFormModule,
-    NzInputModule,
-    NzButtonModule,
-    NzCardModule,
-    NzCheckboxModule,
-    NzSkeletonModule,
-    NzTagModule,
-    NzDividerModule,
-    NzToolTipModule,
-    NzTableModule,
-    NzProgressModule,
-    NzTabsModule,
-    NzBadgeModule,
+import { LoginFormComponent } from './login-form/login-form.component';
+import { TemplateModule } from '../shared/template/template.module';
+const antdModule = [
+  NzFormModule,
+  NzInputModule,
+  NzButtonModule,
+  NzCardModule,
+  NzCheckboxModule,
+  NzSkeletonModule,
+  NzTagModule,
+  NzDividerModule,
+  NzToolTipModule,
+  NzTableModule,
+  NzProgressModule,
+  NzTabsModule,
+  NzBadgeModule,
 ]
 
 @NgModule({
-    imports: [
-        CommonModule,
-        SharedModule,
-        ReactiveFormsModule,
-        QuestionsRoutingModule,
-        ...antdModule
-    ],
-    declarations: [
-        ManageFormsComponent,
-        IndexQuestionsComponent,
-        IndexComponentsComponent,
-        CreateComponentsComponent,
-        IndexSubTopicComponent,
-        ManageEstablishmentsComponent,
-        ShowEstablishmentComponent,
-        ManageResultsComponent
-    ]
+  imports: [
+    CommonModule,
+    SharedModule,
+    ReactiveFormsModule,
+    QuestionsRoutingModule,
+    TemplateModule,
+    ...antdModule
+  ],
+  declarations: [
+    ManageFormsComponent,
+    IndexQuestionsComponent,
+    IndexComponentsComponent,
+    CreateComponentsComponent,
+    IndexSubTopicComponent,
+    ManageEstablishmentsComponent,
+    ShowEstablishmentComponent,
+    ManageResultsComponent,
+    LoginFormComponent,
+  ]
 })
 
-export class QuestionsModule {}
+export class QuestionsModule { }
