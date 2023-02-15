@@ -38,7 +38,6 @@ export class ManageEstablishmentsComponent {
     private message: NzMessageService,
     private questionsService: QuestionService,
     private translate: TranslateService,
-    private auth: AuthStateService,
     public router: Router,
     public token: TokenService) {
     try {
@@ -439,6 +438,7 @@ export class ManageEstablishmentsComponent {
 
         dataArr.push([
           'Código',
+          'Creado el',
           'Nombre',
           'Correo',
           'RUC',
@@ -477,6 +477,7 @@ export class ManageEstablishmentsComponent {
 
             dataArr.push([
               item.code,
+              item['created_at'],
               item.name,
               item.email,
               item.ruc,
@@ -492,12 +493,12 @@ export class ManageEstablishmentsComponent {
 
             let components = item.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
             let subTopics = item.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
-            components.forEach(function(component){
-              dataArr[index+1].push(component.score)
+            components.forEach(function (component) {
+              dataArr[index + 1].push(component.score)
             })
 
-            subTopics.forEach(function(subTopic){
-              dataArr[index+1].push(subTopic.score)
+            subTopics.forEach(function (subTopic) {
+              dataArr[index + 1].push(subTopic.score)
             })
 
             _questions.forEach(function (ques) {
@@ -512,14 +513,16 @@ export class ManageEstablishmentsComponent {
               var score;
               if (result.resultable_type == "App\\Models\\Forms\\Question") {
                 let quest = dataArr[index + 1].find(item => item == result.resultable.code)
-                if (result['resultable']['type'] == 'relacionada' || result['resultable']['type'] == 'una_opcion') {
-                  score = (result['score'] / 10).toFixed(2)
+                if (result['resultable']['type'] == 'relacionada') {
+                  score = result['score'] != null ? (result['score'] / 10).toFixed(2) : ''
+                } else if (result['resultable']['type'] == 'una_opcion') {
+                  score = result['score'] != null ? (result['score']=='0'?result['score']: (result['score'] / result['score']).toFixed(0)) : ''
                 } else if (result['resultable']['type'] == 'si_no') {
-                  score = (result['score'] * 10).toFixed(2)
+                  score = result['score'] != null ? (result['score'] == '1' ? 'Si' : 'No') : '';
                 } else if (result['resultable']['type'] == 'informativa') {
-                  score = result['answer']
+                  score = result['score'] != null ? result['answer'] : '';
                 } else {
-                  score = result['score']
+                  score = result['score'] != null ? result['score'] : ''
                 }
                 if (quest != undefined) {
                   var _index = dataArr[index + 1].indexOf(quest);
@@ -530,10 +533,11 @@ export class ManageEstablishmentsComponent {
 
             dataArr[index + 1].forEach(function (element) {
               let rest = dataArr[0].find(item => item == element)
-              var index_=dataArr[index+1].indexOf(rest);
+              var index_ = dataArr[index + 1].indexOf(rest);
               dataArr[index + 1][index_] = 'NaN';
             })
           })
+          console.log({ dataArr })
           const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataArr, {
             skipHeader: true,
           });
