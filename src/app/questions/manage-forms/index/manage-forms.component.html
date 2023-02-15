@@ -7,8 +7,8 @@
     </div>
   </div>
   <div style="background: #ECECEC;padding:30px;">
-    <div nz-row [nzGutter]="8">
-      <div nz-col [nzSpan]="8" *ngFor="let form of forms">
+    <div nz-row>
+      <div  nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="8"  *ngFor="let form of forms">
         <nz-card nzTitle="{{form.code}}-{{form.name}}" [nzExtra]="extraTemplate">
           <p>{{form.description}}</p>
           <nz-divider [nzText]="'general.Componentes'|translate"></nz-divider>

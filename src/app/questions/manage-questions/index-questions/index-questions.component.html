@@ -12,8 +12,8 @@
   </div>
 
   <div style="background: #ECECEC;padding:30px;" *ngIf="isTable==false">
-    <div nz-row [nzGutter]="8">
-      <div nz-col [nzSpan]="8" *ngFor="let question of questions">
+    <div nz-row>
+      <div nz-col nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="8" *ngFor="let question of questions">
         <nz-card nzTitle="{{question.code}}-{{question.name}}" [nzExtra]="extraTemplate">
           <p>{{question.description}}</p>
           <div nz-row *ngIf="question.children.length>0">
