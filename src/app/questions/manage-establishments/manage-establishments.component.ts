@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Establishment } from 'src/app/test-form/establishment';
 import { EstablishmentService } from 'src/app/test-form/establishment.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -21,7 +21,7 @@ import { AuthStateService } from 'src/app/shared/auth-state.service';
   templateUrl: './manage-establishments.component.html',
   styleUrls: ['./manage-establishments.component.css']
 })
-export class ManageEstablishmentsComponent implements OnInit {
+export class ManageEstablishmentsComponent {
   establishments: Establishment[] = [];
   establishmentsExcel: Establishment[] = [];
 
@@ -53,7 +53,6 @@ export class ManageEstablishmentsComponent implements OnInit {
 
     try {
       this.questionsService.getAllActive().subscribe((data: any[]) => {
-        console.log(data)
         this.questionsExcel = data['questions'];
         this.componentsExcel = data['components'];
         this.subTopicsExcel = data['subTopics'];
@@ -65,9 +64,6 @@ export class ManageEstablishmentsComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-
-  }
 
   showEstablishment(id) {
     try {
@@ -440,9 +436,11 @@ export class ManageEstablishmentsComponent implements OnInit {
     try {
       try {
         var dataArr = [];
+
         dataArr.push([
           'Código',
           'Nombre',
+          'Correo',
           'RUC',
           'Empresa',
           'Tipo',
@@ -452,7 +450,8 @@ export class ManageEstablishmentsComponent implements OnInit {
           'Cantón',
           'Parroquia',
           'Formulario',
-        ])
+        ],
+        )
 
         this.componentsExcel.forEach(function (item) {
           dataArr[0].push(item.name)
@@ -469,18 +468,17 @@ export class ManageEstablishmentsComponent implements OnInit {
           }
         })
 
-
-
-
         this.establishmentService.getAllForExcel().subscribe((data: Establishment[]) => {
           this.establishmentsExcel = data;
           var _questions = this.questionsExcel
 
           this.establishmentsExcel.forEach(function (item, index) {
             let form = item.results.find(element => element['resultable_type'] == "App\\Models\\Forms\\Form")
+
             dataArr.push([
               item.code,
               item.name,
+              item.email,
               item.ruc,
               item.company,
               item.type_of_taxpayer,
@@ -491,6 +489,7 @@ export class ManageEstablishmentsComponent implements OnInit {
               item['location_parrish']['description'],
               form.score
             ])
+
             let components = item.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\Component")
             let subTopics = item.results.filter(element => element['resultable_type'] == "App\\Models\\Forms\\SubTopic")
             components.forEach(function(component){
@@ -535,7 +534,9 @@ export class ManageEstablishmentsComponent implements OnInit {
               dataArr[index + 1][index_] = 'NaN';
             })
           })
-          const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataArr);
+          const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataArr, {
+            skipHeader: true,
+          });
           const workbook: XLSX.WorkBook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
 
           XLSX.writeFile(workbook, 'resultados_establecimientos.xlsx');

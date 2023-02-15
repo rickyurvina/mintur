@@ -24,11 +24,13 @@ export class ManageResultsComponent implements OnInit, AfterViewChecked {
   numberNoComplete: number = 0;
   numberOneComplete: number = 0;
   numberAllComplete: number = 0;
+  numberStartCompleteForm: number = 0;
+  numberOnlyRegister: number = 0;
   percentageComplete: number = 0;
   establishmentsGrouped: any[];
   constructor(private colorConfig: ThemeConstantService,
     geographicService: GeographichClassifierService,
-    private establishmentService: EstablishmentService,
+    establishmentService: EstablishmentService,
     private establishmentTypesService: EstablishmentTypeService) {
 
 
@@ -48,6 +50,8 @@ export class ManageResultsComponent implements OnInit, AfterViewChecked {
       this.numberNoComplete = data['zero'];
       this.numberOneComplete = data['one'];
       this.numberAllComplete = data['all'];
+      this.numberStartCompleteForm = data['establishments_start_form'];
+      this.numberOnlyRegister = data['establishments_only_register'];
       this.percentageComplete = data['promPercentage'];
     })
 
