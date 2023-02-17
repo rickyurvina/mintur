@@ -1136,7 +1136,7 @@ export class FillFormComponent implements OnInit, AfterViewChecked {
                 widths: ['auto'],
                 body: [
                   [{ text: 'Visita tus resultados en linea', alignment: 'right' }],
-                  [{ qr: `http://172.177.124.172/user/test-form`, fit: '100' }],
+                  [{ qr: `https://formulario-evaluacion-minturismo.laverix.com.ec/mintur/formulario`, fit: '100' }],
                 ],
               },
               alignment: 'right',

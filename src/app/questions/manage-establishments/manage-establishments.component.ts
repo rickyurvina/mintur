@@ -87,21 +87,7 @@ export class ManageEstablishmentsComponent {
         var form = data['forms'];
         var components = data['components'];
         var subTopics = data['subTopics'];
-        var questions = data['questions'].filter(function (element) {
-          if (element['resultable'] != null && element['resultable']['type'] == 'relacionada') {
-            if (element['score'] / 10 < 5) {
-              return element['resultable']['has_score'] == 1 && element['resultable']['code'] != null;
-            }
-          } else if (element['resultable'] != null && element['resultable']['type'] == 'si_no') {
-            if (element['score'] * 10 < 5) {
-              return element['resultable']['has_score'] == 1 && element['resultable']['code'] != null;
-            }
-          } else if (element['resultable'] != null && element['resultable']['type'] == 'rango_1_5') {
-            if (element['score'] * 5 < 5) {
-              return element['resultable']['has_score'] == 1 && element['resultable']['code'] != null;
-            }
-          }
-        })
+        var questions = data['questions']
         let docDefinition = {
           pageSize: 'A4',
           pageOrientation: 'landscape',
@@ -201,20 +187,7 @@ export class ManageEstablishmentsComponent {
 
                     ],
                   },
-                },
-
-                {
-                  table: {
-                    headerRows: 1,
-                    widths: ['auto'],
-                    body: [
-                      [{ text: 'Visita tus resultados en linea', alignment: 'right' }],
-                      [{ qr: `http://172.177.124.172/user/test-form`, fit: '100' }],
-                    ],
-                  },
-                  alignment: 'right',
-                  layout: 'noBorders',
-                },
+                }
               ],
             },
             {
@@ -333,7 +306,7 @@ export class ManageEstablishmentsComponent {
               table: {
                 layout: 'lightHorizontalLines',
                 headerRows: 2,
-                widths: ['auto', 'auto', 'auto', 'auto'],
+                widths: ['auto',  'auto'],
                 body: [
                   [
                     {
@@ -341,24 +314,12 @@ export class ManageEstablishmentsComponent {
                       alignment: 'center',
                       fillColor: '#26506d',
                       color: 'white',
-                      colSpan: 4,
-                    }, {}, {}, {}
+                      colSpan: 2,
+                    },  {}
                   ],
                   [
                     {
                       text: 'Pregunta',
-                      alignment: 'center',
-                      fillColor: '#26506d',
-                      color: 'white',
-                    },
-                    {
-                      text: 'Importancia',
-                      alignment: 'center',
-                      fillColor: '#26506d',
-                      color: 'white',
-                    },
-                    {
-                      text: 'Medios de verificación',
                       alignment: 'center',
                       fillColor: '#26506d',
                       color: 'white',
@@ -370,12 +331,23 @@ export class ManageEstablishmentsComponent {
                       color: 'white',
                     },
                   ],
-                  ...questions.map((p) => [
-                    p['resultable']['name'],
-                    p['resultable']['importance'],
-                    p['resultable']['verification_means'],
-                    p['resultable']['type'] == 'relacionada' ? (p['score'] / 10).toFixed(2) : p['resultable']['type'] == 'si_no' ? (p['score'] * 10).toFixed(2) : (p['score'] * 5).toFixed(2)
-                  ]),
+                  ...questions.map((p) =>
+                    [
+                      p['resultable']['name'],
+                      p['resultable']['type'] == 'relacionada' ?
+                        ((p['score'] != null) ? (p['score'] / 10).toFixed(2) : '')
+
+                        : p['resultable']['type'] == 'una_opcion' ?
+                          ((p['score'] != null) ? (p['score'] == '0' ? p['score'] : (p['score'] / p['score']).toFixed(0)) : '')
+
+                          : p['resultable']['type'] == 'si_no' ?
+                            (p['score'] != null ? (p['score'] == '1' ? 'Si' : 'No') : '')
+
+                            : (p['resultable']['type'] == 'informativa') ?
+
+                             (p['score'] != null ? p['answer'] : '')
+                              : p['score'] != null ? p['score'] : ''
+                    ]),
                 ],
               },
             },
@@ -421,6 +393,8 @@ export class ManageEstablishmentsComponent {
         };
         if (action === 'download') {
           pdfMake.createPdf(docDefinition).download(`Evaluacion${establishment['name']}.pdf`);
+          pdfMake.createPdf(docDefinition).print();
+
         }
       }, err => {
         this.message.create('error', `Error: al cargar la data para la descarga`);
@@ -516,7 +490,7 @@ export class ManageEstablishmentsComponent {
                 if (result['resultable']['type'] == 'relacionada') {
                   score = result['score'] != null ? (result['score'] / 10).toFixed(2) : ''
                 } else if (result['resultable']['type'] == 'una_opcion') {
-                  score = result['score'] != null ? (result['score']=='0'?result['score']: (result['score'] / result['score']).toFixed(0)) : ''
+                  score = result['score'] != null ? (result['score'] == '0' ? result['score'] : (result['score'] / result['score']).toFixed(0)) : ''
                 } else if (result['resultable']['type'] == 'si_no') {
                   score = result['score'] != null ? (result['score'] == '1' ? 'Si' : 'No') : '';
                 } else if (result['resultable']['type'] == 'informativa') {
